@@ -885,8 +885,8 @@
             </div>
           </div>
           <div class="field">
-            <label>University / Institution</label>
-            <input type="text" id="f-uni" placeholder="e.g. University of Malaya">
+            <label>Occupation</label>
+            <input type="text" id="f-uni" placeholder="e.g. University Lecturer, Industry Professional, Retired...">
           </div>
           <div class="field-row">
             <div class="field">
@@ -1028,19 +1028,19 @@
 </footer>
 
 <script>
-// ── DATA STORE (Cloudflare KV via Worker in production; localStorage for now) ──
-const STORAGE_KEY = 'rm_students_v1';
+// ── DATA STORE — Cloudflare Worker shared backend ──
+const API = 'https://rm-students.profdrtan.workers.dev';
+let cachedData = [];
 
-function getData() {
-  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }
-  catch { return []; }
+async function fetchData() {
+  try {
+    const r = await fetch(API + '/students');
+    if (r.ok) cachedData = await r.json();
+  } catch {}
+  return cachedData;
 }
 
-function saveData(arr) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
-}
-
-function submitRegistration() {
+async function submitRegistration() {
   const first    = document.getElementById('f-first').value.trim();
   const last     = document.getElementById('f-last').value.trim();
   const uni      = document.getElementById('f-uni').value.trim();
@@ -1060,19 +1060,29 @@ function submitRegistration() {
   btn.disabled = true;
   btn.textContent = 'Registering...';
 
-  const record = { first, last, uni, country, prog, stage, domain, tool, challenge, ts: Date.now() };
-  const data = getData();
-  data.push(record);
-  saveData(data);
-
-  document.getElementById('reg-form').style.display = 'none';
-  document.getElementById('form-success').style.display = 'block';
-
-  renderDashboard();
+  try {
+    const r = await fetch(API + '/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ first, last, uni, country, prog, stage, domain, tool, challenge, ts: Date.now() })
+    });
+    if (!r.ok) throw new Error();
+    document.getElementById('reg-form').style.display = 'none';
+    document.getElementById('form-success').style.display = 'block';
+    await refreshDashboard();
+  } catch {
+    btn.disabled = false;
+    btn.textContent = 'Register & Join Live Dashboard →';
+    alert('Could not connect. Please try again.');
+  }
 }
 
-function renderDashboard() {
-  const data = getData();
+async function refreshDashboard() {
+  const data = await fetchData();
+  renderDashboard(data);
+}
+
+function renderDashboard(data) {
   const n = data.length;
 
   // hero ticker
@@ -1188,9 +1198,9 @@ function animateCount(elId, target) {
   }, 30);
 }
 
-// poll every 5s for new registrations (in production this would be WebSocket/SSE)
-setInterval(renderDashboard, 5000);
-renderDashboard();
+// Poll every 8s — all browsers share the same live data via the Worker
+setInterval(refreshDashboard, 8000);
+refreshDashboard();
 </script>
 </body>
 </html>

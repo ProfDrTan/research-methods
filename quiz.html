@@ -260,13 +260,12 @@ nav{position:sticky;top:0;z-index:100;background:rgba(2,8,23,0.92);backdrop-filt
 <!-- STUDENT -->
 <div class="screen" id="sscreen">
 <div class="sw">
-  <!-- Name entry -->
+  <!-- Not registered gate -->
   <div id="s-name-screen" class="name-card">
-    <div class="name-icon">👋</div>
-    <div class="name-title">Welcome to Dr. Tan's Class</div>
-    <div class="name-sub">Enter your name so Dr. Tan can see who has responded to each question.</div>
-    <input type="text" class="name-input" id="s-name-in" placeholder="Your full name e.g. Aisha Rahman" onkeydown="if(event.key==='Enter')saveName()">
-    <button class="name-btn" onclick="saveName()">Join Class →</button>
+    <div class="name-icon">🔒</div>
+    <div class="name-title">Registration Required</div>
+    <div class="name-sub">You need to register on the class home page before you can access the quiz. This ensures Dr. Tan can track your participation.</div>
+    <a href="/" style="display:inline-block;width:100%;padding:0.8rem;background:linear-gradient(135deg,var(--violet),#5b21b6);color:#fff;border:none;border-radius:8px;font-family:var(--sans);font-weight:700;font-size:0.88rem;cursor:pointer;text-decoration:none;text-align:center;">Go to Registration →</a>
   </div>
   <!-- Waiting -->
   <div id="s-wait" class="waiting" style="display:none;">
@@ -383,15 +382,7 @@ function showScreen(id){
   document.getElementById(id).classList.add('active');
 }
 
-// ── STUDENT NAME ──
-function saveName(){
-  const n = document.getElementById('s-name-in').value.trim();
-  if(!n){ alert('Please enter your name.'); return; }
-  localStorage.setItem(NAME_KEY, n);
-  document.getElementById('s-name-screen').style.display = 'none';
-  document.getElementById('s-wait').style.display = 'block';
-  document.getElementById('s-wait-name').textContent = '👤 ' + n;
-}
+// Student name comes from registration
 
 // ── INSTRUCTOR BREAK / Q SELECTION ──
 function selBreak(n, btn){
@@ -474,7 +465,10 @@ function startITimer(secs){
     updateITimer(iTimerRemaining);
     if(iTimerRemaining <= 0){
       clearITimer();
-      broadcastResults();
+      // Timer expired — responses lock but DO NOT auto-reveal
+      // Dr. Tan clicks "Show Results to All" manually
+      document.getElementById('i-timer').textContent = 'TIME';
+      document.getElementById('i-timer').classList.add('urgent');
     }
   }, 1000);
 }
@@ -752,6 +746,29 @@ async function showStudentResults(qId){
 }
 
 // ── INIT ──
+// Check registration — redirect if not registered
+function checkRegistration() {
+  const name = localStorage.getItem('student_name_v1');
+  const registered = localStorage.getItem('student_registered');
+  if (!name || registered !== 'yes') {
+    // Not registered — show gate message
+    document.getElementById('s-name-screen').style.display = 'block';
+    document.getElementById('s-wait').style.display = 'none';
+    return false;
+  }
+  document.getElementById('s-name-screen').style.display = 'none';
+  document.getElementById('s-wait').style.display = 'block';
+  document.getElementById('s-wait-name').textContent = '👤 ' + name;
+  return true;
+}
+
+function showStudent(){
+  showScreen('sscreen');
+  document.getElementById('btn-s').classList.add('active');
+  document.getElementById('btn-i').classList.remove('active');
+  if(checkRegistration()) startStudentPoll();
+}
+
 showStudent();
 </script>
 </body>

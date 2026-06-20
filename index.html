@@ -770,12 +770,30 @@
   <div class="section-label">Downloads</div>
   <h2 class="section-title">Class Materials</h2>
   <p class="section-sub">All lecture decks, datasets, and tools in one place. Updated each session.</p>
+  <!-- LOCKED STATE (shown when not registered) -->
+  <div id="materials-locked" style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:2.5rem;text-align:center;">
+    <div style="font-size:2.5rem;margin-bottom:1rem;">🔒</div>
+    <div style="font-family:var(--sans);font-weight:700;font-size:1.1rem;margin-bottom:0.5rem;">Registration Required</div>
+    <div style="font-size:0.88rem;color:var(--muted);margin-bottom:1.5rem;max-width:400px;margin-left:auto;margin-right:auto;">You must register as a student to access course materials, the lecture page, and the live quiz. Scroll down to register — it takes 60 seconds.</div>
+    <a href="#students" style="display:inline-block;font-family:var(--sans);font-weight:700;font-size:0.88rem;padding:0.7rem 1.75rem;background:linear-gradient(135deg,var(--violet),#5b21b6);color:#fff;border-radius:8px;text-decoration:none;">Register Now →</a>
+  </div>
+
+  <!-- UNLOCKED STATE (shown after registration) -->
+  <div id="materials-unlocked" style="display:none;">
   <div class="downloads-grid">
+    <a href="lecture.html" target="_blank" class="dl-card" style="border-color:rgba(0,229,255,0.2);">
+      <div class="dl-icon">📖</div>
+      <div class="dl-info">
+        <div class="dl-name">Full Lecture — All Modules</div>
+        <div class="dl-meta">Web · Self-driven · 4 Hours</div>
+      </div>
+      <div class="dl-arrow">↗</div>
+    </a>
     <a href="https://drive.google.com/file/d/1BoQjzg5smBY4fFLy9uASQAgyMPgwpsDM/view" target="_blank" class="dl-card">
       <div class="dl-icon">📄</div>
       <div class="dl-info">
         <div class="dl-name">Intro to Quantitative Analysis</div>
-        <div class="dl-meta">PDF · Day 1 Lecture · SPSS Essentials</div>
+        <div class="dl-meta">PDF · Lecture Slides · SPSS Essentials</div>
       </div>
       <div class="dl-arrow">↗</div>
     </a>
@@ -791,7 +809,7 @@
       <div class="dl-icon">📄</div>
       <div class="dl-info">
         <div class="dl-name">Introduction to SEM &amp; SmartPLS</div>
-        <div class="dl-meta">PDF · Day 2 Lecture · PLS-SEM</div>
+        <div class="dl-meta">PDF · PLS-SEM Lecture</div>
       </div>
       <div class="dl-arrow">↗</div>
     </a>
@@ -819,6 +837,15 @@
       </div>
       <div class="dl-arrow">↗</div>
     </a>
+    <a href="quiz.html" target="_blank" class="dl-card" style="border-color:rgba(245,158,11,0.3);">
+      <div class="dl-icon">⚡</div>
+      <div class="dl-info">
+        <div class="dl-name">Live Quiz</div>
+        <div class="dl-meta">Interactive · Launches during class</div>
+      </div>
+      <div class="dl-arrow">↗</div>
+    </a>
+  </div>
   </div>
 </section>
 
@@ -1085,11 +1112,19 @@ async function submitRegistration() {
   btn.textContent = 'Registered! ✓';
 
   const data = getData();
-  data.push({ first, last, uni, country, prog, stage, domain, tool, challenge, ts: Date.now() });
+  const record = { first, last, uni, country, prog, stage, domain, tool, challenge, ts: Date.now() };
+  data.push(record);
   saveData(data);
+
+  // Store name for quiz identification
+  localStorage.setItem('student_name_v1', first + ' ' + last);
+  localStorage.setItem('student_registered', 'yes');
 
   document.getElementById('reg-form').style.display = 'none';
   document.getElementById('form-success').style.display = 'block';
+
+  // Unlock materials immediately
+  unlockMaterials();
   refreshDashboard();
 }
 
@@ -1216,16 +1251,31 @@ function animateCount(elId, target) {
 // Render on load
 refreshDashboard();
 
+function unlockMaterials() {
+  document.getElementById('materials-locked').style.display = 'none';
+  document.getElementById('materials-unlocked').style.display = 'block';
+}
+
 function resetData() {
   if (!confirm('Reset all student data back to demo data? This cannot be undone.')) return;
   localStorage.removeItem(KEY);
-  // Show form again if hidden
+  localStorage.removeItem('student_registered');
+  localStorage.removeItem('student_name_v1');
   document.getElementById('reg-form').style.display = 'block';
   document.getElementById('form-success').style.display = 'none';
   const btn = document.getElementById('submit-btn');
   btn.disabled = false;
   btn.textContent = 'Register & Join Live Dashboard →';
+  document.getElementById('materials-locked').style.display = 'block';
+  document.getElementById('materials-unlocked').style.display = 'none';
   refreshDashboard();
+}
+
+// Check registration on page load — unlock if already registered
+if (localStorage.getItem('student_registered') === 'yes') {
+  unlockMaterials();
+  document.getElementById('reg-form').style.display = 'none';
+  document.getElementById('form-success').style.display = 'block';
 }
 </script>
 </body>

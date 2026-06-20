@@ -462,12 +462,23 @@ footer a{color:var(--cyan);text-decoration:none;}
   <div class="dash-section" id="dashboard">
     <div class="section-label">Live Intelligence</div>
     <h2 class="section-title" style="margin-bottom:0.5rem;">Who's In The Room?</h2>
-    <p style="color:var(--muted);font-size:0.88rem;margin-bottom:2rem;">Live class profile — updates as your classmates register. This is quantitative research happening in real time.</p>
+    <p style="color:var(--muted);font-size:0.88rem;margin-bottom:2rem;">Live class profile — updates as classmates register. Names persist even if connection drops.</p>
+
+    <!-- ROSTER — full width at top -->
+    <div class="dash-card" style="margin-bottom:1.25rem;">
+      <div class="dash-card-title">
+        <span><span class="live-dot" style="margin-right:0.4rem;"></span>Class Roster</span>
+        <span id="roster-count" style="font-family:var(--mono);font-size:0.68rem;color:var(--cyan);">0 registered</span>
+      </div>
+      <div id="roster-list" style="display:flex;flex-wrap:wrap;gap:0.5rem;min-height:40px;">
+        <span style="font-size:0.78rem;color:var(--muted);font-family:var(--mono);">Waiting for students to register...</span>
+      </div>
+    </div>
+
     <div class="student-layout">
-      <!-- DASHBOARD PANELS -->
       <div class="dashboard-col">
         <div class="dash-card">
-          <div class="dash-card-title"><span>Live Registrations</span><div class="live-dot"></div></div>
+          <div class="dash-card-title"><span>Registrations</span><div class="live-dot"></div></div>
           <div class="count-display" id="live-count">0</div>
           <div class="count-label">students across <span id="live-countries-count">0</span> countries</div>
           <button onclick="resetData()" style="margin-top:0.85rem;font-family:var(--mono);font-size:0.65rem;padding:0.28rem 0.75rem;background:transparent;border:1px solid rgba(239,68,68,0.3);color:rgba(239,68,68,0.6);border-radius:5px;cursor:pointer;" onmouseover="this.style.color='#ef4444';this.style.borderColor='#ef4444'" onmouseout="this.style.color='rgba(239,68,68,0.6)';this.style.borderColor='rgba(239,68,68,0.3)'">⟳ Reset Data</button>
@@ -588,6 +599,25 @@ function renderDashboard(data){
   const uniqueCountries=[...new Set(data.map(d=>d.country).filter(Boolean))];
   document.getElementById('live-count').textContent=n;
   document.getElementById('live-countries-count').textContent=uniqueCountries.length;
+
+  // ROSTER — full names with country flag-like chips
+  const rosterEl=document.getElementById('roster-list');
+  const rosterCount=document.getElementById('roster-count');
+  if(rosterEl){
+    if(!data.length){
+      rosterEl.innerHTML='<span style="font-size:0.78rem;color:var(--muted);font-family:var(--mono);">Waiting for students to register...</span>';
+    } else {
+      rosterEl.innerHTML=data.map((s,i)=>`
+        <div style="display:flex;align-items:center;gap:0.4rem;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:0.35rem 0.7rem;">
+          <span style="font-family:var(--mono);font-size:0.6rem;color:var(--muted);">${i+1}</span>
+          <span style="font-family:var(--sans);font-weight:600;font-size:0.8rem;color:var(--text);">${s.first} ${s.last}</span>
+          <span style="font-family:var(--mono);font-size:0.62rem;color:var(--cyan);padding:0.1rem 0.4rem;background:rgba(0,229,255,0.07);border-radius:3px;">${s.country||'?'}</span>
+          <span style="font-family:var(--mono);font-size:0.58rem;color:var(--muted);">${s.prog||''}</span>
+        </div>`).join('');
+    }
+    if(rosterCount) rosterCount.textContent=n+' registered';
+  }
+
   // country chips
   const cc=countField(data,'country');
   const ce=document.getElementById('country-chips');

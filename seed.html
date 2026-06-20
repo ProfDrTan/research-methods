@@ -1,44 +1,69 @@
 <!DOCTYPE html>
 <html>
 <head><title>Seed Data</title>
-<style>body{font-family:monospace;background:#020817;color:#00e5ff;padding:2rem;}
-.ok{color:#10b981;} .err{color:#ef4444;}</style>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Courier New', monospace; background: #020817; color: #00e5ff; padding: 2rem; }
+h2 { margin-bottom: 1.5rem; color: #a78bfa; }
+.ok  { color: #10b981; margin: 0.3rem 0; }
+.err { color: #ef4444; margin: 0.3rem 0; }
+.info { color: #f59e0b; margin: 0.3rem 0; }
+.done { color: #f59e0b; font-size: 1.3rem; margin-top: 1.5rem; }
+#log p { padding: 0.15rem 0; }
+</style>
 </head>
 <body>
-<h2>Injecting fictitious students...</h2>
-<div id="log"></div>
+<h2>⚡ Research Methods — Student Data Injector</h2>
+<div id="log"><p class="info">Starting...</p></div>
 <script>
 const API = 'https://rm-students.teikkheong.workers.dev';
+
 const students = [
   {first:"Aisha",last:"Rahman",uni:"University Lecturer",country:"Bangladesh",prog:"PhD",stage:"Conducting Research & Collecting Data",domain:"Digital Finance and AI adoption in microfinance",tool:"SmartPLS",challenge:"Sample size and measurement invariance"},
   {first:"Rajesh",last:"Kumar",uni:"Industry Professional",country:"India",prog:"PhD",stage:"Preparing a Research Proposal",domain:"Machine learning in healthcare diagnostics",tool:"Python",challenge:"Defining research gap and theoretical framework"},
   {first:"Fatima",last:"Al-Zahra",uni:"University Lecturer",country:"UAE",prog:"DBA",stage:"Writing up Dissertation",domain:"AI-driven leadership and organisational change",tool:"SPSS",challenge:"Interpreting SEM results and writing discussion chapter"},
-  {first:"Muhammad",last:"Tariq",uni:"Industry Professional",country:"Pakistan",prog:"PhD",stage:"Carrying out Literature Review",domain:"Blockchain adoption in Islamic banking",tool:"SmartPLS",challenge:"Finding enough peer reviewed articles on blockchain in Islamic finance"},
+  {first:"Muhammad",last:"Tariq",uni:"Industry Professional",country:"Pakistan",prog:"PhD",stage:"Carrying out Literature Review",domain:"Blockchain adoption in Islamic banking",tool:"SmartPLS",challenge:"Finding peer reviewed articles on blockchain in Islamic finance"},
   {first:"Priya",last:"Nair",uni:"University Lecturer",country:"India",prog:"PhD",stage:"Preparing for Proposal Defense",domain:"EdTech and student engagement using AI tools",tool:"R",challenge:"Operationalising constructs and building the conceptual framework"},
   {first:"Omar",last:"Hussain",uni:"Retired",country:"Pakistan",prog:"DBA",stage:"Defending at Viva Voce",domain:"Digital transformation strategy in public sector",tool:"AMOS",challenge:"Handling committee questions on methodology robustness"},
-  {first:"Siti",last:"Aminah",uni:"University Lecturer",country:"Malaysia",prog:"PhD",stage:"Conducting Research & Collecting Data",domain:"Social media influence on consumer behaviour",tool:"SmartPLS",challenge:"Getting sufficient survey responses and avoiding common method bias"},
+  {first:"Siti",last:"Aminah",uni:"University Lecturer",country:"Malaysia",prog:"PhD",stage:"Conducting Research & Collecting Data",domain:"Social media influence on consumer behaviour",tool:"SmartPLS",challenge:"Getting sufficient survey responses avoiding common method bias"},
   {first:"Ahmed",last:"Al-Rashid",uni:"Industry Professional",country:"Saudi Arabia",prog:"DBA",stage:"Writing up Dissertation",domain:"Fintech regulation and compliance using AI",tool:"SPSS",challenge:"Aligning regulatory frameworks across different countries"},
-  {first:"Lina",last:"Chen",uni:"University Lecturer",country:"Singapore",prog:"PhD",stage:"Preparing a Research Proposal",domain:"Natural language processing for sentiment analysis in finance",tool:"Python",challenge:"Choosing between ML and SEM approaches"},
-  {first:"Kofi",last:"Asante",uni:"Industry Professional",country:"Nigeria",prog:"PhD",stage:"Carrying out Literature Review",domain:"Cryptocurrency adoption and financial inclusion in Africa",tool:"R",challenge":"Lack of localised datasets for African financial markets"},
-  {first:"Nadia",last:"Hassan",uni:"University Lecturer",country:"Egypt",prog:"DBA",stage:"Conducting Research & Collecting Data",domain:"Women entrepreneurship and digital platforms",tool:"SPSS",challenge":"Survey translation and cultural equivalence testing"},
-  {first:"Vikram",last:"Singh",uni:"Industry Professional",country:"India",prog:"PhD",stage:"Preparing for Proposal Defense",domain:"Supply chain resilience using predictive AI",tool:"Python",challenge":"Bridging the gap between operations management and AI literature"},
-  {first:"Nurul",last:"Hidayah",uni:"University Lecturer",country:"Malaysia",prog:"PhD",stage:"Writing up Dissertation",domain:"Islamic fintech and customer trust",tool:"SmartPLS",challenge":"Discriminant validity issues with overlapping constructs"},
-  {first:"James",last:"Okafor",uni:"Industry Professional",country:"Nigeria",prog:"DBA",stage:"Preparing a Research Proposal",domain:"AI ethics and governance in emerging markets",tool:"None yet",challenge":"Understanding quantitative methods from scratch"},
-  {first:"Sara",last:"Malik",uni:"University Lecturer",country:"Pakistan",prog:"PhD",stage:"Conducting Research & Collecting Data",domain:"Mental health apps and user behaviour analytics",tool:"R",challenge":"IRB approval delays and participant recruitment"}
+  {first:"Lina",last:"Chen",uni:"University Lecturer",country:"Singapore",prog:"PhD",stage:"Preparing a Research Proposal",domain:"Natural language processing for sentiment analysis in finance",tool:"Python",challenge:"Choosing between ML and SEM approaches for my research"},
+  {first:"Kofi",last:"Asante",uni:"Industry Professional",country:"Nigeria",prog:"PhD",stage:"Carrying out Literature Review",domain:"Cryptocurrency adoption and financial inclusion in Africa",tool:"R",challenge:"Lack of localised datasets for African financial markets"},
+  {first:"Nadia",last:"Hassan",uni:"University Lecturer",country:"Egypt",prog:"DBA",stage:"Conducting Research & Collecting Data",domain:"Women entrepreneurship and digital platforms",tool:"SPSS",challenge:"Survey translation and cultural equivalence testing"},
+  {first:"Vikram",last:"Singh",uni:"Industry Professional",country:"India",prog:"PhD",stage:"Preparing for Proposal Defense",domain:"Supply chain resilience using predictive AI",tool:"Python",challenge:"Bridging operations management and AI research literature"},
+  {first:"Nurul",last:"Hidayah",uni:"University Lecturer",country:"Malaysia",prog:"PhD",stage:"Writing up Dissertation",domain:"Islamic fintech and customer trust",tool:"SmartPLS",challenge:"Discriminant validity issues with overlapping constructs"},
+  {first:"James",last:"Okafor",uni:"Industry Professional",country:"Nigeria",prog:"DBA",stage:"Preparing a Research Proposal",domain:"AI ethics and governance in emerging markets",tool:"None yet",challenge:"Understanding quantitative methods from scratch"},
+  {first:"Sara",last:"Malik",uni:"University Lecturer",country:"Pakistan",prog:"PhD",stage:"Conducting Research & Collecting Data",domain:"Mental health apps and user behaviour analytics",tool:"R",challenge:"IRB approval delays and participant recruitment"}
 ];
 
 const log = document.getElementById('log');
-let done = 0;
 
-async function seedAll() {
-  // Clear first
-  await fetch(API + '/clear', {
-    method: 'POST',
-    headers: {'Content-Type':'application/json'},
-    body: JSON.stringify({secret:'drtan2025clear'})
-  });
-  log.innerHTML += '<p>🗑️ Cleared existing data</p>';
+function addLog(msg, cls='ok') {
+  const p = document.createElement('p');
+  p.className = cls;
+  p.innerHTML = msg;
+  log.appendChild(p);
+  window.scrollTo(0, document.body.scrollHeight);
+}
 
+async function run() {
+  log.innerHTML = '';
+
+  // Clear existing
+  try {
+    await fetch(API + '/clear', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({secret:'drtan2025clear'})
+    });
+    addLog('🗑️ Cleared existing data', 'info');
+  } catch(e) {
+    addLog('⚠️ Could not clear: ' + e.message, 'err');
+  }
+
+  await new Promise(r => setTimeout(r, 500));
+
+  let count = 0;
   for (const s of students) {
     try {
       const r = await fetch(API + '/register', {
@@ -46,18 +71,20 @@ async function seedAll() {
         headers: {'Content-Type':'application/json'},
         body: JSON.stringify({...s, ts: Date.now()})
       });
+      if (!r.ok) throw new Error('HTTP ' + r.status);
       const d = await r.json();
-      done++;
-      log.innerHTML += `<p class="ok">✅ ${done}. ${s.first} ${s.last} — ${s.country} (${s.prog}) → ${d.count} total</p>`;
+      count++;
+      addLog(`✅ ${count}. <strong>${s.first} ${s.last}</strong> — ${s.country} · ${s.prog} · ${s.stage.split(' ').slice(0,3).join(' ')}... → ${d.count} in DB`);
     } catch(e) {
-      log.innerHTML += `<p class="err">❌ Failed: ${s.first} ${s.last}</p>`;
+      addLog(`❌ Failed: ${s.first} ${s.last} — ${e.message}`, 'err');
     }
-    await new Promise(r => setTimeout(r, 300));
+    await new Promise(r => setTimeout(r, 400));
   }
-  log.innerHTML += '<p style="color:#f59e0b;font-size:1.2rem;margin-top:1rem">🎉 Done! Now open research-methods.pages.dev to see the live dashboard.</p>';
+
+  addLog(`<br>🎉 Done! ${count} students injected. <a href="/" style="color:#00e5ff">→ View Live Dashboard</a>`, 'done');
 }
 
-seedAll();
+run();
 </script>
 </body>
 </html>

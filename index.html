@@ -975,6 +975,7 @@
           </div>
           <div class="count-display" id="live-count">0</div>
           <div class="count-label">students registered across <span id="live-countries-count">0</span> countries</div>
+          <button onclick="resetData()" style="margin-top:1rem;font-family:var(--mono);font-size:0.68rem;padding:0.35rem 0.9rem;background:transparent;border:1px solid rgba(239,68,68,0.3);color:rgba(239,68,68,0.6);border-radius:6px;cursor:pointer;letter-spacing:0.05em;transition:all 0.2s;" onmouseover="this.style.borderColor='#ef4444';this.style.color='#ef4444'" onmouseout="this.style.borderColor='rgba(239,68,68,0.3)';this.style.color='rgba(239,68,68,0.6)'">⟳ RESET ALL DATA</button>
         </div>
 
         <!-- Countries -->
@@ -1214,6 +1215,18 @@ function animateCount(elId, target) {
 
 // Render on load
 refreshDashboard();
+
+function resetData() {
+  if (!confirm('Reset all student data back to demo data? This cannot be undone.')) return;
+  localStorage.removeItem(KEY);
+  // Show form again if hidden
+  document.getElementById('reg-form').style.display = 'block';
+  document.getElementById('form-success').style.display = 'none';
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = false;
+  btn.textContent = 'Register & Join Live Dashboard →';
+  refreshDashboard();
+}
 </script>
 </body>
 </html>

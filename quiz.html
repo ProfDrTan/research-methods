@@ -273,6 +273,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(2,8,23,0.92);backdrop-filt
     <div class="wait-title">Waiting for Dr. Tan...</div>
     <div class="wait-sub">A question will appear here the moment it is launched. Keep this page open.</div>
     <div class="wait-name" id="s-wait-name"></div>
+    <div id="s-participation" style="display:none;margin-top:1.5rem;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1rem 1.25rem;text-align:left;max-width:480px;margin-left:auto;margin-right:auto;"></div>
   </div>
   <!-- Question -->
   <div id="s-question" style="display:none;"></div>
@@ -280,7 +281,8 @@ nav{position:sticky;top:0;z-index:100;background:rgba(2,8,23,0.92);backdrop-filt
   <div id="s-ty" class="ty" style="display:none;">
     <div class="ty-icon">✅</div>
     <div class="ty-title">Answer submitted!</div>
-    <div class="ty-sub">Your response is recorded. Results will appear on screen when Dr. Tan reveals them.</div>
+    <div class="ty-sub">Your response is recorded. Results will appear when Dr. Tan reveals them.</div>
+    <div id="s-participation-ty" style="display:none;margin-top:1.5rem;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1rem 1.25rem;text-align:left;"></div>
   </div>
   <!-- Results broadcast -->
   <div id="s-results" style="display:none;"></div>
@@ -586,6 +588,9 @@ function renderParticipation(state, allResp){
 }
 
 // ── STUDENT POLL ──
+// Session start time — we only react to questions launched AFTER we opened the page
+const SESSION_START = Date.now();
+
 function startStudentPoll(){
   if(pollInterval) clearInterval(pollInterval);
   checkStudentState();
@@ -599,7 +604,20 @@ async function checkStudentState(){
   if(!getStudentName()) return;
   try {
     const state = await (await fetch(API+'/quiz/state')).json();
-    // Show results broadcast
+
+    // CRITICAL: Only react to questions launched in THIS session
+    // If launchedAt is before we opened the page — ignore entirely
+    const launchedThisSession = state.launchedAt && state.launchedAt > (SESSION_START - 5000);
+
+    if(!launchedThisSession){
+      // Stale state from previous session — show waiting screen only
+      if(lastStateQ !== null){ lastStateQ=null; studentDone=false; curAnswer=null; clearSTimer(); }
+      showStudentScreen('s-wait');
+      updateParticipationList({});
+      return;
+    }
+
+    // Show results broadcast — only if launched this session
     if(state.showResults && state.activeQ){
       if(lastShowResults !== state.showResults || lastStateQ !== state.activeQ){
         lastShowResults = state.showResults; lastStateQ = state.activeQ;
@@ -608,12 +626,16 @@ async function checkStudentState(){
       return;
     }
     lastShowResults = false;
+
     // No active question
     if(!state.activeQ){
       if(lastStateQ !== null){ lastStateQ=null; studentDone=false; curAnswer=null; clearSTimer(); }
-      showStudentScreen('s-wait'); return;
+      showStudentScreen('s-wait');
+      updateParticipationList({});
+      return;
     }
-    // New question launched
+
+    // New question launched this session
     if(state.activeQ !== lastStateQ){
       lastStateQ = state.activeQ; studentDone = false; curAnswer = null;
       renderStudentQuestion(state);
@@ -622,7 +644,52 @@ async function checkStudentState(){
       return;
     }
     if(!studentDone) updateSTimer(state);
+
+    // Update participation list on waiting/answered screens
+    if(studentDone){
+      const allResp = await (await fetch(API+'/quiz/responses')).json();
+      updateParticipationList(allResp);
+    }
   } catch(e){}
+}
+
+async function updateParticipationList(allResp){
+  const el = document.getElementById('s-participation');
+  if(!el) return;
+  // Get registered students
+  let students = [];
+  try{ students = JSON.parse(localStorage.getItem('rm_v2')||'[]'); }catch{}
+  if(!students.length){ el.style.display='none'; return; }
+
+  const state = await (await fetch(API+'/quiz/state').catch(()=>({json:()=>({})}))).json().catch(()=>({}));
+  const qId = state.activeQ || lastStateQ;
+  const qr = qId && allResp[qId] ? allResp[qId] : [];
+  const respondedNames = new Set(qr.map(r=>r.name?.toLowerCase().trim()).filter(Boolean));
+
+  const answered = students.filter(s=>{
+    const full=(s.first+' '+s.last).toLowerCase();
+    return respondedNames.has(full)||[...respondedNames].some(n=>n.includes(s.first.toLowerCase()));
+  });
+  const pending = students.filter(s=>{
+    const full=(s.first+' '+s.last).toLowerCase();
+    return !respondedNames.has(full)&&![...respondedNames].some(n=>n.includes(s.first.toLowerCase()));
+  });
+
+  if(!qId){ el.style.display='none'; return; }
+  el.style.display='block';
+  el.innerHTML=`
+    <div style="font-family:var(--mono);font-size:0.62rem;letter-spacing:0.1em;color:var(--muted);text-transform:uppercase;margin-bottom:0.6rem;">
+      Class Participation — ${answered.length}/${students.length} responded
+    </div>
+    ${answered.length?`<div style="margin-bottom:0.5rem;font-family:var(--mono);font-size:0.65rem;color:var(--green);">✅ ANSWERED</div>
+    <div style="display:flex;flex-wrap:wrap;gap:0.3rem;margin-bottom:0.85rem;">
+      ${answered.map(s=>`<span style="font-size:0.72rem;padding:0.18rem 0.5rem;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2);border-radius:4px;color:var(--green);">${s.first} ${s.last}</span>`).join('')}
+    </div>`:''}
+    ${pending.length?`<div style="margin-bottom:0.5rem;font-family:var(--mono);font-size:0.65rem;color:var(--red);">⚠ NOT YET RESPONDED</div>
+    <div style="display:flex;flex-wrap:wrap;gap:0.3rem;">
+      ${pending.map(s=>`<span style="font-size:0.72rem;padding:0.18rem 0.5rem;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:4px;color:var(--red);">${s.first} ${s.last}</span>`).join('')}
+    </div>`:''}
+  `;
 }
 
 function showStudentScreen(id){

@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Speaker Notes — Dr. Tan (Private)</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Space+Mono:wght@400;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0f1117;--surface:#1a1f2e;--border:#252d3d;
+  --cyan:#00e5ff;--violet:#a78bfa;--green:#10b981;
+  --amber:#f59e0b;--red:#ef4444;--text:#e2e8f0;--muted:#64748b;
+  --mono:'Space Mono',monospace;--sans:'Space Grotesk',sans-serif;--body:'Inter',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15px;line-height:1.6;}
+
+/* TOP BAR */
+.topbar{position:sticky;top:0;z-index:100;background:rgba(15,17,23,0.97);border-bottom:2px solid var(--amber);padding:0.6rem 1.25rem;display:flex;align-items:center;justify-content:space-between;}
+.tb-brand{font-family:var(--mono);font-size:0.72rem;color:var(--amber);letter-spacing:0.1em;}
+.tb-warning{font-family:var(--mono);font-size:0.62rem;color:var(--muted);background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);padding:0.2rem 0.6rem;border-radius:4px;}
+.tb-links{display:flex;gap:0.4rem;}
+.tb-link{font-family:var(--mono);font-size:0.62rem;padding:0.2rem 0.55rem;border:1px solid var(--border);border-radius:4px;color:var(--muted);text-decoration:none;}
+.tb-link:hover{color:var(--cyan);border-color:var(--cyan);}
+
+/* PROGRESS */
+.progress{height:3px;background:var(--border);}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--amber),var(--cyan));width:0%;transition:width 0.2s;}
+
+/* MODULE HEADERS */
+.module-header{background:linear-gradient(135deg,rgba(124,58,237,0.15),rgba(0,229,255,0.06));border-left:4px solid var(--violet);padding:1.25rem 1.5rem;margin:0;}
+.mh-label{font-family:var(--mono);font-size:0.62rem;letter-spacing:0.15em;color:var(--violet);text-transform:uppercase;margin-bottom:0.3rem;}
+.mh-title{font-family:var(--sans);font-size:1.3rem;font-weight:700;margin-bottom:0.2rem;}
+.mh-meta{display:flex;gap:1.5rem;margin-top:0.6rem;flex-wrap:wrap;}
+.mh-tag{font-family:var(--mono);font-size:0.65rem;padding:0.2rem 0.55rem;border-radius:4px;background:rgba(0,229,255,0.08);border:1px solid rgba(0,229,255,0.15);color:var(--cyan);}
+.mh-tag.amber{background:rgba(245,158,11,0.08);border-color:rgba(245,158,11,0.2);color:var(--amber);}
+.mh-tag.green{background:rgba(16,185,129,0.08);border-color:rgba(16,185,129,0.2);color:var(--green);}
+
+/* NOTE CARDS */
+.note-section{padding:1rem 1.25rem;border-bottom:1px solid var(--border);}
+.note-concept{font-family:var(--sans);font-weight:700;font-size:0.95rem;color:var(--cyan);margin-bottom:0.6rem;display:flex;align-items:center;gap:0.5rem;}
+.note-concept::before{content:'▸';color:var(--amber);}
+
+/* TALKING POINTS */
+.talk-points{list-style:none;display:flex;flex-direction:column;gap:0.45rem;margin-bottom:0.85rem;}
+.talk-points li{display:flex;gap:0.6rem;font-size:0.86rem;line-height:1.55;}
+.talk-points li::before{content:'•';color:var(--amber);flex-shrink:0;margin-top:0.05rem;}
+.talk-points li strong{color:var(--text);}
+
+/* EXAMPLES BOX */
+.examples-box{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:0.85rem 1rem;margin-bottom:0.85rem;}
+.ex-label{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.12em;color:var(--green);text-transform:uppercase;margin-bottom:0.6rem;display:flex;align-items:center;gap:0.4rem;}
+.ex-label::before{content:'🌍';}
+.ex-grid{display:flex;flex-direction:column;gap:0.4rem;}
+.ex-item{display:flex;gap:0.6rem;align-items:flex-start;font-size:0.82rem;}
+.ex-sector{font-family:var(--mono);font-size:0.6rem;padding:0.15rem 0.45rem;border-radius:3px;background:rgba(167,139,250,0.12);border:1px solid rgba(167,139,250,0.2);color:var(--violet);flex-shrink:0;margin-top:0.1rem;white-space:nowrap;}
+.ex-text{color:var(--muted);line-height:1.5;}
+.ex-text strong{color:var(--text);}
+
+/* STORY BOX */
+.story-box{background:rgba(245,158,11,0.05);border:1px solid rgba(245,158,11,0.2);border-left:3px solid var(--amber);border-radius:0 8px 8px 0;padding:0.85rem 1rem;margin-bottom:0.85rem;}
+.story-label{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.12em;color:var(--amber);text-transform:uppercase;margin-bottom:0.4rem;}
+.story-text{font-size:0.84rem;color:var(--muted);line-height:1.6;font-style:italic;}
+.story-text strong{color:var(--text);font-style:normal;}
+
+/* VIVA ALERT */
+.viva-box{background:rgba(239,68,68,0.05);border:1px solid rgba(239,68,68,0.2);border-left:3px solid var(--red);border-radius:0 8px 8px 0;padding:0.75rem 1rem;margin-bottom:0.85rem;}
+.viva-label{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.12em;color:var(--red);text-transform:uppercase;margin-bottom:0.35rem;}
+.viva-text{font-size:0.82rem;color:var(--muted);line-height:1.5;}
+.viva-text strong{color:var(--text);}
+
+/* BRIDGE */
+.bridge{font-family:var(--mono);font-size:0.72rem;color:var(--cyan);background:rgba(0,229,255,0.05);border:1px solid rgba(0,229,255,0.15);border-radius:6px;padding:0.5rem 0.85rem;margin-bottom:0.5rem;}
+.bridge::before{content:'→ BRIDGE: ';}
+
+/* TIMING */
+.timing{display:inline-block;font-family:var(--mono);font-size:0.65rem;color:var(--amber);background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);border-radius:4px;padding:0.15rem 0.5rem;margin-bottom:0.75rem;}
+
+/* QUIZ CUE */
+.quiz-cue{background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.25);border-radius:8px;padding:0.85rem 1rem;text-align:center;}
+.qc-icon{font-size:1.5rem;margin-bottom:0.3rem;}
+.qc-title{font-family:var(--sans);font-weight:700;font-size:0.9rem;color:var(--amber);margin-bottom:0.2rem;}
+.qc-sub{font-family:var(--mono);font-size:0.68rem;color:var(--muted);}
+
+/* DIVIDER */
+.mod-divider{height:4px;background:linear-gradient(90deg,var(--violet),var(--cyan),transparent);margin:0;}
+
+/* QUICK NAV */
+.quick-nav{display:flex;flex-wrap:wrap;gap:0.4rem;padding:0.75rem 1.25rem;background:var(--surface);border-bottom:1px solid var(--border);}
+.qn-btn{font-family:var(--mono);font-size:0.62rem;padding:0.2rem 0.55rem;border:1px solid var(--border);border-radius:4px;color:var(--muted);text-decoration:none;transition:all 0.15s;}
+.qn-btn:hover{color:var(--amber);border-color:var(--amber);}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="tb-brand">🔒 SPEAKER NOTES — PRIVATE — DO NOT SHARE SCREEN</div>
+  <div class="tb-warning">⚠ NOT FOR STUDENTS</div>
+  <div class="tb-links">
+    <a href="lecture.html" class="tb-link" target="_blank">📖 Lecture</a>
+    <a href="quiz.html" class="tb-link" target="_blank">⚡ Quiz</a>
+  </div>
+</div>
+<div class="progress"><div class="progress-fill" id="prog"></div></div>
+
+<div class="quick-nav">
+  <a href="#m1" class="qn-btn">M1 Foundations</a>
+  <a href="#m2" class="qn-btn">M2 Descriptives</a>
+  <a href="#m3" class="qn-btn">M3 Inferential</a>
+  <a href="#m4" class="qn-btn">M4 SEM</a>
+  <a href="#m5" class="qn-btn">M5 Writing</a>
+  <a href="#m6" class="qn-btn">M6 Mixed Methods</a>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- MODULE 1 — FOUNDATIONS -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div id="m1">
+<div class="module-header">
+  <div class="mh-label">Module 1</div>
+  <div class="mh-title">Research Foundations &amp; Measurement Scales</div>
+  <div class="mh-meta">
+    <span class="mh-tag amber">9:20 – 10:00 AM</span>
+    <span class="mh-tag">~40 mins</span>
+    <span class="mh-tag green">Quiz 1 after</span>
+  </div>
+</div>
+
+<div class="note-section">
+  <div class="timing">⏱ Opening — 5 mins</div>
+  <div class="note-concept">Opening Hook — Why Research Methodology Matters</div>
+  <ul class="talk-points">
+    <li>Start with this: <strong>"You are not here to learn statistics. You are here to learn how to make credible claims about the world."</strong></li>
+    <li>Every claim in your dissertation has to be defensible. The examiner's job is to find the weakest link. Your job is to make sure there isn't one.</li>
+    <li>Methodology is your armour. Without it, your findings are just opinions with numbers attached.</li>
+    <li>Ask the class: <strong>"How many of you have already chosen your research method?"</strong> Use the dashboard to see the class profile — reference it directly.</li>
+  </ul>
+  <div class="story-box">
+    <div class="story-label">Opening Story</div>
+    <div class="story-text">"I once sat on a viva panel where a candidate had done three years of research, collected 400 surveys, run regression in SPSS — and the examiner asked one question: <strong>'Why did you treat your Likert scale as interval?'</strong> She couldn't answer. Three years of work, nearly derailed by one sentence. That's why we're here today."</div>
+  </div>
+</div>
+
+<div class="note-section">
+  <div class="timing">⏱ 8 mins</div>
+  <div class="note-concept">Research Paradigms — Positivism</div>
+  <ul class="talk-points">
+    <li>Keep this simple: <strong>positivism = "I can measure it, therefore I can know it."</strong></li>
+    <li>Contrast with interpretivism in one sentence: "Interpretivists say the meaning people attach to things is what matters — that's interviews and focus groups."</li>
+    <li>Make the point: when you use a survey and run SPSS, you are a positivist. Own it. Defend it.</li>
+    <li>AI connection: <strong>"Machine learning models are positivist by nature — they find patterns in data and treat those patterns as truth. Your quantitative research and AI speak the same philosophical language."</strong></li>
+  </ul>
+  <div class="examples-box">
+    <div class="ex-label">Sector Examples — Paradigms in Practice</div>
+    <div class="ex-grid">
+      <div class="ex-item"><span class="ex-sector">EDUCATION</span><div class="ex-text"><strong>Positivist:</strong> Survey 500 students on learning satisfaction, run regression to find what predicts academic performance. <strong>Interpretivist:</strong> Interview 12 teachers about their experience of online teaching post-COVID.</div></div>
+      <div class="ex-item"><span class="ex-sector">HOSPITALITY</span><div class="ex-text"><strong>Positivist:</strong> Survey 300 hotel guests on service quality using a validated 22-item SERVQUAL scale. Test whether tangibles, reliability, and empathy predict repurchase intention.</div></div>
+      <div class="ex-item"><span class="ex-sector">SME</span><div class="ex-text"><strong>Positivist:</strong> Survey 200 SME owners on digital adoption. Measure readiness, resources, and leadership — test which predicts digital transformation success.</div></div>
+      <div class="ex-item"><span class="ex-sector">MANUFACTURING</span><div class="ex-text"><strong>Positivist:</strong> Measure defect rates, production time, and employee training hours across 50 factories. Run regression: does training predict quality?</div></div>
+    </div>
+  </div>
+  <div class="viva-box">
+    <div class="viva-label">⚡ Viva Question They Will Be Asked</div>
+    <div class="viva-text">"Why did you choose a positivist paradigm for your study?" <strong>Answer:</strong> "My research seeks to measure the relationships between constructs across a large sample and generalise findings to the population. Positivism provides the philosophical foundation for objective measurement, statistical testing, and generalisability — which aligns with my research objectives."</div>
+  </div>
+</div>
+
+<div class="note-section">
+  <div class="timing">⏱ 12 mins</div>
+  <div class="note-concept">The Four Measurement Scales</div>
+  <ul class="talk-points">
+    <li>Use this memory trick: <strong>NOIR — Nominal, Ordinal, Interval, Ratio.</strong> Each level adds a property.</li>
+    <li>Nominal: just labels. Gender, country, job type. You can count. That's it.</li>
+    <li>Ordinal: adds order. Ranking your top 3 hotels. But the gap between 1st and 2nd is not the same as 2nd and 3rd.</li>
+    <li>Interval: adds equal distance. Likert 1–7. The gap between 3 and 4 equals the gap between 6 and 7. But no true zero.</li>
+    <li>Ratio: adds true zero. Salary. Zero dollars means no salary. Age. Zero means newborn. You can say "twice as much."</li>
+    <li><strong>The golden rule: you can go down the scale, never up.</strong> You can treat ratio as interval. You cannot treat nominal as ratio.</li>
+  </ul>
+  <div class="examples-box">
+    <div class="ex-label">Sector Examples — Scales in Research</div>
+    <div class="ex-grid">
+      <div class="ex-item"><span class="ex-sector">HOSPITALITY</span><div class="ex-text"><strong>Nominal:</strong> Hotel star rating category (3-star, 4-star, 5-star — these are labels, not numbers you can average). <strong>Ratio:</strong> Revenue per available room (RevPAR) — has true zero, you can say one hotel earns twice another.</div></div>
+      <div class="ex-item"><span class="ex-sector">EDUCATION</span><div class="ex-text"><strong>Ordinal:</strong> Class ranking (1st, 2nd, 3rd — we know the order but not if the gap is equal). <strong>Interval:</strong> Likert satisfaction scale on student feedback forms.</div></div>
+      <div class="ex-item"><span class="ex-sector">MANUFACTURING</span><div class="ex-text"><strong>Ratio:</strong> Number of defects per 1,000 units, production cycle time in minutes, employee tenure in years — all have true zeros.</div></div>
+      <div class="ex-item"><span class="ex-sector">DIGITAL</span><div class="ex-text"><strong>Interval:</strong> Net Promoter Score (0–10 scale). <strong>Ratio:</strong> Website conversion rate, app downloads, monthly active users — all start from zero.</div></div>
+      <div class="ex-item"><span class="ex-sector">SME</span><div class="ex-text"><strong>Nominal:</strong> Industry type (retail, F&B, services). <strong>Ratio:</strong> Annual revenue, number of employees, years in operation.</div></div>
+    </div>
+  </div>
+  <div class="story-box">
+    <div class="story-label">Story — The Likert Debate</div>
+    <div class="story-text">"A student once told me her supervisor said she couldn't use the mean for her Likert data because it's 'technically ordinal.' She was devastated — her entire analysis relied on means. Here's the truth: <strong>in management research, we treat Likert scales with 5 or more points as interval. This is the accepted convention in top journals like JAMS, MIS Quarterly, and IJIM.</strong> Your job is to acknowledge the debate in your methodology chapter and cite Norman (2010) who showed the mean is robust even for Likert data."</div>
+  </div>
+  <div class="bridge">Move from scales to HOW we describe data — "Now that we know what TYPE of data we have, let's look at how we describe it."</div>
+</div>
+
+<div class="note-section">
+  <div class="quiz-cue">
+    <div class="qc-icon">⚡</div>
+    <div class="qc-title">LAUNCH QUIZ 1 NOW</div>
+    <div class="qc-sub">Quiz 1 — Central Tendency & Scales · 10 questions · Set timer 3 mins · Use this break</div>
+  </div>
+</div>
+</div>
+
+<div class="mod-divider"></div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- MODULE 2 — DESCRIPTIVE STATISTICS -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div id="m2">
+<div class="module-header">
+  <div class="mh-label">Module 2</div>
+  <div class="mh-title">Descriptive Statistics &amp; the Normal Distribution</div>
+  <div class="mh-meta">
+    <span class="mh-tag amber">10:00 – 10:45 AM</span>
+    <span class="mh-tag">~45 mins</span>
+    <span class="mh-tag green">Quiz 2 after</span>
+  </div>
+</div>
+
+<div class="note-section">
+  <div class="timing">⏱ 8 mins</div>
+  <div class="note-concept">Measures of Central Tendency</div>
+  <ul class="talk-points">
+    <li>The three measures answer different questions: Mode = "most common?" Median = "what's the middle?" Mean = "what's the average?"</li>
+    <li><strong>Key insight:</strong> When mean and median are very different, your data is skewed. This tells you something important about your population.</li>
+    <li>Always report BOTH mean and median in your dissertation. A gap between them is a finding, not a problem.</li>
+    <li>Ask the class: <strong>"What's the average salary in Singapore?"</strong> — The mean is distorted by high earners. The median tells a truer story. This is why Singapore reports median household income.</li>
+  </ul>
+  <div class="examples-box">
+    <div class="ex-label">Sector Examples — Central Tendency</div>
+    <div class="ex-grid">
+      <div class="ex-item"><span class="ex-sector">HOSPITALITY</span><div class="ex-text"><strong>Mean vs Median:</strong> Average hotel room rate is $180. But the median is $95. Why? A few luxury suites at $2,000 pull the mean up dramatically. The median better represents what most guests pay.</div></div>
+      <div class="ex-item"><span class="ex-sector">EDUCATION</span><div class="ex-text"><strong>Mode:</strong> The most common grade in a class is B+. This tells you where the majority of students cluster — more useful than the mean for understanding grade distribution.</div></div>
+      <div class="ex-item"><span class="ex-sector">MANUFACTURING</span><div class="ex-text"><strong>Mean defects</strong> per batch = 2.3. But the median = 1. A few batches with 20+ defects are skewing the mean. The median reveals the typical production run is actually quite clean.</div></div>
+      <div class="ex-item"><span class="ex-sector">SME</span><div class="ex-text"><strong>Mean revenue</strong> of SMEs in study = RM 2.4 million. Median = RM 480k. Three large SMEs approaching corporate size distort the mean. Always check both.</div></div>
+      <div class="ex-item"><span class="ex-sector">DIGITAL</span><div class="ex-text"><strong>App session length:</strong> Mean = 8 minutes (pulled up by power users spending 2 hours). Median = 2.5 minutes. Most users are in and out quickly. These are two very different user stories.</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="note-section">
+  <div class="timing">⏱ 15 mins</div>
+  <div class="note-concept">The Four Moments of a Normal Distribution</div>
+  <ul class="talk-points">
+    <li>Frame it like this: <strong>"A distribution is like a person — it has a location (mean), a size (SD), a lean (skewness), and a shape (kurtosis). To fully describe a person you need all four. Same for your data."</strong></li>
+    <li><strong>Mean:</strong> Where it sits. <strong>SD:</strong> How spread out. <strong>Skewness:</strong> Which way it leans. <strong>Kurtosis:</strong> How peaked or flat.</li>
+    <li>The empirical rule — write this on the board or say it three times: <strong>68-95-99.9.</strong> It comes up in every viva.</li>
+    <li>Practical point: In SPSS, always run Explore → look at skewness and kurtosis. If |skewness| > 2 or |kurtosis| > 7, you have a problem. Consider non-parametric tests.</li>
+  </ul>
+  <div class="examples-box">
+    <div class="ex-label">Sector Examples — The Four Moments</div>
+    <div class="ex-grid">
+      <div class="ex-item"><span class="ex-sector">HOSPITALITY</span><div class="ex-text"><strong>Customer satisfaction scores</strong> at a hotel: Mean = 4.2/5, SD = 0.8 (tight — consistent service), Skewness = -1.3 (negatively skewed — most guests rate high, a few very unhappy ones pull the tail left). This hotel is performing well but has occasional service failures.</div></div>
+      <div class="ex-item"><span class="ex-sector">MANUFACTURING</span><div class="ex-text"><strong>Defect rates:</strong> Positively skewed (+2.8). Most production runs have zero or near-zero defects. But rare catastrophic batches create a long right tail. The mean defect rate looks alarming but the median tells you the process is usually fine.</div></div>
+      <div class="ex-item"><span class="ex-sector">EDUCATION</span><div class="ex-text"><strong>Exam scores:</strong> Leptokurtic (peaked, kurtosis = +4). Most students score between 65–75%. Very few extremely high or low scores. Suggests the exam is well-calibrated to the middle range.</div></div>
+      <div class="ex-item"><span class="ex-sector">DIGITAL</span><div class="ex-text"><strong>Daily active users</strong> on a new app: Platykurtic (flat distribution). Usage is spread broadly — some days very low, some very high, no clear central peak. Suggests inconsistent engagement — a product design problem.</div></div>
+      <div class="ex-item"><span class="ex-sector">SME</span><div class="ex-text"><strong>Employee tenure:</strong> Bimodal distribution (two peaks — new hires under 1 year and veterans over 10 years). High turnover in the 2–5 year range. This is not a normal distribution — report both peaks and investigate why mid-tenure employees leave.</div></div>
+    </div>
+  </div>
+  <div class="story-box">
+    <div class="story-label">Story — Why Normal Distribution Matters</div>
+    <div class="story-text">"A DBA student I supervised was running t-tests on customer satisfaction data from a hotel chain. The data was severely negatively skewed — almost everyone gave 4 or 5 stars with a few very angry guests at 1. His t-test results were significant. But when we checked the normality assumption — violated badly. We switched to Mann-Whitney U. The results flipped — no longer significant. <strong>The test he chose changed his conclusion.</strong> That's why checking your distribution before choosing your test is not optional — it's the foundation."</div>
+  </div>
+</div>
+
+<div class="note-section">
+  <div class="timing">⏱ 10 mins</div>
+  <div class="note-concept">Choosing the Right Graph</div>
+  <ul class="talk-points">
+    <li>One simple rule: <strong>Categorical data = Bar chart. Continuous data = Histogram.</strong></li>
+    <li>Scatterplot = when you want to SEE the relationship before running correlation or regression. Always plot first, calculate second.</li>
+    <li>Boxplot = when you want to compare distributions across groups AND see outliers. Much more informative than a bar chart of means.</li>
+    <li>Common mistake to warn about: <strong>Never use a pie chart for more than 4–5 categories</strong> — the human eye cannot accurately judge angles. Use a bar chart instead.</li>
+  </ul>
+  <div class="examples-box">
+    <div class="ex-label">Sector Examples — Right Graph for Right Data</div>
+    <div class="ex-grid">
+      <div class="ex-item"><span class="ex-sector">HOSPITALITY</span><div class="ex-text"><strong>Bar chart:</strong> Number of complaints by department (housekeeping, F&B, front desk, concierge). <strong>Boxplot:</strong> Compare room rate distributions across 5 hotel brands — see median, spread, and outliers in one chart.</div></div>
+      <div class="ex-item"><span class="ex-sector">MANUFACTURING</span><div class="ex-text"><strong>Histogram:</strong> Distribution of production cycle times — reveals if the process is normally distributed or has outliers. <strong>Scatterplot:</strong> Plot defect rate vs temperature to visually check for a relationship before running correlation.</div></div>
+      <div class="ex-item"><span class="ex-sector">EDUCATION</span><div class="ex-text"><strong>Bar chart:</strong> Percentage of students by programme (PhD, DBA, Masters). <strong>Histogram:</strong> Distribution of GPA scores across 300 students — check for normality before parametric tests.</div></div>
+      <div class="ex-item"><span class="ex-sector">DIGITAL</span><div class="ex-text"><strong>Line graph:</strong> Daily active users over 12 months — shows trends and seasonality. <strong>Scatterplot:</strong> Ad spend vs conversion rate — visual check for linearity before regression.</div></div>
+    </div>
+  </div>
+  <div class="bridge">Move to inferential: "Now that we can DESCRIBE our data, we want to ask bigger questions — is this pattern real, or could it be due to chance? That's inferential statistics."</div>
+</div>
+
+<div class="note-section">
+  <div class="quiz-cue">
+    <div class="qc-icon">⚡</div>
+    <div class="qc-title">LAUNCH QUIZ 2 NOW</div>
+    <div class="qc-sub">Quiz 2 — Distribution & Correlation · 10 questions · Set timer 3 mins · Take your break ☕</div>
+  </div>
+</div>
+
+<div class="note-section" style="background:rgba(245,158,11,0.04);border-left:3px solid var(--amber);">
+  <div class="timing" style="background:rgba(16,185,129,0.1);border-color:rgba(16,185,129,0.2);color:var(--green);">☕ 10:45 – 11:00 AM — COFFEE BREAK</div>
+  <ul class="talk-points">
+    <li>While students do Quiz 2, step away. Come back at 11:00 sharp.</li>
+    <li>When you return: show Quiz 2 results on screen. Discuss 2–3 questions where students got it wrong.</li>
+    <li>Use the word cloud from Q2 open text to transition: <strong>"I can see from your responses that [X] is coming up a lot — let's address that now."</strong></li>
+  </ul>
+</div>
+</div>
+
+<div class="mod-divider"></div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- MODULE 3 — INFERENTIAL STATISTICS -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div id="m3">
+<div class="module-header">
+  <div class="mh-label">Module 3</div>
+  <div class="mh-title">Inferential Statistics &amp; SPSS</div>
+  <div class="mh-meta">
+    <span class="mh-tag amber">11:00 – 11:45 AM</span>
+    <span class="mh-tag">~45 mins</span>
+    <span class="mh-tag green">Quiz 3 after</span>
+  </div>
+</div>
+
+<div class="note-section">
+  <div class="timing">⏱ 8 mins</div>
+  <div class="note-concept">The Statistical Test Decision Tree</div>
+  <ul class="talk-points">
+    <li>Frame it as a clinical diagnosis: <strong>"You wouldn't give a patient medication without a diagnosis. You don't run a t-test without asking: what type of data, how many groups, is it paired or independent?"</strong></li>
+    <li>Three questions determine your test every time: (1) What type of data? (2) How many groups? (3) Same people or different people?</li>
+    <li>The most common error PhD students make: <strong>running an independent t-test when data is paired.</strong> Results are wrong. Conclusions are wrong. Examiner will catch it.</li>
+  </ul>
+  <div class="examples-box">
+    <div class="ex-label">Sector Examples — Choosing the Right Test</div>
+    <div class="ex-grid">
+      <div class="ex-item"><span class="ex-sector">HOSPITALITY</span><div class="ex-text"><strong>Chi-Square:</strong> Is there a relationship between guest nationality (nominal) and preferred room type (nominal)? Do Asian guests prefer twin rooms more than Western guests? Chi-square tells you if the association is significant.</div></div>
+      <div class="ex-item"><span class="ex-sector">EDUCATION</span><div class="ex-text"><strong>Paired T-test:</strong> Did student confidence improve after a workshop? Survey the SAME students before and after. Same people, two time points = paired t-test. Classic pre-post design.</div></div>
+      <div class="ex-item"><span class="ex-sector">MANUFACTURING</span><div class="ex-text"><strong>Independent T-test:</strong> Do factories with ISO certification have significantly lower defect rates than uncertified factories? Two separate groups (certified vs not) = independent samples t-test.</div></div>
+      <div class="ex-item"><span class="ex-sector">DIGITAL</span><div class="ex-text"><strong>ANOVA:</strong> Do conversion rates differ significantly across three ad formats (video, banner, native)? Three independent groups = one-way ANOVA. If significant, run Tukey post-hoc to find which pairs differ.</div></div>
+      <div class="ex-item"><span class="ex-sector">SME</span><div class="ex-text"><strong>Pearson Correlation:</strong> Is there a relationship between marketing spend and monthly revenue across 80 SMEs? Both continuous = Pearson r. Plot a scatterplot first to check linearity.</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="note-section">
+  <div class="timing">⏱ 8 mins</div>
+  <div class="note-concept">The p-value — Most Misunderstood Concept in Research</div>
+  <ul class="talk-points">
+    <li>Say this slowly and clearly: <strong>"The p-value does NOT tell you the probability your hypothesis is true. It tells you: IF the null hypothesis were true, how likely is it that you would see this result by chance?"</strong></li>
+    <li>p = 0.03 means: if there were truly NO effect, you would only get this result 3% of the time by random chance. So either something real is going on, or you got very unlucky.</li>
+    <li>Common misquote to correct: "p &lt; 0.05 means I'm 95% confident my hypothesis is correct." WRONG. Never say this in a viva.</li>
+    <li>Practical significance vs statistical significance: <strong>a result can be statistically significant but practically meaningless.</strong> Always report effect size (Cohen's d, η²).</li>
+  </ul>
+  <div class="examples-box">
+    <div class="ex-label">Sector Examples — p-values in Context</div>
+    <div class="ex-grid">
+      <div class="ex-item"><span class="ex-sector">HOSPITALITY</span><div class="ex-text"><strong>Significant but trivial:</strong> Survey of 2,000 hotel guests finds a significant difference in satisfaction between breakfast-included and room-only guests (p = 0.003). But the mean difference is 0.1 on a 7-point scale. Statistically significant. Practically meaningless.</div></div>
+      <div class="ex-item"><span class="ex-sector">EDUCATION</span><div class="ex-text"><strong>Not significant but important:</strong> New teaching method shows 8% improvement in exam scores (p = 0.12, n = 30). Not significant — but sample is too small. With 200 students the same effect would be p &lt; 0.001. <strong>Absence of significance ≠ absence of effect.</strong></div></div>
+      <div class="ex-item"><span class="ex-sector">MANUFACTURING</span><div class="ex-text"><strong>Highly significant AND practical:</strong> New quality process reduces defects by 34% (p &lt; 0.001, Cohen's d = 1.2 — large effect). Both statistically and practically significant. This is your strongest finding.</div></div>
+    </div>
+  </div>
+  <div class="viva-box">
+    <div class="viva-label">⚡ Viva Question</div>
+    <div class="viva-text">"Your results are statistically significant. What does that mean?" <strong>Correct answer:</strong> "It means that if there were no true relationship between these variables in the population, the probability of observing a result this extreme in my sample is less than 5%. Combined with the effect size of [X], I conclude the relationship is both statistically and practically significant."</div>
+  </div>
+</div>
+
+<div class="note-section">
+  <div class="timing">⏱ 15 mins — SPSS DEMO</div>
+  <div class="note-concept">SPSS Live Demo — ABC Company Dataset</div>
+  <ul class="talk-points">
+    <li><strong>Switch to SPSS now.</strong> Tell students: "Watch my screen. Follow along if you have SPSS."</li>
+    <li>Open Employee_data_1.sav. Walk through: Analyze → Descriptive Statistics → Frequencies. Show how to read output.</li>
+    <li>Run Chi-Square: Analyze → Descriptive Statistics → Crosstabs → Statistics → Chi-Square.</li>
+    <li>Run Independent T-test: Analyze → Compare Means → Independent Samples T-test. Show Levene's test first.</li>
+    <li>Run Correlation: Analyze → Correlate → Bivariate. Show the correlation matrix and how to read significance stars.</li>
+    <li>Run Regression: Analyze → Regression → Linear. Show R², coefficients, and significance of each predictor.</li>
+    <li><strong>Key teaching point for regression:</strong> "Look at the Adjusted R² — 0.458 means your predictors explain 45.8% of the variance in salary. Not bad. But 54.2% is still unexplained — that's what your theoretical framework needs to acknowledge."</li>
+  </ul>
+  <div class="story-box">
+    <div class="story-label">Story — SPSS Output That Shocked Everyone</div>
+    <div class="story-text">"In the ABC Company data, we find that education predicts current salary. No surprise. But when we control for education, gender becomes non-significant. Does that mean there's no gender discrimination? Not necessarily — it means education mediates the relationship. <strong>Women in this company may have less access to education opportunities, which then affects salary.</strong> That's why we need SEM — to untangle these complex causal chains that simple regression cannot see."</div>
+  </div>
+  <div class="bridge">Switch back to lecture slides: "SPSS is powerful for observed variables. But what if your key constructs — like trust, satisfaction, leadership — can't be directly observed? That's where SEM comes in."</div>
+</div>
+
+<div class="note-section">
+  <div class="quiz-cue">
+    <div class="qc-icon">⚡</div>
+    <div class="qc-title">LAUNCH QUIZ 3 NOW</div>
+    <div class="qc-sub">Quiz 3 — Inferential Tests · 10 questions · Set timer 3 mins · Your break</div>
+  </div>
+</div>
+</div>
+
+<div class="mod-divider"></div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- MODULE 4 — SEM -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div id="m4">
+<div class="module-header">
+  <div class="mh-label">Module 4</div>
+  <div class="mh-title">Structural Equation Modelling &amp; SmartPLS</div>
+  <div class="mh-meta">
+    <span class="mh-tag amber">11:45 AM – 12:30 PM</span>
+    <span class="mh-tag">~45 mins</span>
+    <span class="mh-tag green">Quiz 4 & 5 after</span>
+  </div>
+</div>
+
+<div class="note-section">
+  <div class="timing">⏱ 8 mins</div>
+  <div class="note-concept">Why SEM? — Moving Beyond Regression</div>
+  <ul class="talk-points">
+    <li>Start with this analogy: <strong>"Regression is a scalpel. SEM is a surgical robot. Both cut — but SEM is more precise, handles complexity, and can do multiple operations simultaneously."</strong></li>
+    <li>Three things SEM does that regression cannot: (1) Models unobservable constructs. (2) Corrects for measurement error. (3) Tests multiple DVs at once.</li>
+    <li>The real-world relevance: <strong>"You cannot put a ruler next to 'customer trust' and measure it. You cannot directly observe 'digital transformation maturity'. These are latent — you infer them from multiple indicators. SEM was built for exactly this."</strong></li>
+  </ul>
+  <div class="examples-box">
+    <div class="ex-label">Sector Examples — Why You Need SEM</div>
+    <div class="ex-grid">
+      <div class="ex-item"><span class="ex-sector">HOSPITALITY</span><div class="ex-text"><strong>Service Quality → Customer Satisfaction → Loyalty → WOM.</strong> You cannot directly measure "Service Quality" — you measure tangibles, reliability, responsiveness, assurance, empathy (SERVQUAL). SEM tests the full chain simultaneously. Regression would require four separate analyses.</div></div>
+      <div class="ex-item"><span class="ex-sector">EDUCATION</span><div class="ex-text"><strong>Teacher Competency → Student Engagement → Academic Performance.</strong> Teacher competency is latent — measured by pedagogical skill, subject mastery, and communication items. SEM handles this naturally.</div></div>
+      <div class="ex-item"><span class="ex-sector">SME</span><div class="ex-text"><strong>Digital Readiness → Technology Adoption → Business Performance.</strong> "Digital readiness" is a latent construct — you can't directly measure it. You ask about IT infrastructure, management attitude, and employee skills. SEM brings these together.</div></div>
+      <div class="ex-item"><span class="ex-sector">MANUFACTURING</span><div class="ex-text"><strong>Total Quality Management → Process Innovation → Operational Excellence.</strong> TQM is latent — leadership commitment, employee involvement, customer focus. SEM tests if TQM indirectly affects operational excellence through process innovation (mediation).</div></div>
+      <div class="ex-item"><span class="ex-sector">DIGITAL</span><div class="ex-text"><strong>User Experience → Trust → Continued Usage Intention.</strong> UX is latent — ease of use, visual design, responsiveness. SEM tests whether trust mediates the UX-usage relationship — critical for app design decisions.</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="note-section">
+  <div class="timing">⏱ 8 mins</div>
+  <div class="note-concept">PLS-SEM vs CB-SEM — Making the Right Choice</div>
+  <ul class="talk-points">
+    <li>Simple decision rule: <strong>"If you have 200+ responses, normal data, and you're confirming an established theory — use CB-SEM (AMOS). If you have less, non-normal data, or you're exploring — use PLS-SEM (SmartPLS)."</strong></li>
+    <li>Most of your students will use PLS-SEM. Survey-based management research with 100–300 responses is the sweet spot for SmartPLS.</li>
+    <li>Important: <strong>SmartPLS is free for academic use.</strong> AMOS requires a license. This is a practical consideration for PhD students on a budget.</li>
+    <li>Defend PLS: "Some reviewers prefer CB-SEM. If challenged, cite Hair et al. (2017) — 'Partial Least Squares Structural Equation Modeling' — the definitive textbook. PLS is published in the top journals."</li>
+  </ul>
+  <div class="viva-box">
+    <div class="viva-label">⚡ Viva Question</div>
+    <div class="viva-text">"Why did you choose PLS-SEM over CB-SEM?" <strong>Answer:</strong> "My sample size of [n] is appropriate for PLS-SEM, which requires a minimum of 10 times the largest number of paths pointing to any construct. My data showed significant deviation from normality (skewness = X, kurtosis = Y), violating the CB-SEM requirement of multivariate normality. Additionally, my research is exploratory in nature, which aligns with PLS-SEM's predictive focus. These considerations together justify the use of SmartPLS."</div>
+  </div>
+</div>
+
+<div class="note-section">
+  <div class="timing">⏱ 8 mins</div>
+  <div class="note-concept">Reflective vs Formative — The Critical Distinction</div>
+  <ul class="talk-points">
+    <li>The test question: <strong>"If I remove one indicator, does the meaning of the construct change?"</strong> If YES → Formative. If NO → Reflective.</li>
+    <li>Reflective example: Customer Loyalty items (I will recommend this hotel, I will return, I will not switch). Remove one — the others still capture loyalty. Interchangeable. Reflective.</li>
+    <li>Formative example: Socioeconomic Status = education + income + occupation. Remove income — you have fundamentally changed what SES means. Not interchangeable. Formative.</li>
+    <li><strong>Most management research constructs are reflective.</strong> If in doubt, check: do indicators correlate highly with each other? If yes, likely reflective.</li>
+  </ul>
+  <div class="examples-box">
+    <div class="ex-label">Sector Examples — Reflective vs Formative</div>
+    <div class="ex-grid">
+      <div class="ex-item"><span class="ex-sector">HOSPITALITY</span><div class="ex-text"><strong>Reflective:</strong> Guest satisfaction — "I am satisfied with my stay", "My overall experience was excellent", "I would rate this hotel highly." All three reflect the same underlying satisfaction. Highly correlated. Removing one doesn't change the construct.</div></div>
+      <div class="ex-item"><span class="ex-sector">SME</span><div class="ex-text"><strong>Formative:</strong> SME Performance = financial performance + market share + customer satisfaction + employee retention. Each dimension adds unique meaning. Removing financial performance changes what "performance" means entirely.</div></div>
+      <div class="ex-item"><span class="ex-sector">DIGITAL</span><div class="ex-text"><strong>Reflective:</strong> Technology Acceptance — "Using this app is easy", "I find this app useful", "I enjoy using this app." All reflect acceptance of the technology. Formative: Digital Maturity = infrastructure + skills + strategy + culture. Each pillar is distinct.</div></div>
+      <div class="ex-item"><span class="ex-sector">MANUFACTURING</span><div class="ex-text"><strong>Reflective:</strong> Employee Commitment — "I am proud to work here", "I would recommend this company", "I plan to stay long-term." All reflect the same loyalty construct. Classic reflective scale.</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="note-section">
+  <div class="timing">⏱ 10 mins</div>
+  <div class="note-concept">Quality Criteria — What to Check and in What Order</div>
+  <ul class="talk-points">
+    <li>The order is critical: <strong>Outer model first, inner model second. Always.</strong> If your measurement model fails, your structural results are meaningless.</li>
+    <li>Step 1: Outer loadings &gt; 0.7. If between 0.4–0.7, check if removing it improves AVE. Below 0.4 — remove it.</li>
+    <li>Step 2: CR &gt; 0.7 (or 0.6 for exploratory). CR is preferred over Cronbach's alpha in PLS-SEM.</li>
+    <li>Step 3: AVE &gt; 0.5. This is convergent validity — your construct explains more than half the variance in its indicators.</li>
+    <li>Step 4: Discriminant validity — √AVE of each construct must exceed its correlations with all others (Fornell-Larcker).</li>
+    <li>Step 5: Run bootstrapping (5,000 samples). Look at t-values (&gt;1.96 = significant at p&lt;0.05) and p-values directly.</li>
+    <li>Step 6: Check R². 0.19 = weak, 0.33 = moderate, 0.67 = substantial (Hair et al.).</li>
+    <li>Step 7: Check VIF &lt; 5. If VIF &gt; 5, you have multicollinearity — your predictors are too similar.</li>
+  </ul>
+  <div class="story-box">
+    <div class="story-label">Story — The AVE Disaster</div>
+    <div class="story-text">"A student submitted her thesis with SmartPLS results. AVE for one construct was 0.38. She didn't notice — or didn't know what it meant. The examiner immediately flagged it: <strong>'Your construct only explains 38% of the variance in its indicators. The rest is measurement error. Your results for this construct are not reliable.'</strong> She had to collect new data. Six more months. Always check AVE before you celebrate your path coefficients."</div>
+  </div>
+</div>
+
+<div class="note-section">
+  <div class="timing">⏱ 10 mins — SmartPLS DEMO</div>
+  <div class="note-concept">SmartPLS Live Demo — Deli99 Dataset</div>
+  <ul class="talk-points">
+    <li><strong>Switch to SmartPLS now.</strong> Load Deli99.csv. Build the path model: Expectation → Satisfaction → Loyalty.</li>
+    <li>Run PLS Algorithm. Show outer loadings table — point out anything below 0.7.</li>
+    <li>Show Quality Criteria panel — CR, AVE, Cronbach's Alpha side by side.</li>
+    <li>Run bootstrapping (5,000 samples, two-tailed). Show path coefficients with t-values and p-values.</li>
+    <li>Key teaching moment: <strong>"Look at the path coefficient from Expectation to Satisfaction — β = 0.52, t = 8.3, p &lt; 0.001. This means higher customer expectations lead to higher satisfaction. Counter-intuitive? Yes. But think about it — customers with high expectations choose higher-end options that actually deliver."</strong></li>
+    <li>Show R² for Satisfaction and Loyalty. Interpret together.</li>
+  </ul>
+  <div class="bridge">After SmartPLS: "Now you know how to run the analysis. The final piece is how to WRITE it up so your examiner trusts every number you report."</div>
+</div>
+
+<div class="note-section">
+  <div class="quiz-cue">
+    <div class="qc-icon">⚡</div>
+    <div class="qc-title">LAUNCH QUIZ 4 NOW</div>
+    <div class="qc-sub">Quiz 4 — SEM Foundations · 10 questions · Set timer 3 mins · Your break</div>
+  </div>
+</div>
+</div>
+
+<div class="mod-divider"></div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- MODULE 5 — WRITING UP -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div id="m5">
+<div class="module-header">
+  <div class="mh-label">Module 5</div>
+  <div class="mh-title">Writing Up Your Results</div>
+  <div class="mh-meta">
+    <span class="mh-tag amber">12:30 – 12:50 PM</span>
+    <span class="mh-tag">~20 mins</span>
+    <span class="mh-tag green">Quiz 5 after</span>
+  </div>
+</div>
+
+<div class="note-section">
+  <div class="timing">⏱ 15 mins</div>
+  <div class="note-concept">APA Reporting — The Non-Negotiables</div>
+  <ul class="talk-points">
+    <li>Frame it: <strong>"Writing up results is where 80% of the marks live but where 80% of the errors occur. The analysis can be perfect — but if you can't communicate it clearly, examiners don't trust it."</strong></li>
+    <li>Rule 1: Every statistical result must be reported in APA format with the test statistic, degrees of freedom, p-value, and effect size.</li>
+    <li>Rule 2: Every result must be connected to a hypothesis or research question. Never just dump numbers.</li>
+    <li>Rule 3: Tables must be self-explanatory. If someone removes your table from your dissertation and gives it to a stranger, they should understand it without reading your text.</li>
+    <li>AI tool tip: <strong>"You can paste your SPSS or SmartPLS output into Claude or ChatGPT and ask it to write an APA results paragraph. It will. But YOU must verify every number and every interpretation. Use AI as your writing assistant, not your researcher."</strong></li>
+  </ul>
+  <div class="examples-box">
+    <div class="ex-label">Sector Examples — APA Write-Up Templates</div>
+    <div class="ex-grid">
+      <div class="ex-item"><span class="ex-sector">HOSPITALITY</span><div class="ex-text"><strong>T-test write-up:</strong> "An independent samples t-test revealed that 5-star hotel guests (M = 6.2, SD = 0.8) reported significantly higher service quality than 3-star guests (M = 4.7, SD = 1.1), t(298) = 12.4, p &lt; .001, d = 1.56 (large effect)."</div></div>
+      <div class="ex-item"><span class="ex-sector">MANUFACTURING</span><div class="ex-text"><strong>Regression write-up:</strong> "Multiple regression analysis revealed that employee training (β = .43, p &lt; .001) and process standardisation (β = .31, p = .002) significantly predicted defect reduction, F(2, 147) = 38.6, p &lt; .001, R² = .345."</div></div>
+      <div class="ex-item"><span class="ex-sector">SME</span><div class="ex-text"><strong>SEM write-up:</strong> "The structural model supported H1: digital readiness positively influenced technology adoption (β = 0.62, t = 9.34, p &lt; .001), explaining 48.2% of the variance in technology adoption (R² = .482)."</div></div>
+      <div class="ex-item"><span class="ex-sector">EDUCATION</span><div class="ex-text"><strong>Chi-Square write-up:</strong> "A Chi-square test of independence revealed a significant association between teaching modality and student satisfaction, χ²(2, N = 342) = 18.7, p &lt; .001, Cramér's V = .23 (moderate effect)."</div></div>
+    </div>
+  </div>
+  <div class="viva-box">
+    <div class="viva-label">⚡ What Examiners Look For</div>
+    <div class="viva-text">1. <strong>Measurement model table before structural model</strong> — if your CR and AVE are not in a table, examiners assume you didn't check them. 2. <strong>Effect sizes alongside p-values</strong> — p-value alone is insufficient. 3. <strong>Connecting every result to a hypothesis</strong> — "H1 is supported" is required. 4. <strong>Acknowledging non-significant results</strong> — do not hide them. Discuss why they might not be significant.</div>
+  </div>
+</div>
+
+<div class="note-section">
+  <div class="quiz-cue">
+    <div class="qc-icon">⚡</div>
+    <div class="qc-title">LAUNCH QUIZ 5 NOW</div>
+    <div class="qc-sub">Quiz 5 — Advanced SEM & Reflection · 9 questions including Likert confidence checks · Your final break</div>
+  </div>
+</div>
+</div>
+
+<div class="mod-divider"></div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- MODULE 6 — MIXED METHODS -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div id="m6">
+<div class="module-header">
+  <div class="mh-label">Module 6 — Bonus if time permits</div>
+  <div class="mh-title">Mixed Methods Research</div>
+  <div class="mh-meta">
+    <span class="mh-tag amber">12:50 – 1:00 PM</span>
+    <span class="mh-tag">~10 mins</span>
+    <span class="mh-tag green">Quiz 6 optional</span>
+  </div>
+</div>
+
+<div class="note-section">
+  <div class="timing">⏱ 8 mins</div>
+  <div class="note-concept">Mixed Methods — When One is Not Enough</div>
+  <ul class="talk-points">
+    <li>Opening line: <strong>"Quantitative tells you WHAT and HOW MUCH. Qualitative tells you WHY. Mixed methods tells you both. That's why it's becoming the gold standard for complex management research."</strong></li>
+    <li>The three designs in plain English: Explanatory Sequential = survey first, interviews explain. Exploratory Sequential = interviews first, survey tests. Convergent = both at once, compare results.</li>
+    <li>For DBA candidates especially: <strong>"Most of you are practitioner-researchers. You have access to real organisations. Mixed methods lets you use both your insider knowledge (qual) and rigorous statistics (quant). This is your competitive advantage."</strong></li>
+    <li>Triangulation punchline: <strong>"When your numbers and your interviews tell the same story — that is a finding you can defend with complete confidence. When they contradict — that contradiction is itself a contribution to knowledge."</strong></li>
+  </ul>
+  <div class="examples-box">
+    <div class="ex-label">Sector Examples — Mixed Methods in Practice</div>
+    <div class="ex-grid">
+      <div class="ex-item"><span class="ex-sector">HOSPITALITY</span><div class="ex-text"><strong>Explanatory Sequential:</strong> Survey 400 hotel employees on job satisfaction → SEM shows compensation does NOT predict satisfaction (unexpected!). Interview 20 employees → they reveal recognition and growth opportunities matter more than pay in this industry. The qual explains the unexpected quant finding.</div></div>
+      <div class="ex-item"><span class="ex-sector">EDUCATION</span><div class="ex-text"><strong>Exploratory Sequential:</strong> Interview 15 online learners about what makes virtual classes engaging → themes emerge: instructor presence, peer interaction, content relevance. Build a survey instrument from these themes → test with 300 students → SEM confirms all three predict engagement.</div></div>
+      <div class="ex-item"><span class="ex-sector">SME</span><div class="ex-text"><strong>Convergent Parallel:</strong> Survey 150 SME owners on digital adoption barriers (quant: cost, skills, infrastructure) AND interview 12 owners simultaneously (qual: fear of change, lack of trusted advisors, bad past experiences). Merge: quant shows WHAT barriers, qual shows WHY they persist despite support programmes.</div></div>
+      <div class="ex-item"><span class="ex-sector">MANUFACTURING</span><div class="ex-text"><strong>Explanatory Sequential:</strong> Quantitative data shows factories with higher training spend have lower defect rates (significant, β = .48). But why do some high-spend factories still have high defects? Interview factory managers → discover training content quality matters more than quantity. The qual adds the nuance the numbers couldn't.</div></div>
+      <div class="ex-item"><span class="ex-sector">DIGITAL</span><div class="ex-text"><strong>Exploratory Sequential:</strong> Interview 20 users who abandoned an app after 3 days → themes: confusing onboarding, no perceived value in first session, no notification strategy. Build a survey on these themes → test with 500 users → regression confirms onboarding quality and early value delivery predict 30-day retention.</div></div>
+    </div>
+  </div>
+  <div class="story-box">
+    <div class="story-label">Closing Story — The Power of Triangulation</div>
+    <div class="story-text">"I supervised a DBA candidate who worked in a large bank. His SEM showed that digital banking adoption was driven by perceived usefulness — standard TAM finding, nothing new. But then he interviewed 15 elderly customers. They said they KNEW it was useful — they just didn't trust it. <strong>Trust was the missing construct.</strong> He went back, added trust to his model, re-ran SEM — trust fully mediated the usefulness-adoption relationship. His thesis went from incremental to genuinely original. That's the gift of mixed methods — the interviews told him what the survey couldn't measure."</div>
+  </div>
+</div>
+
+<div class="note-section">
+  <div class="quiz-cue">
+    <div class="qc-icon">⚡</div>
+    <div class="qc-title">LAUNCH QUIZ 6 (IF TIME)</div>
+    <div class="qc-sub">Quiz 6 — Mixed Methods · 6 questions · Perfect way to end the session</div>
+  </div>
+</div>
+
+<div class="note-section" style="background:rgba(16,185,129,0.04);border-left:3px solid var(--green);">
+  <div class="timing" style="background:rgba(16,185,129,0.1);border-color:rgba(16,185,129,0.2);color:var(--green);">🎯 SESSION CLOSE — 1:00 PM</div>
+  <ul class="talk-points">
+    <li>Use the open text word cloud from Quiz 5 or 6: <strong>"Before I let you go — I want to address what I see in the word cloud."</strong> Answer the top 3 words/themes.</li>
+    <li>Check the Likert confidence scores from Quiz 5: <strong>"I can see the class average confidence in choosing statistical tests is X out of 7. That tells me we need to..."</strong></li>
+    <li>Closing line: <strong>"You came in today with data. You're leaving with methodology. The difference between a good dissertation and a great one is not the findings — it's how defensibly you arrived at them. You now have the tools."</strong></li>
+    <li>Remind them: the website stays open permanently — lecture, materials, all of it. They can come back anytime.</li>
+  </ul>
+</div>
+</div>
+
+<script>
+window.addEventListener('scroll',()=>{
+  const d=document.documentElement;
+  const pct=(d.scrollTop/(d.scrollHeight-d.clientHeight))*100;
+  document.getElementById('prog').style.width=pct+'%';
+});
+</script>
+</body>
+</html>

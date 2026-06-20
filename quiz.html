@@ -237,14 +237,16 @@ nav{position:sticky;top:0;z-index:100;background:rgba(2,8,23,0.92);backdrop-filt
     <button class="ab ab-reset" onclick="resetResp()">⟳ Clear Responses</button>
   </div>
 
-  <!-- TWO COLUMN: PARTICIPATION + RESULTS -->
+  <!-- TWO COLUMN: PENDING NAMES + RESULTS -->
   <div class="two-col">
     <div class="panel">
       <div class="panel-title">
-        <span><span class="ld"></span>Participation Tracker</span>
-        <span id="part-count" style="font-family:var(--mono);font-size:0.68rem;color:var(--green);">0 / 0</span>
+        <span><span class="ld"></span>Still Haven't Answered</span>
+        <span id="part-count" style="font-family:var(--mono);font-size:0.68rem;color:var(--red);">0 pending</span>
       </div>
-      <div class="part-list" id="part-list"><div class="no-data">Launch a question to track participation.</div></div>
+      <div id="part-list">
+        <div class="no-data">Launch a question — names appear here and disappear as students respond.</div>
+      </div>
     </div>
     <div class="panel">
       <div class="panel-title">
@@ -273,19 +275,21 @@ nav{position:sticky;top:0;z-index:100;background:rgba(2,8,23,0.92);backdrop-filt
     <div class="wait-title">Waiting for Dr. Tan...</div>
     <div class="wait-sub">A question will appear here the moment it is launched. Keep this page open.</div>
     <div class="wait-name" id="s-wait-name"></div>
-    <div id="s-participation" style="display:none;margin-top:1.5rem;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1rem 1.25rem;text-align:left;max-width:480px;margin-left:auto;margin-right:auto;"></div>
   </div>
   <!-- Question -->
   <div id="s-question" style="display:none;"></div>
-  <!-- Thank you -->
-  <div id="s-ty" class="ty" style="display:none;">
-    <div class="ty-icon">✅</div>
-    <div class="ty-title">Answer submitted!</div>
-    <div class="ty-sub">Your response is recorded. Results will appear when Dr. Tan reveals them.</div>
-    <div id="s-participation-ty" style="display:none;margin-top:1.5rem;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1rem 1.25rem;text-align:left;"></div>
+  <!-- Thank you + wall of shame still visible -->
+  <div id="s-ty" style="display:none;">
+    <div class="ty">
+      <div class="ty-icon">✅</div>
+      <div class="ty-title">Answer submitted!</div>
+      <div class="ty-sub">Your name has been removed. Waiting for Dr. Tan to reveal results.</div>
+    </div>
   </div>
   <!-- Results broadcast -->
   <div id="s-results" style="display:none;"></div>
+  <!-- WALL OF SHAME — shown during active question, visible to all -->
+  <div id="s-wall" style="display:none;margin-top:1.5rem;"></div>
 </div>
 </div>
 
@@ -557,34 +561,59 @@ function renderParticipation(state, allResp){
   const el = document.getElementById('part-list');
   const pc = document.getElementById('part-count');
   if(!state.activeQ){
-    el.innerHTML = '<div class="no-data">Launch a question to track participation.</div>';
-    pc.textContent = '0 / 0'; return;
-  }
-  const qr = allResp[state.activeQ] || [];
-  const respondedNames = new Set(qr.map(r=>r.name?.toLowerCase().trim()).filter(Boolean));
-  // Get registered students from seed data in localStorage
-  let students = [];
-  try { students = JSON.parse(localStorage.getItem('rm_v2')||'[]'); } catch{}
-  if(!students.length){
-    // Show just responders if no registered list
-    if(!qr.length){ el.innerHTML='<div class="no-data">No responses yet.</div>'; pc.textContent='0 / 0'; return; }
-    el.innerHTML = qr.map(r=>`<div class="part-item part-done"><span class="part-name">${r.name||'Anonymous'}</span><span class="part-badge">✓ Answered</span></div>`).join('');
-    pc.textContent = qr.length+' responded';
+    el.innerHTML = '<div class="no-data">Launch a question — names appear here and disappear as students respond.</div>';
+    pc.textContent = '0 pending';
     return;
   }
-  // Match registered students against responses
-  let responded=0;
-  const items = students.map(s=>{
-    const fullName = (s.first+' '+s.last).toLowerCase().trim();
-    const hasAnswered = respondedNames.has(fullName) || [...respondedNames].some(n=>n.includes(s.first.toLowerCase())||n.includes(s.last.toLowerCase()));
-    if(hasAnswered) responded++;
-    const elapsed = state.launchedAt ? Math.floor((Date.now()-state.launchedAt)/1000) : 0;
-    const cls = hasAnswered ? 'part-done' : (elapsed>60?'part-none':'part-wait');
-    const badge = hasAnswered ? '✓ Answered' : (elapsed>60?'⚠ No response':'⏳ Pending');
-    return `<div class="part-item ${cls}"><span class="part-name">${s.first} ${s.last}</span><span class="part-badge">${badge}</span></div>`;
-  }).join('');
-  el.innerHTML = items;
-  pc.textContent = `${responded} / ${students.length}`;
+
+  // Get registered students from localStorage seed/data
+  let students = [];
+  try { students = JSON.parse(localStorage.getItem('rm_v2')||'[]'); } catch{}
+
+  if(!students.length){
+    el.innerHTML = '<div class="no-data">No registered students found.</div>';
+    pc.textContent = '0 pending';
+    return;
+  }
+
+  const qr = allResp[state.activeQ] || [];
+  const respondedNames = new Set(
+    qr.map(r => (r.name||'').toLowerCase().trim()).filter(Boolean)
+  );
+
+  // Only show students who have NOT yet responded
+  const pending = students.filter(s => {
+    const full = (s.first + ' ' + s.last).toLowerCase().trim();
+    const firstName = s.first.toLowerCase();
+    return !respondedNames.has(full) &&
+           ![...respondedNames].some(n => n.includes(firstName) && n.includes(s.last.toLowerCase()));
+  });
+
+  pc.textContent = pending.length
+    ? `${pending.length} still pending`
+    : '✅ Everyone responded!';
+
+  if(!pending.length){
+    el.innerHTML = `<div style="text-align:center;padding:1.5rem;">
+      <div style="font-size:2rem;margin-bottom:0.5rem;">🎉</div>
+      <div style="font-family:var(--sans);font-weight:700;color:var(--green);font-size:0.95rem;">Everyone has responded!</div>
+      <div style="font-family:var(--mono);font-size:0.7rem;color:var(--muted);margin-top:0.25rem;">${qr.length} responses recorded</div>
+    </div>`;
+    return;
+  }
+
+  // Render pending names — big red chips, easy to read on mic
+  el.innerHTML = `
+    <div style="font-family:var(--mono);font-size:0.65rem;color:var(--muted);margin-bottom:0.75rem;letter-spacing:0.08em;">
+      CALL THESE OUT — ${qr.length} answered · ${pending.length} remaining
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:0.5rem;">
+      ${pending.map(s => `
+        <div style="padding:0.45rem 0.85rem;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:7px;font-family:var(--sans);font-weight:600;font-size:0.85rem;color:var(--red);">
+          ${s.first} ${s.last}
+          <span style="font-family:var(--mono);font-size:0.6rem;color:rgba(239,68,68,0.6);margin-left:0.35rem;">${s.country||''}</span>
+        </div>`).join('')}
+    </div>`;
 }
 
 // ── STUDENT POLL ──
@@ -603,25 +632,31 @@ let sTimerRemaining = 0;
 async function checkStudentState(){
   if(!getStudentName()) return;
   try {
-    const state = await (await fetch(API+'/quiz/state')).json();
+    const [stateRes, respRes] = await Promise.all([
+      fetch(API+'/quiz/state'),
+      fetch(API+'/quiz/responses')
+    ]);
+    const state = await stateRes.json();
+    const allResp = await respRes.json();
 
     // CRITICAL: Only react to questions launched in THIS session
-    // If launchedAt is before we opened the page — ignore entirely
     const launchedThisSession = state.launchedAt && state.launchedAt > (SESSION_START - 5000);
 
     if(!launchedThisSession){
-      // Stale state from previous session — show waiting screen only
       if(lastStateQ !== null){ lastStateQ=null; studentDone=false; curAnswer=null; clearSTimer(); }
       showStudentScreen('s-wait');
-      updateParticipationList({});
+      document.getElementById('s-wall').style.display='none';
       return;
     }
 
-    // Show results broadcast — only if launched this session
+    // Always update wall of shame
+    await renderWallOfShame(state, allResp);
+
+    // Show results broadcast
     if(state.showResults && state.activeQ){
       if(lastShowResults !== state.showResults || lastStateQ !== state.activeQ){
         lastShowResults = state.showResults; lastStateQ = state.activeQ;
-        await showStudentResults(state.activeQ);
+        await showStudentResults(state.activeQ, allResp);
       }
       return;
     }
@@ -631,11 +666,11 @@ async function checkStudentState(){
     if(!state.activeQ){
       if(lastStateQ !== null){ lastStateQ=null; studentDone=false; curAnswer=null; clearSTimer(); }
       showStudentScreen('s-wait');
-      updateParticipationList({});
+      document.getElementById('s-wall').style.display='none';
       return;
     }
 
-    // New question launched this session
+    // New question launched
     if(state.activeQ !== lastStateQ){
       lastStateQ = state.activeQ; studentDone = false; curAnswer = null;
       renderStudentQuestion(state);
@@ -643,53 +678,65 @@ async function checkStudentState(){
       startSTimer(state);
       return;
     }
-    if(!studentDone) updateSTimer(state);
 
-    // Update participation list on waiting/answered screens
+    // Already submitted — show thank you but keep wall visible
     if(studentDone){
-      const allResp = await (await fetch(API+'/quiz/responses')).json();
-      updateParticipationList(allResp);
+      showStudentScreen('s-ty');
+    } else {
+      updateSTimer(state);
     }
   } catch(e){}
 }
 
-async function updateParticipationList(allResp){
-  const el = document.getElementById('s-participation');
+async function renderWallOfShame(state, allResp){
+  const el = document.getElementById('s-wall');
   if(!el) return;
-  // Get registered students
+
+  // Only show during active question launched this session
+  const launchedThisSession = state.launchedAt && state.launchedAt > (SESSION_START - 5000);
+  if(!state.activeQ || !launchedThisSession || state.showResults){
+    el.style.display = 'none';
+    return;
+  }
+
   let students = [];
-  try{ students = JSON.parse(localStorage.getItem('rm_v2')||'[]'); }catch{}
+  try { students = JSON.parse(localStorage.getItem('rm_v2')||'[]'); } catch{}
   if(!students.length){ el.style.display='none'; return; }
 
-  const state = await (await fetch(API+'/quiz/state').catch(()=>({json:()=>({})}))).json().catch(()=>({}));
-  const qId = state.activeQ || lastStateQ;
-  const qr = qId && allResp[qId] ? allResp[qId] : [];
-  const respondedNames = new Set(qr.map(r=>r.name?.toLowerCase().trim()).filter(Boolean));
+  const qr = (allResp && allResp[state.activeQ]) ? allResp[state.activeQ] : [];
+  const respondedNames = new Set(qr.map(r=>(r.name||'').toLowerCase().trim()).filter(Boolean));
 
-  const answered = students.filter(s=>{
-    const full=(s.first+' '+s.last).toLowerCase();
-    return respondedNames.has(full)||[...respondedNames].some(n=>n.includes(s.first.toLowerCase()));
-  });
   const pending = students.filter(s=>{
-    const full=(s.first+' '+s.last).toLowerCase();
-    return !respondedNames.has(full)&&![...respondedNames].some(n=>n.includes(s.first.toLowerCase()));
+    const full=(s.first+' '+s.last).toLowerCase().trim();
+    const fn=s.first.toLowerCase(), ln=s.last.toLowerCase();
+    return !respondedNames.has(full) &&
+           ![...respondedNames].some(n=>n.includes(fn)&&n.includes(ln));
   });
 
-  if(!qId){ el.style.display='none'; return; }
-  el.style.display='block';
+  el.style.display = 'block';
+
+  if(!pending.length){
+    el.innerHTML=`<div style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);border-radius:10px;padding:1.25rem;text-align:center;">
+      <div style="font-size:1.5rem;margin-bottom:0.35rem;">🎉</div>
+      <div style="font-family:var(--sans);font-weight:700;color:var(--green);font-size:0.95rem;">Everyone has responded!</div>
+      <div style="font-family:var(--mono);font-size:0.68rem;color:var(--muted);margin-top:0.2rem;">${qr.length} of ${students.length} answered</div>
+    </div>`;
+    return;
+  }
+
   el.innerHTML=`
-    <div style="font-family:var(--mono);font-size:0.62rem;letter-spacing:0.1em;color:var(--muted);text-transform:uppercase;margin-bottom:0.6rem;">
-      Class Participation — ${answered.length}/${students.length} responded
-    </div>
-    ${answered.length?`<div style="margin-bottom:0.5rem;font-family:var(--mono);font-size:0.65rem;color:var(--green);">✅ ANSWERED</div>
-    <div style="display:flex;flex-wrap:wrap;gap:0.3rem;margin-bottom:0.85rem;">
-      ${answered.map(s=>`<span style="font-size:0.72rem;padding:0.18rem 0.5rem;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2);border-radius:4px;color:var(--green);">${s.first} ${s.last}</span>`).join('')}
-    </div>`:''}
-    ${pending.length?`<div style="margin-bottom:0.5rem;font-family:var(--mono);font-size:0.65rem;color:var(--red);">⚠ NOT YET RESPONDED</div>
-    <div style="display:flex;flex-wrap:wrap;gap:0.3rem;">
-      ${pending.map(s=>`<span style="font-size:0.72rem;padding:0.18rem 0.5rem;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:4px;color:var(--red);">${s.first} ${s.last}</span>`).join('')}
-    </div>`:''}
-  `;
+    <div style="background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.2);border-radius:10px;padding:1.25rem;">
+      <div style="font-family:var(--mono);font-size:0.65rem;color:var(--red);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.85rem;">
+        ⚠ ${pending.length} student${pending.length!==1?'s':''} still haven't answered — ${qr.length}/${students.length} responded
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:0.5rem;">
+        ${pending.map(s=>`
+          <div style="padding:0.4rem 0.85rem;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:7px;font-family:var(--sans);font-weight:600;font-size:0.85rem;color:var(--red);">
+            ${s.first} ${s.last}
+            <span style="font-family:var(--mono);font-size:0.58rem;color:rgba(239,68,68,0.6);margin-left:0.3rem;">${s.country||''}</span>
+          </div>`).join('')}
+      </div>
+    </div>`;
 }
 
 function showStudentScreen(id){
@@ -769,11 +816,13 @@ function renderSTimerBar(state){
 function clearSTimer(){ if(sTimerInterval){clearInterval(sTimerInterval);sTimerInterval=null;} }
 
 // Show results to student
-async function showStudentResults(qId){
+async function showStudentResults(qId, allResp){
   const q = getQ(qId);
   if(!q) return;
-  let allResp = {};
-  try { allResp = await (await fetch(API+'/quiz/responses')).json(); } catch{}
+  if(!allResp){
+    try { allResp = await (await fetch(API+'/quiz/responses')).json(); } catch{ allResp={}; }
+  }
+  document.getElementById('s-wall').style.display='none';
   const qr = allResp[qId] || [];
   const el = document.getElementById('s-results');
   let html = `<div class="broadcast"><div class="bc-title">📊 Results — ${q.text}</div><div class="bc-sub">${qr.length} response${qr.length!==1?'s':''} from your class</div>`;

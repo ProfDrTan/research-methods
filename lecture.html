@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quantitative Research Methods — Dr. Teik-Kheong Tan</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#020817;--bg2:#0b1120;--bg3:#111827;--surface:#161f30;
+  --border:#1e2d45;--cyan:#00e5ff;--violet:#7c3aed;--violet2:#a78bfa;
+  --green:#10b981;--amber:#f59e0b;--red:#ef4444;--text:#e2e8f0;--muted:#64748b;
+  --mono:'Space Mono',monospace;--sans:'Space Grotesk',sans-serif;--body:'Inter',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.7;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,229,255,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,0.025) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0;}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:100;background:rgba(2,8,23,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:56px;}
+.nav-brand{font-family:var(--mono);font-size:0.8rem;color:var(--cyan);}
+.nav-brand span{color:var(--muted);}
+.nav-links{display:flex;gap:0.25rem;list-style:none;}
+.nav-links a{font-family:var(--sans);font-size:0.75rem;color:var(--muted);text-decoration:none;padding:0.3rem 0.65rem;border-radius:5px;transition:all 0.2s;}
+.nav-links a:hover{color:var(--cyan);background:rgba(0,229,255,0.06);}
+.nav-quiz{color:var(--amber)!important;border:1px solid rgba(245,158,11,0.3)!important;}
+.nav-quiz:hover{background:rgba(245,158,11,0.08)!important;}
+
+/* PROGRESS BAR */
+.progress-bar{position:fixed;top:56px;left:0;right:0;height:3px;background:var(--bg3);z-index:99;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--cyan),var(--violet));width:0%;transition:width 0.1s;}
+
+/* SIDEBAR TOC */
+.toc{position:fixed;left:0;top:56px;width:220px;height:calc(100vh - 56px);overflow-y:auto;border-right:1px solid var(--border);background:var(--bg2);padding:1.5rem 1rem;z-index:90;}
+.toc-title{font-family:var(--mono);font-size:0.62rem;letter-spacing:0.15em;color:var(--muted);text-transform:uppercase;margin-bottom:1rem;}
+.toc-list{list-style:none;display:flex;flex-direction:column;gap:0.1rem;}
+.toc-list a{font-size:0.78rem;color:var(--muted);text-decoration:none;padding:0.3rem 0.6rem;border-radius:5px;display:block;transition:all 0.2s;border-left:2px solid transparent;}
+.toc-list a:hover{color:var(--text);background:rgba(255,255,255,0.04);}
+.toc-list a.active{color:var(--cyan);border-left-color:var(--cyan);background:rgba(0,229,255,0.06);}
+.toc-list .toc-break{color:var(--amber)!important;}
+.toc-time{font-family:var(--mono);font-size:0.6rem;color:var(--muted);padding:0.25rem 0.6rem;display:block;}
+
+/* MAIN CONTENT */
+.main{margin-left:220px;padding:0;position:relative;z-index:1;}
+
+/* HERO BANNER */
+.lecture-hero{padding:4rem 4rem 3rem;background:linear-gradient(135deg,rgba(124,58,237,0.12),rgba(0,229,255,0.06));border-bottom:1px solid var(--border);}
+.lecture-eyebrow{font-family:var(--mono);font-size:0.68rem;letter-spacing:0.18em;color:var(--cyan);text-transform:uppercase;margin-bottom:1rem;}
+.lecture-title{font-family:var(--sans);font-size:clamp(1.8rem,3vw,2.8rem);font-weight:700;letter-spacing:-0.02em;line-height:1.1;margin-bottom:1rem;}
+.lecture-title .accent{color:var(--cyan);}
+.lecture-meta{display:flex;gap:2rem;flex-wrap:wrap;margin-top:1.5rem;}
+.meta-item{font-family:var(--mono);font-size:0.72rem;color:var(--muted);}
+.meta-item strong{color:var(--text);}
+
+/* SECTIONS */
+.lecture-section{padding:3.5rem 4rem;border-bottom:1px solid var(--border);}
+.lecture-section:last-child{border-bottom:none;}
+
+.seg-label{font-family:var(--mono);font-size:0.65rem;letter-spacing:0.15em;color:var(--violet2);text-transform:uppercase;margin-bottom:0.5rem;display:flex;align-items:center;gap:0.5rem;}
+.seg-time{background:rgba(124,58,237,0.15);border:1px solid rgba(124,58,237,0.25);padding:0.15rem 0.5rem;border-radius:4px;font-size:0.6rem;}
+.seg-title{font-family:var(--sans);font-size:1.6rem;font-weight:700;letter-spacing:-0.02em;margin-bottom:0.5rem;line-height:1.2;}
+.seg-intro{color:var(--muted);font-size:0.95rem;margin-bottom:2rem;max-width:680px;line-height:1.7;}
+
+/* CONCEPT CARDS */
+.concept-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;margin:1.5rem 0;}
+.concept-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.25rem;position:relative;overflow:hidden;}
+.concept-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--cyan),var(--violet));}
+.concept-icon{font-size:1.4rem;margin-bottom:0.6rem;}
+.concept-title{font-family:var(--sans);font-weight:700;font-size:0.92rem;margin-bottom:0.4rem;}
+.concept-desc{font-size:0.82rem;color:var(--muted);line-height:1.6;}
+.concept-formula{font-family:var(--mono);font-size:0.8rem;color:var(--cyan);margin-top:0.6rem;padding:0.3rem 0.6rem;background:rgba(0,229,255,0.06);border-radius:4px;}
+
+/* CALLOUT BOXES */
+.callout{border-radius:10px;padding:1.25rem 1.5rem;margin:1.5rem 0;}
+.callout-key{background:rgba(0,229,255,0.06);border:1px solid rgba(0,229,255,0.2);border-left:3px solid var(--cyan);}
+.callout-warning{background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.2);border-left:3px solid var(--amber);}
+.callout-insight{background:rgba(124,58,237,0.06);border:1px solid rgba(124,58,237,0.2);border-left:3px solid var(--violet);}
+.callout-ai{background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.2);border-left:3px solid var(--green);}
+.callout-label{font-family:var(--mono);font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:0.5rem;}
+.callout-key .callout-label{color:var(--cyan);}
+.callout-warning .callout-label{color:var(--amber);}
+.callout-insight .callout-label{color:var(--violet2);}
+.callout-ai .callout-label{color:var(--green);}
+.callout p{font-size:0.88rem;line-height:1.7;}
+.callout strong{color:var(--text);}
+
+/* TABLE */
+.data-table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:0.85rem;}
+.data-table th{font-family:var(--mono);font-size:0.68rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);padding:0.6rem 1rem;border-bottom:1px solid var(--border);text-align:left;}
+.data-table td{padding:0.65rem 1rem;border-bottom:1px solid rgba(30,45,69,0.5);}
+.data-table tr:hover td{background:rgba(255,255,255,0.02);}
+.tick{color:var(--green);font-weight:700;}
+.dash{color:var(--muted);}
+
+/* SCALE VISUALISER */
+.scale-viz{display:flex;gap:0;margin:1rem 0;border-radius:8px;overflow:hidden;border:1px solid var(--border);}
+.scale-seg{flex:1;padding:0.75rem 0.5rem;text-align:center;font-family:var(--mono);font-size:0.72rem;border-right:1px solid var(--border);}
+.scale-seg:last-child{border-right:none;}
+.scale-seg .s-num{font-size:1.1rem;font-weight:700;display:block;margin-bottom:0.2rem;}
+.scale-nominal{background:rgba(100,116,139,0.15);color:var(--muted);}
+.scale-ordinal{background:rgba(124,58,237,0.12);color:var(--violet2);}
+.scale-interval{background:rgba(0,229,255,0.1);color:var(--cyan);}
+.scale-ratio{background:rgba(16,185,129,0.1);color:var(--green);}
+
+/* DISTRIBUTION VIZ */
+.dist-wrap{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.5rem;margin:1.5rem 0;}
+.dist-title{font-family:var(--mono);font-size:0.68rem;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:1rem;}
+.bell-curve{width:100%;height:120px;}
+
+/* STEP LIST */
+.step-list{display:flex;flex-direction:column;gap:1rem;margin:1.5rem 0;}
+.step-item{display:flex;gap:1rem;align-items:flex-start;}
+.step-num{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--violet),var(--cyan));display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:0.75rem;font-weight:700;color:var(--bg);flex-shrink:0;}
+.step-content{flex:1;}
+.step-title{font-family:var(--sans);font-weight:600;font-size:0.92rem;margin-bottom:0.25rem;}
+.step-desc{font-size:0.84rem;color:var(--muted);line-height:1.6;}
+
+/* QUIZ BREAK BANNER */
+.quiz-break{background:linear-gradient(135deg,rgba(245,158,11,0.12),rgba(245,158,11,0.04));border:1px solid rgba(245,158,11,0.3);border-radius:12px;padding:2rem;margin:2rem 0;text-align:center;}
+.quiz-break-icon{font-size:2.5rem;margin-bottom:0.75rem;}
+.quiz-break-title{font-family:var(--sans);font-weight:700;font-size:1.2rem;color:var(--amber);margin-bottom:0.5rem;}
+.quiz-break-sub{font-size:0.88rem;color:var(--muted);margin-bottom:1.25rem;}
+.quiz-break-btn{display:inline-block;font-family:var(--sans);font-weight:700;font-size:0.88rem;padding:0.7rem 1.75rem;background:linear-gradient(135deg,var(--amber),#d97706);color:var(--bg);border-radius:8px;text-decoration:none;transition:all 0.2s;}
+.quiz-break-btn:hover{opacity:0.9;transform:translateY(-1px);}
+
+/* SEM DIAGRAM */
+.sem-diagram{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.5rem;margin:1.5rem 0;overflow-x:auto;}
+.sem-row{display:flex;align-items:center;gap:0.5rem;margin:0.4rem 0;flex-wrap:wrap;}
+.sem-indicator{background:rgba(0,229,255,0.08);border:1px solid rgba(0,229,255,0.25);border-radius:5px;padding:0.3rem 0.7rem;font-family:var(--mono);font-size:0.7rem;color:var(--cyan);}
+.sem-arrow{color:var(--muted);font-size:0.8rem;}
+.sem-construct{background:rgba(124,58,237,0.15);border:1px solid rgba(124,58,237,0.35);border-radius:8px;padding:0.4rem 1rem;font-family:var(--sans);font-weight:600;font-size:0.85rem;color:var(--violet2);}
+.sem-path{display:flex;align-items:center;gap:0.5rem;margin:0.75rem 0;}
+
+/* DECISION TREE */
+.dtree{display:flex;flex-direction:column;gap:0.75rem;margin:1.5rem 0;}
+.dtree-node{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:0.75rem 1rem;}
+.dtree-q{font-size:0.82rem;font-weight:600;color:var(--text);margin-bottom:0.4rem;}
+.dtree-options{display:flex;gap:0.5rem;flex-wrap:wrap;}
+.dtree-yes{font-family:var(--mono);font-size:0.68rem;padding:0.2rem 0.6rem;border-radius:4px;background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.25);color:var(--green);}
+.dtree-no{font-family:var(--mono);font-size:0.68rem;padding:0.2rem 0.6rem;border-radius:4px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);color:var(--red);}
+.dtree-result{font-family:var(--mono);font-size:0.7rem;padding:0.25rem 0.65rem;border-radius:4px;background:rgba(0,229,255,0.08);border:1px solid rgba(0,229,255,0.2);color:var(--cyan);}
+
+/* HIGHLIGHT TEXT */
+h3{font-family:var(--sans);font-weight:700;font-size:1.05rem;margin:1.5rem 0 0.6rem;color:var(--text);}
+p{font-size:0.9rem;color:var(--muted);margin-bottom:0.75rem;line-height:1.75;}
+p strong{color:var(--text);}
+ul,ol{padding-left:1.25rem;margin-bottom:0.75rem;}
+li{font-size:0.88rem;color:var(--muted);margin-bottom:0.3rem;line-height:1.6;}
+li strong{color:var(--text);}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .toc{display:none;}
+  .main{margin-left:0;}
+  .lecture-hero,.lecture-section{padding:2rem 1.5rem;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">DR.TAN <span>// QUANTITATIVE RESEARCH</span></div>
+  <ul class="nav-links">
+    <li><a href="#m1">Foundations</a></li>
+    <li><a href="#m2">Descriptives</a></li>
+    <li><a href="#m3">Inferential</a></li>
+    <li><a href="#m4">SEM</a></li>
+    <li><a href="quiz.html" class="nav-quiz">⚡ Live Quiz</a></li>
+    <li><a href="/">← Home</a></li>
+  </ul>
+</nav>
+
+<!-- PROGRESS -->
+<div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+
+<!-- SIDEBAR -->
+<aside class="toc">
+  <div class="toc-title">Session Contents</div>
+  <ul class="toc-list">
+    <li><span class="toc-time">9:00 AM</span></li>
+    <li><a href="#intro">Introduction & Class Profile</a></li>
+    <li><span class="toc-time">9:20 AM</span></li>
+    <li><a href="#m1">Module 1 — Foundations</a></li>
+    <li><a href="#paradigms">Research Paradigms</a></li>
+    <li><a href="#scales">Measurement Scales</a></li>
+    <li><a href="#break1" class="toc-break">⚡ Quiz Break 1</a></li>
+    <li><span class="toc-time">10:00 AM</span></li>
+    <li><a href="#m2">Module 2 — Descriptives</a></li>
+    <li><a href="#central">Central Tendency</a></li>
+    <li><a href="#moments">Four Moments</a></li>
+    <li><a href="#break2" class="toc-break">⚡ Quiz Break 2</a></li>
+    <li><span class="toc-time">10:45 AM</span></li>
+    <li><a href="#break-coffee">☕ Break</a></li>
+    <li><span class="toc-time">11:00 AM</span></li>
+    <li><a href="#m3">Module 3 — Inferential</a></li>
+    <li><a href="#dtree">Decision Tree</a></li>
+    <li><a href="#tests">Statistical Tests</a></li>
+    <li><a href="#break3" class="toc-break">⚡ Quiz Break 3</a></li>
+    <li><span class="toc-time">11:45 AM</span></li>
+    <li><a href="#m4">Module 4 — SEM</a></li>
+    <li><a href="#plsvscb">PLS vs CB-SEM</a></li>
+    <li><a href="#measurement">Measurement Model</a></li>
+    <li><a href="#quality">Quality Criteria</a></li>
+    <li><a href="#break4" class="toc-break">⚡ Quiz Break 4</a></li>
+    <li><span class="toc-time">12:30 PM</span></li>
+    <li><a href="#m5">Module 5 — Writing Up</a></li>
+    <li><a href="#qa">Q&A</a></li>
+  </ul>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+
+<!-- HERO -->
+<div class="lecture-hero" id="intro">
+  <div class="lecture-eyebrow">Saturday Intensive · 9:00 AM – 1:00 PM</div>
+  <h1 class="lecture-title">Quantitative Research Methods<br>in the <span class="accent">Age of AI</span></h1>
+  <p style="color:var(--muted);max-width:640px;font-size:0.95rem;margin-top:1rem;">A doctoral-level intensive bridging classical statistical methodology with AI-driven data science. By the end of this session you will be able to design a quantitative study, choose the right statistical test, run descriptive and inferential analysis in SPSS, and build a PLS-SEM model in SmartPLS.</p>
+  <div class="lecture-meta">
+    <div class="meta-item"><strong>Instructor</strong><br>Dr. Teik-Kheong Tan, PhD · IEEE</div>
+    <div class="meta-item"><strong>Duration</strong><br>4 Hours · 4 Modules · 4 Quiz Breaks</div>
+    <div class="meta-item"><strong>Tools</strong><br>SPSS · SmartPLS · Python · R</div>
+    <div class="meta-item"><strong>Level</strong><br>PhD / DBA Doctoral Candidates</div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════ -->
+<!-- MODULE 1 — FOUNDATIONS -->
+<!-- ════════════════════════════════════════════════════ -->
+<section class="lecture-section" id="m1">
+  <div class="seg-label">
+    <span>Module 1</span>
+    <span class="seg-time">9:20 – 10:00 AM</span>
+  </div>
+  <h2 class="seg-title">Research Foundations &amp; Measurement</h2>
+  <p class="seg-intro">Before you touch SPSS or SmartPLS, you must be anchored in the philosophical foundations of what you are doing and why. Every methodological choice you make — from your sampling strategy to your statistical test — flows from these foundations.</p>
+
+  <div id="paradigms">
+  <h3>Research Paradigms — Why Your Worldview Matters</h3>
+  <p>A research paradigm is your set of beliefs about the nature of reality (ontology) and how we can know it (epistemology). Quantitative research sits firmly within <strong>positivism</strong> — the view that reality exists independently of the observer, that it can be measured objectively, and that patterns in data reveal universal truths about human behaviour.</p>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon">🔭</div>
+      <div class="concept-title">Positivism</div>
+      <div class="concept-desc">Reality is objective and measurable. Knowledge comes from empirical observation and measurement. This is the home of quantitative research.</div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🔬</div>
+      <div class="concept-title">Post-Positivism</div>
+      <div class="concept-desc">Reality exists but our measurement of it is imperfect. Acknowledges measurement error — which is exactly why SEM corrects for it.</div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🧠</div>
+      <div class="concept-title">Interpretivism</div>
+      <div class="concept-desc">Reality is socially constructed. Knowledge is subjective. This is where qualitative research lives — interviews, ethnography, grounded theory.</div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">⚖️</div>
+      <div class="concept-title">Pragmatism</div>
+      <div class="concept-desc">Use whatever works. Mixed methods researchers often sit here — combining surveys with interviews for a fuller picture.</div>
+    </div>
+  </div>
+
+  <div class="callout callout-ai">
+    <div class="callout-label">🤖 AI Lens</div>
+    <p>Machine learning models are inherently positivist — they assume patterns in data are real and discoverable. When you use AI to analyse survey data or predict outcomes, you are operationalising positivism at scale. Understanding this alignment helps you defend your methodology to examiners who may question the use of AI tools in doctoral research.</p>
+  </div>
+  </div>
+
+  <div id="scales">
+  <h3>The Four Measurement Scales — The DNA of Quantitative Data</h3>
+  <p>Every variable in your study sits on one of four measurement scales. The scale determines <strong>which descriptive statistics are meaningful</strong> and <strong>which inferential tests are valid</strong>. Getting this wrong is one of the most common errors in doctoral dissertations.</p>
+
+  <div class="scale-viz">
+    <div class="scale-seg scale-nominal">
+      <span class="s-num">N</span>Nominal<br><small>Categories only</small>
+    </div>
+    <div class="scale-seg scale-ordinal">
+      <span class="s-num">O</span>Ordinal<br><small>Order, no distance</small>
+    </div>
+    <div class="scale-seg scale-interval">
+      <span class="s-num">I</span>Interval<br><small>Order + distance</small>
+    </div>
+    <div class="scale-seg scale-ratio">
+      <span class="s-num">R</span>Ratio<br><small>True zero point</small>
+    </div>
+  </div>
+
+  <table class="data-table">
+    <thead>
+      <tr><th>Scale</th><th>Example</th><th>Mode</th><th>Median</th><th>Mean</th><th>SD</th><th>Ratio</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Nominal</strong></td><td>Gender, Country, PhD/DBA</td><td class="tick">✓</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td></tr>
+      <tr><td><strong>Ordinal</strong></td><td>Rankings, Likert* (debated)</td><td class="tick">✓</td><td class="tick">✓</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td></tr>
+      <tr><td><strong>Interval</strong></td><td>Likert 1–7, Temperature °C</td><td class="tick">✓</td><td class="tick">✓</td><td class="tick">✓</td><td class="tick">✓</td><td class="dash">—</td></tr>
+      <tr><td><strong>Ratio</strong></td><td>Salary, Age, Years of experience</td><td class="tick">✓</td><td class="tick">✓</td><td class="tick">✓</td><td class="tick">✓</td><td class="tick">✓</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout callout-warning">
+    <div class="callout-label">⚠️ The Likert Scale Debate</div>
+    <p>Strictly speaking, a Likert scale (1–7) is <strong>ordinal</strong> — we cannot prove the distance between "3" and "4" equals the distance between "6" and "7". However, in practice, most researchers in management, marketing, and social science treat Likert scales as <strong>interval</strong> when there are 5 or more points. SmartPLS and SPSS both support this convention. Be prepared to justify this in your viva.</p>
+  </div>
+
+  <div class="callout callout-key">
+    <div class="callout-label">🔑 Key Rule</div>
+    <p>You can always <strong>move down</strong> the scale (treat ratio as interval) but never <strong>move up</strong> (you cannot treat nominal data as ratio). This single rule resolves most methodological choice questions about which statistic to use.</p>
+  </div>
+  </div>
+</section>
+
+<!-- QUIZ BREAK 1 -->
+<div class="lecture-section" id="break1" style="padding:2rem 4rem;">
+  <div class="quiz-break">
+    <div class="quiz-break-icon">⚡</div>
+    <div class="quiz-break-title">Quiz Break 1 — Foundations &amp; Measurement</div>
+    <div class="quiz-break-sub">Dr. Tan will launch 5 questions on your screen. Take 10–12 minutes to answer. Be honest with your responses — the class results will be discussed together.</div>
+    <a href="quiz.html" class="quiz-break-btn" target="_blank">Open Quiz on This Device →</a>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════ -->
+<!-- MODULE 2 — DESCRIPTIVE STATISTICS -->
+<!-- ════════════════════════════════════════════════════ -->
+<section class="lecture-section" id="m2">
+  <div class="seg-label">
+    <span>Module 2</span>
+    <span class="seg-time">10:00 – 10:45 AM</span>
+  </div>
+  <h2 class="seg-title">Descriptive Statistics &amp; the Normal Distribution</h2>
+  <p class="seg-intro">Before you test any hypothesis, you must describe your data. Descriptive statistics are not just preliminary steps — they reveal the story your data is telling. A non-normal distribution, a bimodal distribution, an extreme outlier — all of these change which inferential tests you can legitimately use.</p>
+
+  <div id="central">
+  <h3>Measures of Central Tendency</h3>
+  <p>Central tendency statistics tell you where the <strong>middle</strong> of your distribution sits. The choice between mean, median, and mode is not arbitrary — it depends on your scale of measurement and the shape of your distribution.</p>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon">📊</div>
+      <div class="concept-title">Mode</div>
+      <div class="concept-desc">The most frequently occurring value. The only measure valid for nominal data. Useful for understanding the most common category in your sample.</div>
+      <div class="concept-formula">Valid for: Nominal, Ordinal, Interval, Ratio</div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">📏</div>
+      <div class="concept-title">Median</div>
+      <div class="concept-desc">The 50th percentile — the middle value when data is ordered. Robust to outliers. Use when your distribution is skewed.</div>
+      <div class="concept-formula">Valid for: Ordinal, Interval, Ratio</div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">⚖️</div>
+      <div class="concept-title">Mean</div>
+      <div class="concept-desc">The arithmetic average. Uses all data points — so it is pulled by extreme values (outliers). The foundation of most parametric tests.</div>
+      <div class="concept-formula">Mean = Σx / N</div>
+    </div>
+  </div>
+
+  <div class="callout callout-insight">
+    <div class="callout-label">💡 Doctoral Insight</div>
+    <p>When you report descriptive statistics in your dissertation, always report <strong>both mean and median</strong> for continuous variables. A large gap between them signals skewness — which then forces you to justify whether parametric or non-parametric tests are appropriate for your inferential analysis.</p>
+  </div>
+  </div>
+
+  <div id="moments">
+  <h3>The Four Moments of a Normal Distribution</h3>
+  <p>A normal (bell-curve) distribution is completely described by four mathematical properties — the "four moments." Your data will never be perfectly normal, but understanding how far it deviates — and in which direction — is critical for choosing the right tests.</p>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon">1️⃣</div>
+      <div class="concept-title">Mean — 1st Moment</div>
+      <div class="concept-desc">Central tendency. Where the distribution is centred. The peak of the bell curve.</div>
+      <div class="concept-formula">Σx / N</div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">2️⃣</div>
+      <div class="concept-title">Standard Deviation — 2nd Moment</div>
+      <div class="concept-desc">Spread/dispersion. How tightly or loosely values cluster around the mean.</div>
+      <div class="concept-formula">SD = √[Σ(x-x̄)² / (N-1)]</div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">3️⃣</div>
+      <div class="concept-title">Skewness — 3rd Moment</div>
+      <div class="concept-desc">The lean or tail of the distribution. Positive skew = tail to the right. Negative skew = tail to the left.</div>
+      <div class="concept-formula">+ve = right tail | -ve = left tail</div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">4️⃣</div>
+      <div class="concept-title">Kurtosis — 4th Moment</div>
+      <div class="concept-desc">Peakedness vs. flatness. Leptokurtic (+ve) = peaked. Platykurtic (-ve) = flat.</div>
+      <div class="concept-formula">Leptokurtic | Platykurtic</div>
+    </div>
+  </div>
+
+  <div class="dist-wrap">
+    <div class="dist-title">Key Areas Under the Normal Curve — The Empirical Rule</div>
+    <svg class="bell-curve" viewBox="0 0 600 120" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="bellGrad" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#7c3aed" stop-opacity="0.3"/>
+          <stop offset="50%" stop-color="#00e5ff" stop-opacity="0.5"/>
+          <stop offset="100%" stop-color="#7c3aed" stop-opacity="0.3"/>
+        </linearGradient>
+      </defs>
+      <path d="M0,110 Q50,110 100,105 Q150,100 200,70 Q250,30 300,10 Q350,30 400,70 Q450,100 500,105 Q550,110 600,110 Z" fill="url(#bellGrad)" stroke="#00e5ff" stroke-width="1.5"/>
+      <line x1="300" y1="10" x2="300" y2="110" stroke="#00e5ff" stroke-width="1" stroke-dasharray="3,3" opacity="0.5"/>
+      <line x1="200" y1="70" x2="200" y2="110" stroke="#a78bfa" stroke-width="1" stroke-dasharray="3,3" opacity="0.5"/>
+      <line x1="400" y1="70" x2="400" y2="110" stroke="#a78bfa" stroke-width="1" stroke-dasharray="3,3" opacity="0.5"/>
+      <line x1="100" y1="105" x2="100" y2="110" stroke="#64748b" stroke-width="1" opacity="0.5"/>
+      <line x1="500" y1="105" x2="500" y2="110" stroke="#64748b" stroke-width="1" opacity="0.5"/>
+      <text x="300" y="108" text-anchor="middle" font-family="Space Mono" font-size="9" fill="#00e5ff">μ</text>
+      <text x="200" y="108" text-anchor="middle" font-family="Space Mono" font-size="9" fill="#a78bfa">-1SD</text>
+      <text x="400" y="108" text-anchor="middle" font-family="Space Mono" font-size="9" fill="#a78bfa">+1SD</text>
+      <text x="100" y="108" text-anchor="middle" font-family="Space Mono" font-size="9" fill="#64748b">-2SD</text>
+      <text x="500" y="108" text-anchor="middle" font-family="Space Mono" font-size="9" fill="#64748b">+2SD</text>
+      <text x="300" y="55" text-anchor="middle" font-family="Space Mono" font-size="10" fill="#00e5ff">68%</text>
+      <text x="300" y="85" text-anchor="middle" font-family="Space Mono" font-size="9" fill="#a78bfa">95%</text>
+    </svg>
+    <div style="display:flex;gap:2rem;flex-wrap:wrap;margin-top:0.5rem;">
+      <div style="font-family:var(--mono);font-size:0.72rem;"><span style="color:var(--cyan)">±1 SD</span> <span style="color:var(--muted)">≈ 68% of data</span></div>
+      <div style="font-family:var(--mono);font-size:0.72rem;"><span style="color:var(--violet2)">±2 SD</span> <span style="color:var(--muted)">≈ 95% of data</span></div>
+      <div style="font-family:var(--mono);font-size:0.72rem;"><span style="color:var(--muted)">±3 SD</span> <span style="color:var(--muted)">≈ 99.9% of data</span></div>
+    </div>
+  </div>
+
+  <div class="callout callout-key">
+    <div class="callout-label">🔑 When to use non-parametric tests</div>
+    <p>If your data is significantly skewed (|skewness| &gt; 2) or has extreme kurtosis, parametric tests like t-tests and ANOVA may give you misleading results. Switch to non-parametric alternatives: <strong>Mann-Whitney U</strong> instead of independent t-test, <strong>Wilcoxon</strong> instead of paired t-test, <strong>Kruskal-Wallis</strong> instead of ANOVA. PLS-SEM is particularly valuable here because it makes <strong>no distributional assumptions</strong>.</p>
+  </div>
+  </div>
+</section>
+
+<!-- QUIZ BREAK 2 -->
+<div class="lecture-section" id="break2" style="padding:2rem 4rem;">
+  <div class="quiz-break">
+    <div class="quiz-break-icon">⚡</div>
+    <div class="quiz-break-title">Quiz Break 2 — Descriptive Statistics</div>
+    <div class="quiz-break-sub">5 questions on central tendency, the four moments, and the normal distribution. Dr. Tan will step out briefly — take your time and be precise.</div>
+    <a href="quiz.html" class="quiz-break-btn" target="_blank">Open Quiz on This Device →</a>
+  </div>
+</div>
+
+<!-- COFFEE BREAK -->
+<div class="lecture-section" id="break-coffee" style="padding:1.5rem 4rem;">
+  <div style="background:rgba(245,158,11,0.05);border:1px solid rgba(245,158,11,0.15);border-radius:10px;padding:1.25rem 1.5rem;display:flex;align-items:center;gap:1rem;">
+    <span style="font-size:2rem;">☕</span>
+    <div>
+      <div style="font-family:var(--mono);font-size:0.68rem;color:var(--amber);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.25rem;">10:45 – 11:00 AM · Break</div>
+      <div style="font-size:0.88rem;color:var(--muted);">15-minute break. Results from Quiz Break 2 will be discussed when we return. Stretch, hydrate, and come back ready for inferential statistics.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════ -->
+<!-- MODULE 3 — INFERENTIAL STATISTICS -->
+<!-- ════════════════════════════════════════════════════ -->
+<section class="lecture-section" id="m3">
+  <div class="seg-label">
+    <span>Module 3</span>
+    <span class="seg-time">11:00 – 11:45 AM</span>
+  </div>
+  <h2 class="seg-title">Inferential Statistics &amp; SPSS</h2>
+  <p class="seg-intro">Inferential statistics allow you to draw conclusions about a <strong>population</strong> from a <strong>sample</strong>. They answer the fundamental doctoral question: "Is the pattern I see in my data real, or could it have occurred by chance?" The answer comes in the form of a p-value — and the test you use depends on your research question, your measurement scale, and your data distribution.</p>
+
+  <div id="dtree">
+  <h3>Statistical Test Decision Tree</h3>
+  <p>Use this framework to choose the right test every time. Work through each question in order.</p>
+
+  <div class="dtree">
+    <div class="dtree-node">
+      <div class="dtree-q">1. What is your research question type?</div>
+      <div class="dtree-options">
+        <span class="dtree-yes">Difference between groups → go to Q2</span>
+        <span class="dtree-yes">Relationship between variables → go to Q4</span>
+        <span class="dtree-yes">Prediction → Regression / SEM</span>
+      </div>
+    </div>
+    <div class="dtree-node">
+      <div class="dtree-q">2. How many groups are you comparing?</div>
+      <div class="dtree-options">
+        <span class="dtree-yes">2 groups → go to Q3</span>
+        <span class="dtree-yes">3+ groups → ANOVA (parametric) or Kruskal-Wallis</span>
+      </div>
+    </div>
+    <div class="dtree-node">
+      <div class="dtree-q">3. Are the two groups independent or paired?</div>
+      <div class="dtree-options">
+        <span class="dtree-yes">Independent (different people) → Independent Samples T-test</span>
+        <span class="dtree-yes">Paired (same people, two time points) → Paired Samples T-test</span>
+        <span class="dtree-no">Non-normal data → Mann-Whitney U / Wilcoxon</span>
+      </div>
+    </div>
+    <div class="dtree-node">
+      <div class="dtree-q">4. What type of relationship?</div>
+      <div class="dtree-options">
+        <span class="dtree-yes">Association only → Pearson / Spearman Correlation</span>
+        <span class="dtree-yes">Categorical association → Chi-Square</span>
+        <span class="dtree-yes">Predictive → Regression</span>
+        <span class="dtree-yes">Latent variables → SEM (Module 4)</span>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <div id="tests">
+  <h3>The Core Tests — ABC Company Case Study</h3>
+  <p>We use the ABC Company employee dataset (Employee_data_1.sav) throughout SPSS. Here are the 8 research questions and which test answers each one.</p>
+
+  <table class="data-table">
+    <thead>
+      <tr><th>#</th><th>Research Question</th><th>Test</th><th>Why</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Q1</td><td>Gender difference in employment categories?</td><td>Chi-Square</td><td>Two categorical (nominal) variables</td></tr>
+      <tr><td>Q2</td><td>Difference in custodial vs managerial salary?</td><td>Independent T-test</td><td>Two independent groups, continuous DV</td></tr>
+      <tr><td>Q3</td><td>Difference between beginning and current salary?</td><td>Paired T-test</td><td>Same employees, two measurements</td></tr>
+      <tr><td>Q4</td><td>Correlation: Education, Salary, Experience?</td><td>Pearson Correlation</td><td>Relationships between continuous variables</td></tr>
+      <tr><td>Q5–8</td><td>Predictors of current salary?</td><td>Multiple Regression</td><td>Multiple IVs predicting one DV</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout callout-ai">
+    <div class="callout-label">🤖 AI Enhancement</div>
+    <p>AI tools like Python's <strong>statsmodels</strong> and R's built-in functions can run all of these tests and produce publication-ready output in seconds. More importantly, large language models (ChatGPT, Claude) can now <strong>interpret your SPSS output</strong> — paste your results table and ask for an APA-formatted interpretation. This is a legitimate productivity tool for doctoral researchers, but you must understand the underlying logic well enough to verify the interpretation.</p>
+  </div>
+
+  <h3>Interpreting the p-value — What it Actually Means</h3>
+  <p>The p-value is the probability of observing your result (or something more extreme) <strong>if the null hypothesis were true</strong>. It is not the probability that your hypothesis is correct. This distinction trips up many doctoral candidates in their viva.</p>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon">✅</div>
+      <div class="concept-title">p &lt; 0.05</div>
+      <div class="concept-desc">Statistically significant at the 95% confidence level. You reject the null hypothesis. The result is unlikely to be due to chance alone.</div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">⚠️</div>
+      <div class="concept-title">p &lt; 0.01</div>
+      <div class="concept-desc">Significant at 99% confidence. A more stringent threshold. Often required in medical and natural science research.</div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🔍</div>
+      <div class="concept-title">p &gt; 0.05</div>
+      <div class="concept-desc">Not significant. You fail to reject the null. This does NOT mean there is no effect — it may mean your sample was too small (insufficient power).</div>
+    </div>
+  </div>
+
+  <div class="callout callout-warning">
+    <div class="callout-label">⚠️ SPSS Demo — Switch to SPSS</div>
+    <p><strong>Dr. Tan will now switch screens to demonstrate SPSS live.</strong> Open the Employee_data_1.sav file. We will run: Descriptive Statistics → Frequencies → Crosstabulation → Chi-Square → Independent T-test → Paired T-test → Correlation → Regression. Follow along on your own laptop if you have SPSS installed.</p>
+  </div>
+  </div>
+</section>
+
+<!-- QUIZ BREAK 3 -->
+<div class="lecture-section" id="break3" style="padding:2rem 4rem;">
+  <div class="quiz-break">
+    <div class="quiz-break-icon">⚡</div>
+    <div class="quiz-break-title">Quiz Break 3 — Inferential Statistics</div>
+    <div class="quiz-break-sub">5 questions on statistical tests, p-values, and the SPSS case study. Dr. Tan is on a short break — take 12 minutes to work through these carefully.</div>
+    <a href="quiz.html" class="quiz-break-btn" target="_blank">Open Quiz on This Device →</a>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════ -->
+<!-- MODULE 4 — SEM -->
+<!-- ════════════════════════════════════════════════════ -->
+<section class="lecture-section" id="m4">
+  <div class="seg-label">
+    <span>Module 4</span>
+    <span class="seg-time">11:45 AM – 12:30 PM</span>
+  </div>
+  <h2 class="seg-title">Structural Equation Modelling &amp; SmartPLS</h2>
+  <p class="seg-intro">SEM is the most powerful multivariate technique available to management researchers. It combines factor analysis and regression in a single model, allows you to work with latent (unobserved) variables, corrects for measurement error, and tests complex causal structures that regression simply cannot handle.</p>
+
+  <div id="plsvsb">
+  <h3>Why SEM? — Moving Beyond Regression</h3>
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon">📉</div>
+      <div class="concept-title">Multiple Regression</div>
+      <div class="concept-desc">Tests relationships between observed variables only. Cannot model measurement error. One dependent variable at a time. Variables must be directly measurable.</div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🔗</div>
+      <div class="concept-title">SEM Advantage</div>
+      <div class="concept-desc">Models latent (unobservable) constructs. Corrects for measurement error. Tests multiple dependent variables simultaneously. Models mediation and moderation elegantly.</div>
+    </div>
+  </div>
+  </div>
+
+  <div id="plsvsb">
+  <h3>CB-SEM vs PLS-SEM — Which One for Your Research?</h3>
+  <table class="data-table">
+    <thead>
+      <tr><th>Criterion</th><th>CB-SEM (AMOS/LISREL)</th><th>PLS-SEM (SmartPLS)</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Sample Size</td><td>Large (200+)</td><td>Small to medium (30+)</td></tr>
+      <tr><td>Data Distribution</td><td>Must be normal</td><td>No assumptions</td></tr>
+      <tr><td>Research Purpose</td><td>Theory confirmation</td><td>Prediction &amp; exploration</td></tr>
+      <tr><td>Model Complexity</td><td>Can be difficult</td><td>Handles complex models well</td></tr>
+      <tr><td>Latent Variables</td><td>Common factors</td><td>Composite factors</td></tr>
+      <tr><td>Missing Data</td><td>Problematic</td><td>More robust</td></tr>
+      <tr><td>Best for PhD/DBA</td><td>Confirmatory, large n</td><td>Exploratory, typical n</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout callout-insight">
+    <div class="callout-label">💡 The SmartPLS Sweet Spot</div>
+    <p>Most PhD and DBA candidates in management, marketing, IS, and healthcare research use PLS-SEM because: (1) sample sizes in surveys of 150–300 are the norm, (2) management constructs like "trust", "satisfaction", and "intention" are inherently latent, and (3) the research is often exploratory. SmartPLS v3 is free for academic use and produces results directly reportable in journals like MIS Quarterly, JAMS, and IJIM.</p>
+  </div>
+  </div>
+
+  <div id="measurement">
+  <h3>Reflective vs Formative Measurement Models</h3>
+  <p>This is one of the most conceptually important decisions in your SEM model — and one of the most common viva examination questions.</p>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon">←</div>
+      <div class="concept-title">Reflective Model</div>
+      <div class="concept-desc">Arrows point FROM the construct TO the indicators. The construct CAUSES the indicators. Indicators are interchangeable — dropping one does not change the construct's meaning.</div>
+      <div class="concept-formula">Construct → Indicator 1, 2, 3</div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">→</div>
+      <div class="concept-title">Formative Model</div>
+      <div class="concept-desc">Arrows point FROM the indicators TO the construct. The indicators DEFINE the construct. Not interchangeable — each adds unique meaning.</div>
+      <div class="concept-formula">Indicator 1, 2, 3 → Construct</div>
+    </div>
+  </div>
+
+  <div class="sem-diagram">
+    <div style="font-family:var(--mono);font-size:0.65rem;color:var(--muted);margin-bottom:1rem;letter-spacing:0.1em;text-transform:uppercase;">Deli99 PLS-SEM Model</div>
+    <div class="sem-path">
+      <div style="display:flex;flex-direction:column;gap:0.3rem;">
+        <div class="sem-row"><span class="sem-indicator">expect_1</span><span class="sem-arrow">→</span></div>
+        <div class="sem-row"><span class="sem-indicator">expect_2</span><span class="sem-arrow">→</span><span class="sem-construct">Customer Expectation</span></div>
+        <div class="sem-row"><span class="sem-indicator">expect_3</span><span class="sem-arrow">→</span></div>
+      </div>
+      <span class="sem-arrow" style="font-size:1.2rem;color:var(--cyan);">→</span>
+      <span class="sem-construct" style="background:rgba(0,229,255,0.1);border-color:rgba(0,229,255,0.35);color:var(--cyan);">Customer Satisfaction</span>
+      <span class="sem-arrow" style="font-size:1.2rem;color:var(--cyan);">→</span>
+      <div style="display:flex;flex-direction:column;gap:0.3rem;">
+        <div class="sem-row"><span class="sem-arrow">→</span><span class="sem-indicator">loyal_1</span></div>
+        <div class="sem-row"><span class="sem-construct">Customer Loyalty</span><span class="sem-arrow">→</span><span class="sem-indicator">loyal_2</span></div>
+        <div class="sem-row"><span class="sem-arrow">→</span><span class="sem-indicator">loyal_3</span></div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <div id="quality">
+  <h3>PLS-SEM Quality Criteria — What to Report</h3>
+  <table class="data-table">
+    <thead>
+      <tr><th>Criterion</th><th>Where in SmartPLS</th><th>Threshold</th><th>Assesses</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Outer Loadings</strong></td><td>PLS Results → Outer Loadings</td><td>&gt; 0.70 (≥ 0.40 exploratory)</td><td>Indicator Reliability</td></tr>
+      <tr><td><strong>Composite Reliability</strong></td><td>Quality Criteria → CR&amp;V</td><td>&gt; 0.70</td><td>Internal Consistency</td></tr>
+      <tr><td><strong>AVE</strong></td><td>Quality Criteria → CR&amp;V</td><td>&gt; 0.50</td><td>Convergent Validity</td></tr>
+      <tr><td><strong>Discriminant Validity</strong></td><td>Quality Criteria → DV</td><td>√AVE &gt; correlations</td><td>Discriminant Validity</td></tr>
+      <tr><td><strong>Path Coefficients</strong></td><td>Bootstrapping → Path Coeff</td><td>p &lt; 0.05</td><td>Hypothesis Support</td></tr>
+      <tr><td><strong>R²</strong></td><td>PLS Results → R²</td><td>&gt; 0.26 substantial</td><td>Explanatory Power</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout callout-warning">
+    <div class="callout-label">⚠️ SmartPLS Demo — Switch to SmartPLS</div>
+    <p><strong>Dr. Tan will now switch screens to demonstrate SmartPLS live.</strong> We will use the Deli99.csv dataset. Steps: Import data → Build path model → Run PLS Algorithm → Assess outer loadings → Run bootstrapping → Interpret path coefficients and significance. Follow along on your own laptop.</p>
+  </div>
+  </div>
+</section>
+
+<!-- QUIZ BREAK 4 -->
+<div class="lecture-section" id="break4" style="padding:2rem 4rem;">
+  <div class="quiz-break">
+    <div class="quiz-break-icon">⚡</div>
+    <div class="quiz-break-title">Quiz Break 4 — SEM &amp; SmartPLS</div>
+    <div class="quiz-break-sub">5 final questions on SEM theory, PLS vs CB-SEM, measurement models, and quality criteria. This is the hardest set — take your time. Dr. Tan will be back in 12 minutes.</div>
+    <a href="quiz.html" class="quiz-break-btn" target="_blank">Open Quiz on This Device →</a>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════ -->
+<!-- MODULE 5 — WRITING UP -->
+<!-- ════════════════════════════════════════════════════ -->
+<section class="lecture-section" id="m5">
+  <div class="seg-label">
+    <span>Module 5</span>
+    <span class="seg-time">12:30 – 1:00 PM</span>
+  </div>
+  <h2 class="seg-title">Writing Up Your Results</h2>
+  <p class="seg-intro">Running the analysis is only half the work. How you write it up determines whether your examiner trusts your methodology. Here are the non-negotiable conventions for reporting quantitative results in a doctoral dissertation.</p>
+
+  <h3>APA Reporting Rules</h3>
+  <div class="step-list">
+    <div class="step-item">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <div class="step-title">Always report effect size alongside significance</div>
+        <div class="step-desc">p &lt; 0.05 tells you it's significant. Cohen's d (for t-tests) or η² (for ANOVA) tells you if it matters practically. A p-value of 0.001 with d = 0.1 is statistically significant but practically meaningless.</div>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <div class="step-title">Report exact p-values, not just "p &lt; 0.05"</div>
+        <div class="step-desc">Write p = 0.032, not p &lt; 0.05. The exception is when p &lt; 0.001, which you may report as such. APA 7th edition requires this.</div>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <div class="step-title">For SEM: report a complete measurement model table before the structural model</div>
+        <div class="step-desc">Show outer loadings, CR, AVE, and discriminant validity evidence BEFORE you discuss path coefficients. Examiners check this order.</div>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">4</div>
+      <div class="step-content">
+        <div class="step-title">Connect every statistical finding back to your research question</div>
+        <div class="step-desc">"The independent samples t-test revealed a significant difference (t(472) = 4.32, p = 0.001) in current salary between custodial (M = $27,838) and managerial (M = $63,977) employees, supporting H1." Every result needs a sentence like this.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout callout-ai">
+    <div class="callout-label">🤖 AI Writing Assistant</div>
+    <p>You can legitimately use AI to help interpret and write up your SPSS and SmartPLS output — provided you understand what you are reporting. Paste your output table into Claude or ChatGPT and ask: <em>"Write an APA-format results paragraph for this independent samples t-test output for a doctoral dissertation."</em> Then verify the interpretation against what you know. AI writes the prose; you provide the scholarly judgement.</p>
+  </div>
+</section>
+
+<!-- Q&A -->
+<section class="lecture-section" id="qa" style="background:var(--bg2);">
+  <div class="seg-label">Session Close</div>
+  <h2 class="seg-title">Open Q&amp;A</h2>
+  <p class="seg-intro">Use the Live Quiz open-text question to submit your final questions to Dr. Tan. All questions are displayed anonymously on screen and discussed as a group.</p>
+  <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-top:1.5rem;">
+    <a href="quiz.html" style="font-family:var(--sans);font-weight:700;font-size:0.88rem;padding:0.7rem 1.5rem;background:linear-gradient(135deg,var(--violet),#5b21b6);color:#fff;border-radius:8px;text-decoration:none;">Submit Your Question →</a>
+    <a href="/" style="font-family:var(--sans);font-weight:500;font-size:0.88rem;padding:0.7rem 1.5rem;background:transparent;color:var(--text);border:1px solid var(--border);border-radius:8px;text-decoration:none;">← Back to Home</a>
+  </div>
+</section>
+
+</div><!-- end .main -->
+
+<script>
+// Progress bar
+window.addEventListener('scroll',()=>{
+  const doc = document.documentElement;
+  const pct = (doc.scrollTop/(doc.scrollHeight-doc.clientHeight))*100;
+  document.getElementById('progress').style.width = pct+'%';
+});
+
+// Active TOC
+const sections = document.querySelectorAll('[id]');
+const tocLinks = document.querySelectorAll('.toc-list a');
+const obs = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      tocLinks.forEach(l=>l.classList.remove('active'));
+      const active = document.querySelector(`.toc-list a[href="#${e.target.id}"]`);
+      if(active) active.classList.add('active');
+    }
+  });
+},{threshold:0.3});
+sections.forEach(s=>obs.observe(s));
+</script>
+</body>
+</html>

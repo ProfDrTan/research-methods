@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Live Quiz — Dr. Tan's Quantitative Research Class</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#020817; --bg2:#0b1120; --bg3:#111827; --surface:#161f30;
+  --border:#1e2d45; --cyan:#00e5ff; --violet:#7c3aed; --violet2:#a78bfa;
+  --green:#10b981; --amber:#f59e0b; --red:#ef4444; --text:#e2e8f0; --muted:#64748b;
+  --mono:'Space Mono',monospace; --sans:'Space Grotesk',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,229,255,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,0.025) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0;}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:100;background:rgba(2,8,23,0.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:56px;}
+.nav-brand{font-family:var(--mono);font-size:0.8rem;color:var(--cyan);}
+.nav-brand span{color:var(--muted);}
+.mode-toggle{display:flex;gap:0.5rem;}
+.mode-btn{font-family:var(--mono);font-size:0.72rem;padding:0.3rem 0.8rem;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;transition:all 0.2s;letter-spacing:0.05em;}
+.mode-btn.active{border-color:var(--cyan);color:var(--cyan);background:rgba(0,229,255,0.08);}
+
+/* VIEWS */
+#instructor-view, #student-view{display:none;position:relative;z-index:1;}
+#instructor-view.active, #student-view.active{display:block;}
+
+/* ── INSTRUCTOR VIEW ── */
+.instructor-wrap{max-width:1100px;margin:0 auto;padding:2rem 1.5rem;}
+.section-label{font-family:var(--mono);font-size:0.68rem;letter-spacing:0.15em;color:var(--violet2);text-transform:uppercase;margin-bottom:0.5rem;}
+.section-title{font-family:var(--sans);font-size:1.6rem;font-weight:700;margin-bottom:0.35rem;}
+.section-sub{color:var(--muted);font-size:0.88rem;margin-bottom:2rem;}
+
+/* Question selector */
+.q-selector{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:2rem;}
+.q-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1rem 1.25rem;cursor:pointer;transition:all 0.2s;position:relative;}
+.q-card:hover{border-color:rgba(0,229,255,0.3);}
+.q-card.active{border-color:var(--cyan);background:rgba(0,229,255,0.05);}
+.q-card.active::before{content:'▶ LIVE';position:absolute;top:0.6rem;right:0.75rem;font-family:var(--mono);font-size:0.6rem;color:var(--green);letter-spacing:0.1em;}
+.q-tag{font-family:var(--mono);font-size:0.62rem;color:var(--violet2);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.4rem;}
+.q-text{font-size:0.88rem;font-weight:600;line-height:1.4;color:var(--text);}
+.q-type{font-family:var(--mono);font-size:0.62rem;color:var(--muted);margin-top:0.4rem;}
+
+/* Controls */
+.controls{display:flex;gap:0.75rem;margin-bottom:2rem;flex-wrap:wrap;}
+.ctrl-btn{font-family:var(--mono);font-size:0.75rem;padding:0.55rem 1.25rem;border-radius:8px;border:none;cursor:pointer;transition:all 0.2s;letter-spacing:0.04em;font-weight:700;}
+.ctrl-launch{background:linear-gradient(135deg,var(--green),#059669);color:#fff;}
+.ctrl-launch:hover{opacity:0.9;}
+.ctrl-close{background:transparent;border:1px solid rgba(239,68,68,0.4);color:#ef4444;}
+.ctrl-close:hover{background:rgba(239,68,68,0.08);}
+.ctrl-reset-q{background:transparent;border:1px solid var(--border);color:var(--muted);}
+.ctrl-reset-q:hover{border-color:var(--amber);color:var(--amber);}
+
+/* Live results */
+.results-panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.5rem;}
+.results-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;}
+.results-title{font-family:var(--mono);font-size:0.72rem;letter-spacing:0.1em;color:var(--muted);text-transform:uppercase;}
+.response-count{font-family:var(--mono);font-size:0.72rem;color:var(--green);}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);animation:pulse 2s infinite;display:inline-block;margin-right:0.4rem;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+
+.bar-list{display:flex;flex-direction:column;gap:0.75rem;}
+.bar-item{display:flex;flex-direction:column;gap:0.25rem;}
+.bar-header{display:flex;justify-content:space-between;font-size:0.82rem;}
+.bar-label{color:var(--text);font-weight:500;}
+.bar-val{font-family:var(--mono);color:var(--muted);font-size:0.72rem;}
+.bar-track{height:8px;background:var(--bg3);border-radius:4px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--cyan),var(--violet));transition:width 0.6s ease;}
+.bar-fill.correct{background:linear-gradient(90deg,var(--green),#059669);}
+
+/* Word cloud */
+.word-cloud{display:flex;flex-wrap:wrap;gap:0.5rem;min-height:60px;align-items:center;}
+.word-cloud span{font-family:var(--sans);font-weight:600;color:var(--violet2);cursor:default;transition:color 0.2s;}
+.word-cloud span:hover{color:var(--cyan);}
+
+/* No data */
+.no-data{font-family:var(--mono);font-size:0.75rem;color:var(--muted);text-align:center;padding:2rem;}
+
+/* Answer reveal */
+.answer-reveal{margin-top:1.25rem;padding:1rem;border-radius:8px;background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);}
+.answer-reveal-label{font-family:var(--mono);font-size:0.65rem;color:var(--green);letter-spacing:0.1em;margin-bottom:0.3rem;}
+.answer-reveal-text{font-size:0.9rem;font-weight:600;color:var(--green);}
+
+/* ── STUDENT VIEW ── */
+.student-wrap{max-width:620px;margin:0 auto;padding:2rem 1.5rem;}
+.waiting-screen{text-align:center;padding:4rem 2rem;}
+.waiting-icon{font-size:3rem;margin-bottom:1rem;}
+.waiting-title{font-family:var(--sans);font-weight:700;font-size:1.3rem;margin-bottom:0.5rem;}
+.waiting-sub{color:var(--muted);font-size:0.88rem;}
+
+.question-screen{}
+.q-number{font-family:var(--mono);font-size:0.68rem;color:var(--violet2);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:0.75rem;}
+.q-display{font-size:1.25rem;font-weight:700;line-height:1.4;margin-bottom:2rem;}
+.q-context{font-size:0.85rem;color:var(--muted);margin-bottom:1.5rem;padding:0.75rem 1rem;border-left:2px solid var(--violet);background:rgba(124,58,237,0.06);border-radius:0 6px 6px 0;}
+
+.answer-options{display:flex;flex-direction:column;gap:0.75rem;}
+.answer-btn{width:100%;padding:1rem 1.25rem;background:var(--surface);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:var(--sans);font-size:0.95rem;font-weight:500;cursor:pointer;transition:all 0.2s;text-align:left;}
+.answer-btn:hover{border-color:var(--cyan);background:rgba(0,229,255,0.05);}
+.answer-btn.selected{border-color:var(--violet);background:rgba(124,58,237,0.1);color:var(--violet2);}
+.answer-btn.submitted{cursor:default;}
+
+.likert-wrap{display:flex;flex-direction:column;gap:1rem;}
+.likert-scale{display:flex;gap:0.5rem;justify-content:space-between;}
+.likert-btn{flex:1;padding:0.75rem 0;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--mono);font-size:0.9rem;font-weight:700;cursor:pointer;transition:all 0.2s;text-align:center;}
+.likert-btn:hover{border-color:var(--cyan);}
+.likert-btn.selected{border-color:var(--cyan);background:rgba(0,229,255,0.1);color:var(--cyan);}
+.likert-labels{display:flex;justify-content:space-between;font-family:var(--mono);font-size:0.65rem;color:var(--muted);}
+
+.open-wrap textarea{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:0.9rem;color:var(--text);font-family:var(--sans);font-size:0.9rem;min-height:100px;resize:vertical;outline:none;}
+.open-wrap textarea:focus{border-color:var(--cyan);}
+
+.submit-answer-btn{width:100%;margin-top:1.25rem;padding:0.85rem;background:linear-gradient(135deg,var(--cyan),#0097b2);color:var(--bg);border:none;border-radius:8px;font-family:var(--sans);font-weight:700;font-size:0.9rem;cursor:pointer;transition:all 0.2s;}
+.submit-answer-btn:hover{opacity:0.9;}
+.submit-answer-btn:disabled{opacity:0.5;cursor:not-allowed;}
+
+.thankyou-screen{text-align:center;padding:3rem 2rem;}
+.thankyou-icon{font-size:3rem;margin-bottom:1rem;}
+.thankyou-title{font-family:var(--sans);font-weight:700;font-size:1.3rem;margin-bottom:0.5rem;}
+.thankyou-sub{color:var(--muted);font-size:0.88rem;}
+
+/* Divider */
+hr{border:none;border-top:1px solid var(--border);margin:2rem 0;}
+
+@media(max-width:700px){
+  .q-selector{grid-template-columns:1fr;}
+  .likert-btn{padding:0.6rem 0;font-size:0.8rem;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">DR.TAN <span>// LIVE QUIZ</span></div>
+  <div class="mode-toggle">
+    <button class="mode-btn active" onclick="setMode('instructor')" id="btn-instructor">⚙ Instructor</button>
+    <button class="mode-btn" onclick="setMode('student')" id="btn-student">👤 Student</button>
+    <a href="/" style="font-family:var(--mono);font-size:0.72rem;padding:0.3rem 0.8rem;border-radius:6px;border:1px solid var(--border);color:var(--muted);text-decoration:none;margin-left:0.5rem;">← Home</a>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- INSTRUCTOR VIEW -->
+<!-- ══════════════════════════════════════════════════════ -->
+<div id="instructor-view" class="active">
+  <div class="instructor-wrap">
+    <div class="section-label">Instructor Control Panel</div>
+    <h2 class="section-title">Live Quiz Dashboard</h2>
+    <p class="section-sub">Select a question, launch it live, and watch responses build in real time. Students see the question on their screen the moment you launch.</p>
+
+    <!-- QUESTION BANK -->
+    <div class="section-label" style="margin-bottom:0.75rem;">Question Bank — Based on Your Lecture Materials</div>
+    <div class="q-selector" id="q-selector"></div>
+
+    <!-- CONTROLS -->
+    <div class="controls">
+      <button class="ctrl-btn ctrl-launch" onclick="launchQuestion()">▶ Launch Selected Question</button>
+      <button class="ctrl-btn ctrl-close" onclick="closeQuestion()">■ Close Question</button>
+      <button class="ctrl-btn ctrl-reset-q" onclick="resetResponses()">⟳ Clear Responses</button>
+    </div>
+
+    <!-- LIVE RESULTS -->
+    <div class="results-panel">
+      <div class="results-header">
+        <span class="results-title"><span class="live-dot"></span>Live Responses</span>
+        <span class="response-count" id="response-count">0 responses</span>
+      </div>
+      <div id="results-content"><div class="no-data">No question launched yet. Select a question above and click Launch.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- STUDENT VIEW -->
+<!-- ══════════════════════════════════════════════════════ -->
+<div id="student-view">
+  <div class="student-wrap">
+    <div id="waiting-screen" class="waiting-screen">
+      <div class="waiting-icon">⏳</div>
+      <div class="waiting-title">Waiting for Dr. Tan...</div>
+      <div class="waiting-sub">A question will appear here when your instructor launches one. Keep this tab open.</div>
+    </div>
+    <div id="question-screen" class="question-screen" style="display:none;"></div>
+    <div id="thankyou-screen" class="thankyou-screen" style="display:none;">
+      <div class="thankyou-icon">✅</div>
+      <div class="thankyou-title">Answer submitted!</div>
+      <div class="thankyou-sub">Your response has been recorded. Watch the live results on screen.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── QUESTION BANK (grounded in Dr. Tan's actual lecture materials) ──
+const QUESTIONS = [
+  // DAY 1 — INTRO & METHODOLOGY
+  {
+    id:'q1', tag:'Day 1 · Research Methodology', type:'mcq',
+    text:'Which research paradigm underpins quantitative research?',
+    context:'Think about the philosophical assumptions behind measuring and analysing data.',
+    options:['Interpretivism','Positivism','Constructivism','Critical Theory'],
+    correct:1,
+    explanation:'Positivism assumes the world is made up of measurable data and that analysis of that data leads to valid insights about behaviour.'
+  },
+  {
+    id:'q2', tag:'Day 1 · Research Methods', type:'mcq',
+    text:'Which method will you use for your dissertation?',
+    context:'This helps Dr. Tan tailor the session to the class mix.',
+    options:['Quantitative','Qualitative','Mixed Methods','Not decided yet'],
+    correct:null
+  },
+  {
+    id:'q3', tag:'Day 1 · Measurement Scales', type:'mcq',
+    text:'A Likert scale (1–7) is which type of measurement scale?',
+    context:'Consider whether it has a true zero point and equal intervals.',
+    options:['Nominal','Ordinal','Interval','Ratio'],
+    correct:2,
+    explanation:'Likert scales are interval — they convey order and distance, but have no true zero point.'
+  },
+  {
+    id:'q4', tag:'Day 1 · Descriptive Statistics', type:'mcq',
+    text:'Which measure of central tendency is most affected by extreme outliers?',
+    context:'Think about the four moments of a normal distribution.',
+    options:['Mode','Median','Mean','Standard Deviation'],
+    correct:2,
+    explanation:'The Mean is calculated using all values, so extreme scores pull it significantly. The Median is more robust to outliers.'
+  },
+  {
+    id:'q5', tag:'Day 1 · Normal Distribution', type:'mcq',
+    text:'In a normal distribution, approximately what % of data falls within ±2 SD of the mean?',
+    context:'Recall the key areas under the normal curve from the lecture.',
+    options:['68%','95%','99.9%','75%'],
+    correct:1,
+    explanation:'±1 SD ≈ 68%, ±2 SD ≈ 95%, ±3 SD ≈ 99.9% — the empirical rule.'
+  },
+  {
+    id:'q6', tag:'Day 1 · Inferential Statistics', type:'mcq',
+    text:'Which test would you use to compare the means of TWO independent groups?',
+    context:'ABC Company case: comparing custodial vs. managerial salaries.',
+    options:['Chi-Square Test','Independent Samples T-test','Paired Samples T-test','ANOVA'],
+    correct:1,
+    explanation:'Independent Samples T-test compares means between two separate groups — exactly what was used in the ABC Company case for salary comparison.'
+  },
+  {
+    id:'q7', tag:'Day 1 · Correlation', type:'mcq',
+    text:'A correlation of r = -0.85 indicates:',
+    context:'Recall: correlation ranges from -1 to +1.',
+    options:['A weak positive relationship','A strong positive relationship','A strong negative relationship','No relationship'],
+    correct:2,
+    explanation:'Values close to -1 indicate a strong negative (inverse) linear relationship — as one variable increases, the other decreases.'
+  },
+  // DAY 2 — SEM
+  {
+    id:'q8', tag:'Day 2 · SEM Foundations', type:'mcq',
+    text:'What does SEM stand for and what is its key advantage over multiple regression?',
+    context:'Think about what SEM can model that regression cannot.',
+    options:['Sequential Estimation Model — faster computation','Structural Equation Modelling — can model latent variables and measurement error','Statistical Evaluation Method — works with small samples','Standardised Empirical Modelling — no assumptions required'],
+    correct:1,
+    explanation:'SEM can test models with latent (unobserved) variables, model measurement error, and test multiple dependent variables simultaneously.'
+  },
+  {
+    id:'q9', tag:'Day 2 · PLS-SEM vs CB-SEM', type:'mcq',
+    text:'When should you prefer PLS-SEM over CB-SEM?',
+    context:'Think about the conditions Dr. Tan described for when PLS is the better choice.',
+    options:['Large sample, normal data, theory confirmed','Small sample, exploratory research, non-normal data','You want to use AMOS software','When you have only one latent variable'],
+    correct:1,
+    explanation:'PLS-SEM is preferred when: sample size is small, theory is exploratory, data is non-normal, or model specification cannot be ensured.'
+  },
+  {
+    id:'q10', tag:'Day 2 · Measurement Model', type:'mcq',
+    text:'In a REFLECTIVE measurement model, which direction do the arrows point?',
+    context:'Recall: reflective vs. formative constructs from the SmartPLS lecture.',
+    options:['From indicators TO the construct','From the construct TO the indicators','Bidirectional','No arrows — only correlations'],
+    correct:1,
+    explanation:'In a reflective model, the construct causes the indicators — arrows point outward FROM the construct TO each indicator.'
+  },
+  {
+    id:'q11', tag:'Day 2 · Model Quality', type:'mcq',
+    text:'What is the minimum acceptable Composite Reliability (CR) value in PLS-SEM?',
+    context:'Recall the quality criteria table from the SmartPLS assessment section.',
+    options:['0.4','0.5','0.7','0.9'],
+    correct:2,
+    explanation:'Composite Reliability should be 0.7 or higher (Bagozzi & Yi, 1988). For exploratory research, 0.6 is acceptable.'
+  },
+  {
+    id:'q12', tag:'Day 2 · AVE', type:'mcq',
+    text:'Average Variance Extracted (AVE) assesses which type of validity?',
+    context:'Think about what AVE measures in your measurement model.',
+    options:['Discriminant validity only','Convergent validity only','Both convergent and discriminant validity','Predictive validity'],
+    correct:2,
+    explanation:'AVE ≥ 0.5 indicates convergent validity. For discriminant validity, the square root of AVE should exceed correlations with other constructs (Fornell & Larcker, 1981).'
+  },
+  // CONFIDENCE & REFLECTION
+  {
+    id:'q13', tag:'Reflection · Confidence Check', type:'likert',
+    text:'How confident are you in your ability to choose the right statistical test for your research?',
+    context:'Be honest — this helps Dr. Tan know where to spend more time.',
+    scale:{min:1,max:7,minLabel:'Not at all confident',maxLabel:'Extremely confident'}
+  },
+  {
+    id:'q14', tag:'Reflection · SEM Readiness', type:'likert',
+    text:'How ready do you feel to run a PLS-SEM model in SmartPLS right now?',
+    context:'1 = I need much more help, 7 = I could do it independently today.',
+    scale:{min:1,max:7,minLabel:'Not ready at all',maxLabel:'Fully ready'}
+  },
+  {
+    id:'q15', tag:'Open · Biggest Question', type:'open',
+    text:'What is the ONE thing about quantitative research or SEM you most want Dr. Tan to clarify?',
+    context:'This feeds the live word cloud. Be specific — your question helps everyone.',
+  }
+];
+
+// ── STATE ──
+const STATE_KEY = 'quiz_state_v1';
+const RESP_KEY  = 'quiz_responses_v1';
+
+function getState() {
+  try { return JSON.parse(localStorage.getItem(STATE_KEY) || '{}'); } catch { return {}; }
+}
+function setState(s) { localStorage.setItem(STATE_KEY, JSON.stringify(s)); }
+function getResponses() {
+  try { return JSON.parse(localStorage.getItem(RESP_KEY) || '{}'); } catch { return {}; }
+}
+function saveResponses(r) { localStorage.setItem(RESP_KEY, JSON.stringify(r)); }
+
+let selectedQId = null;
+
+// ── MODE TOGGLE ──
+function setMode(mode) {
+  document.getElementById('instructor-view').classList.toggle('active', mode==='instructor');
+  document.getElementById('student-view').classList.toggle('active', mode==='student');
+  document.getElementById('btn-instructor').classList.toggle('active', mode==='instructor');
+  document.getElementById('btn-student').classList.toggle('active', mode==='student');
+  if (mode==='student') pollStudent();
+}
+
+// ── BUILD QUESTION CARDS ──
+function buildQCards() {
+  const state = getState();
+  const el = document.getElementById('q-selector');
+  el.innerHTML = QUESTIONS.map(q => `
+    <div class="q-card ${q.id===selectedQId?'active':''} ${state.activeQ===q.id?'active':''}"
+         onclick="selectQ('${q.id}')">
+      <div class="q-tag">${q.tag}</div>
+      <div class="q-text">${q.text}</div>
+      <div class="q-type">${q.type==='mcq'?'Multiple Choice':q.type==='likert'?'Likert Scale 1–7':'Open Text'}</div>
+    </div>
+  `).join('');
+}
+
+function selectQ(id) {
+  selectedQId = id;
+  buildQCards();
+}
+
+// ── LAUNCH / CLOSE ──
+function launchQuestion() {
+  if (!selectedQId) { alert('Please select a question first.'); return; }
+  const state = getState();
+  state.activeQ = selectedQId;
+  setState(state);
+  buildQCards();
+  renderInstructorResults();
+}
+
+function closeQuestion() {
+  const state = getState();
+  state.activeQ = null;
+  setState(state);
+  buildQCards();
+  renderInstructorResults();
+}
+
+function resetResponses() {
+  if (!confirm('Clear all responses for the current question?')) return;
+  const state = getState();
+  const responses = getResponses();
+  if (state.activeQ) delete responses[state.activeQ];
+  saveResponses(responses);
+  renderInstructorResults();
+}
+
+// ── RENDER INSTRUCTOR RESULTS ──
+function renderInstructorResults() {
+  const state = getState();
+  const el = document.getElementById('results-content');
+  const countEl = document.getElementById('response-count');
+
+  if (!state.activeQ) {
+    el.innerHTML = '<div class="no-data">No question launched yet.</div>';
+    countEl.textContent = '0 responses';
+    return;
+  }
+
+  const q = QUESTIONS.find(x => x.id===state.activeQ);
+  if (!q) return;
+
+  const responses = getResponses();
+  const qResponses = responses[state.activeQ] || [];
+  countEl.textContent = `${qResponses.length} response${qResponses.length!==1?'s':''}`;
+
+  let html = `<div style="margin-bottom:1rem;font-size:0.9rem;font-weight:600;">${q.text}</div>`;
+
+  if (q.type==='mcq') {
+    const counts = {};
+    q.options.forEach(o => counts[o]=0);
+    qResponses.forEach(r => { if (counts[r.answer]!==undefined) counts[r.answer]++; });
+    const total = qResponses.length || 1;
+    html += '<div class="bar-list">' + q.options.map((opt,i) => {
+      const c = counts[opt] || 0;
+      const pct = Math.round((c/total)*100);
+      const isCorrect = q.correct!==null && i===q.correct;
+      return `<div class="bar-item">
+        <div class="bar-header">
+          <span class="bar-label">${opt}${isCorrect?' ✓':''}</span>
+          <span class="bar-val">${c} · ${pct}%</span>
+        </div>
+        <div class="bar-track"><div class="bar-fill ${isCorrect?'correct':''}" style="width:${pct}%"></div></div>
+      </div>`;
+    }).join('') + '</div>';
+    if (q.correct!==null && q.explanation) {
+      html += `<div class="answer-reveal"><div class="answer-reveal-label">CORRECT ANSWER</div><div class="answer-reveal-text">✓ ${q.options[q.correct]} — ${q.explanation}</div></div>`;
+    }
+  } else if (q.type==='likert') {
+    const vals = qResponses.map(r=>parseInt(r.answer)).filter(v=>!isNaN(v));
+    const counts = {};
+    for(let i=1;i<=7;i++) counts[i]=0;
+    vals.forEach(v=>{if(counts[v]!==undefined)counts[v]++;});
+    const total = vals.length||1;
+    const avg = vals.length ? (vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(2) : 'N/A';
+    html += `<div style="font-family:var(--mono);font-size:0.72rem;color:var(--cyan);margin-bottom:1rem;">Mean = ${avg} (n=${vals.length})</div>`;
+    html += '<div class="bar-list">' + Object.entries(counts).map(([v,c]) => {
+      const pct = Math.round((c/total)*100);
+      return `<div class="bar-item">
+        <div class="bar-header"><span class="bar-label">${v}</span><span class="bar-val">${c} · ${pct}%</span></div>
+        <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
+      </div>`;
+    }).join('') + '</div>';
+  } else if (q.type==='open') {
+    const words = {};
+    const stop = new Set(['and','the','a','of','in','to','for','is','with','that','my','i','on','at','an','are','from','this','it','be','as','by','not','or','have','we','they','was','but','more','can','about','how','their','has','been','which','what','would','will','also','so','do','some','its','our','want','need']);
+    qResponses.forEach(r => {
+      (r.answer||'').toLowerCase().split(/\W+/).filter(w=>w.length>3&&!stop.has(w)).forEach(w=>{words[w]=(words[w]||0)+1;});
+    });
+    const sorted = Object.entries(words).sort((a,b)=>b[1]-a[1]).slice(0,30);
+    if (sorted.length===0) {
+      html += '<div class="no-data">No responses yet.</div>';
+    } else {
+      const maxW = sorted[0][1];
+      html += '<div class="word-cloud">' + sorted.map(([w,c])=>{
+        const size = 0.8+(c/maxW)*1.4;
+        const opacity = 0.5+(c/maxW)*0.5;
+        return `<span style="font-size:${size.toFixed(2)}rem;opacity:${opacity.toFixed(2)}">${w}</span>`;
+      }).join('') + '</div>';
+      html += '<div style="margin-top:1rem;font-family:var(--mono);font-size:0.68rem;color:var(--muted);">RAW RESPONSES:</div>';
+      html += '<div style="margin-top:0.5rem;display:flex;flex-direction:column;gap:0.4rem;">' +
+        qResponses.map((r,i)=>`<div style="font-size:0.82rem;padding:0.4rem 0.75rem;background:var(--bg3);border-radius:6px;border-left:2px solid var(--violet);">${i+1}. ${r.answer}</div>`).join('') + '</div>';
+    }
+  }
+
+  el.innerHTML = html;
+}
+
+// ── STUDENT POLL ──
+let studentSubmitted = false;
+let pollInterval = null;
+
+function pollStudent() {
+  if (pollInterval) clearInterval(pollInterval);
+  checkStudentQuestion();
+  pollInterval = setInterval(checkStudentQuestion, 3000);
+}
+
+function checkStudentQuestion() {
+  const state = getState();
+  if (!state.activeQ) {
+    document.getElementById('waiting-screen').style.display='block';
+    document.getElementById('question-screen').style.display='none';
+    if (!studentSubmitted) document.getElementById('thankyou-screen').style.display='none';
+    studentSubmitted = false;
+    return;
+  }
+  if (studentSubmitted) return;
+  const q = QUESTIONS.find(x=>x.id===state.activeQ);
+  if (!q) return;
+  document.getElementById('waiting-screen').style.display='none';
+  document.getElementById('thankyou-screen').style.display='none';
+  document.getElementById('question-screen').style.display='block';
+  renderStudentQuestion(q);
+}
+
+function renderStudentQuestion(q) {
+  const el = document.getElementById('question-screen');
+  let html = `
+    <div class="q-number">${q.tag}</div>
+    <div class="q-display">${q.text}</div>
+    ${q.context?`<div class="q-context">${q.context}</div>`:''}
+  `;
+  if (q.type==='mcq') {
+    html += '<div class="answer-options">' +
+      q.options.map((o,i)=>`<button class="answer-btn" onclick="selectAnswer(this,'${o.replace(/'/g,"\\'")}','${q.id}')">${o}</button>`).join('') +
+      '</div>';
+  } else if (q.type==='likert') {
+    html += `<div class="likert-wrap">
+      <div class="likert-scale">${[1,2,3,4,5,6,7].map(n=>`<button class="likert-btn" onclick="selectAnswer(this,${n},'${q.id}')">${n}</button>`).join('')}</div>
+      <div class="likert-labels"><span>${q.scale.minLabel}</span><span>${q.scale.maxLabel}</span></div>
+    </div>`;
+  } else if (q.type==='open') {
+    html += `<div class="open-wrap"><textarea id="open-answer" placeholder="Type your answer here..."></textarea></div>`;
+  }
+  html += `<button class="submit-answer-btn" id="submit-answer-btn" onclick="submitAnswer('${q.id}','${q.type}')" disabled>Submit Answer →</button>`;
+  el.innerHTML = html;
+}
+
+let currentAnswer = null;
+
+function selectAnswer(btn, value, qId) {
+  currentAnswer = value;
+  const btns = btn.closest('.answer-options, .likert-scale').querySelectorAll('button');
+  btns.forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+  document.getElementById('submit-answer-btn').disabled = false;
+}
+
+function submitAnswer(qId, type) {
+  let answer = currentAnswer;
+  if (type==='open') {
+    answer = document.getElementById('open-answer').value.trim();
+    if (!answer) { alert('Please type your answer.'); return; }
+  }
+  if (!answer && answer!==0) { alert('Please select an answer.'); return; }
+
+  const responses = getResponses();
+  if (!responses[qId]) responses[qId]=[];
+  responses[qId].push({ answer, ts: Date.now() });
+  saveResponses(responses);
+
+  studentSubmitted = true;
+  document.getElementById('question-screen').style.display='none';
+  document.getElementById('thankyou-screen').style.display='block';
+  currentAnswer = null;
+}
+
+// ── OPEN TEXT auto-enable submit ──
+document.addEventListener('input', e => {
+  if (e.target.id==='open-answer') {
+    document.getElementById('submit-answer-btn').disabled = e.target.value.trim().length < 3;
+  }
+});
+
+// ── INIT ──
+buildQCards();
+renderInstructorResults();
+setInterval(()=>{
+  if(document.getElementById('instructor-view').classList.contains('active')) renderInstructorResults();
+}, 3000);
+</script>
+</body>
+</html>

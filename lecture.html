@@ -432,6 +432,54 @@ li strong{color:var(--text);}
     <p>If your data is significantly skewed (|skewness| &gt; 2) or has extreme kurtosis, parametric tests like t-tests and ANOVA may give you misleading results. Switch to non-parametric alternatives: <strong>Mann-Whitney U</strong> instead of independent t-test, <strong>Wilcoxon</strong> instead of paired t-test, <strong>Kruskal-Wallis</strong> instead of ANOVA. PLS-SEM is particularly valuable here because it makes <strong>no distributional assumptions</strong>.</p>
   </div>
   </div>
+
+  <h3>Choosing the Right Graph — A Decision You Cannot Get Wrong</h3>
+  <p>Your choice of graph is not cosmetic — it is a methodological statement. Examiners and reviewers notice when you use a histogram for categorical data or a bar chart for continuous data. Here is the rule:</p>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon">📊</div>
+      <div class="concept-title">Bar Chart</div>
+      <div class="concept-desc">For <strong>categorical data</strong> (nominal or ordinal). Each bar represents a category. Height shows frequency, percentage, or mean score. Use for: gender, country, employment type, programme type.</div>
+      <div class="concept-formula">Nominal / Ordinal data</div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">📈</div>
+      <div class="concept-title">Histogram</div>
+      <div class="concept-desc">For <strong>continuous data</strong> (interval or ratio). Bars touch each other — no gaps. Shows the shape of a distribution. Use to check normality, skewness, and kurtosis visually.</div>
+      <div class="concept-formula">Interval / Ratio data</div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">📦</div>
+      <div class="concept-title">Boxplot</div>
+      <div class="concept-desc">Shows median, interquartile range, and outliers. Excellent for comparing distributions across groups. Reveals skewness through the position of the median line within the box.</div>
+      <div class="concept-formula">Median · IQR · Outliers</div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🔵</div>
+      <div class="concept-title">Scatterplot</div>
+      <div class="concept-desc">For showing the <strong>relationship between two continuous variables</strong>. Each dot = one case. The pattern reveals direction (positive/negative) and strength of correlation. Used before regression.</div>
+      <div class="concept-formula">Correlation · Regression</div>
+    </div>
+  </div>
+
+  <table class="data-table">
+    <thead>
+      <tr><th>Chart Type</th><th>Data Type</th><th>Purpose</th><th>Never Use For</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Bar Chart</strong></td><td>Nominal / Ordinal</td><td>Frequency of categories</td><td>Continuous distributions</td></tr>
+      <tr><td><strong>Histogram</strong></td><td>Interval / Ratio</td><td>Shape of distribution</td><td>Categorical data</td></tr>
+      <tr><td><strong>Boxplot</strong></td><td>Interval / Ratio</td><td>Spread, median, outliers</td><td>Showing exact frequencies</td></tr>
+      <tr><td><strong>Scatterplot</strong></td><td>Two continuous variables</td><td>Correlation / regression</td><td>Single variable distribution</td></tr>
+      <tr><td><strong>Line Graph</strong></td><td>Interval / Ratio over time</td><td>Trends over time</td><td>Cross-sectional categorical data</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout callout-insight">
+    <div class="callout-label">💡 Dispersion Measures — Range vs Standard Deviation</div>
+    <p>The <strong>Range</strong> (max − min) is the simplest measure of dispersion — it tells you the spread between the highest and lowest values. However it is extremely sensitive to outliers. The <strong>Standard Deviation</strong> is more robust because it uses all values and measures average distance from the mean. The <strong>Interquartile Range (IQR)</strong> = Q3 − Q1, and is used with the median (for skewed data) just as SD is used with the mean (for normal data).</p>
+  </div>
 </section>
 
 <!-- QUIZ BREAK 2 -->
@@ -522,6 +570,34 @@ li strong{color:var(--text);}
       <tr><td>Q5–8</td><td>Predictors of current salary?</td><td>Multiple Regression</td><td>Multiple IVs predicting one DV</td></tr>
     </tbody>
   </table>
+
+  <h3>ANOVA — When You Have Three or More Groups</h3>
+  <p>The T-test compares two groups. When you have <strong>three or more independent groups</strong>, you use ANOVA (Analysis of Variance). For example: comparing satisfaction scores across students from Pakistan, India, and UAE.</p>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon">⚖️</div>
+      <div class="concept-title">One-Way ANOVA</div>
+      <div class="concept-desc">Compares means across 3+ groups on a single factor. Tells you IF there is a significant difference — not WHERE. Post-hoc tests (Tukey, Bonferroni) identify which pairs differ.</div>
+      <div class="concept-formula">F = Between-group variance / Within-group variance</div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🔄</div>
+      <div class="concept-title">Non-parametric alternative</div>
+      <div class="concept-desc">If data is non-normal or ordinal, use Kruskal-Wallis instead of ANOVA. It is the non-parametric equivalent and makes no distributional assumptions.</div>
+      <div class="concept-formula">Kruskal-Wallis H test</div>
+    </div>
+  </div>
+
+  <h3>Regression — Predicting Outcomes</h3>
+  <p>Regression moves beyond correlation to <strong>prediction</strong>. It models how much change in the dependent variable (Y) is produced by a unit change in the independent variable (X), holding all other variables constant.</p>
+
+  <div class="callout callout-key">
+    <div class="callout-label">🔑 The Regression Equation</div>
+    <p><strong>Y = a + b₁X₁ + b₂X₂ + ... + ε</strong></p>
+    <p style="margin-top:0.5rem;">Where: <strong>Y</strong> = dependent variable (outcome to predict) · <strong>a</strong> = intercept (value of Y when all X = 0) · <strong>b</strong> = regression coefficient (how much Y changes per unit of X) · <strong>X</strong> = independent variable (predictor) · <strong>ε</strong> = error term (unexplained variance)</p>
+    <p style="margin-top:0.5rem;">The <strong>R²</strong> value tells you what percentage of variance in Y is explained by your predictors. R² = 0.40 means your IVs explain 40% of the variance in Y.</p>
+  </div>
 
   <div class="callout callout-ai">
     <div class="callout-label">🤖 AI Enhancement</div>
@@ -663,17 +739,79 @@ li strong{color:var(--text);}
     </thead>
     <tbody>
       <tr><td><strong>Outer Loadings</strong></td><td>PLS Results → Outer Loadings</td><td>&gt; 0.70 (≥ 0.40 exploratory)</td><td>Indicator Reliability</td></tr>
-      <tr><td><strong>Composite Reliability</strong></td><td>Quality Criteria → CR&amp;V</td><td>&gt; 0.70</td><td>Internal Consistency</td></tr>
+      <tr><td><strong>Composite Reliability</strong></td><td>Quality Criteria → CR&amp;V</td><td>&gt; 0.70 (≥ 0.60 exploratory)</td><td>Internal Consistency</td></tr>
       <tr><td><strong>AVE</strong></td><td>Quality Criteria → CR&amp;V</td><td>&gt; 0.50</td><td>Convergent Validity</td></tr>
       <tr><td><strong>Discriminant Validity</strong></td><td>Quality Criteria → DV</td><td>√AVE &gt; correlations</td><td>Discriminant Validity</td></tr>
       <tr><td><strong>Path Coefficients</strong></td><td>Bootstrapping → Path Coeff</td><td>p &lt; 0.05</td><td>Hypothesis Support</td></tr>
       <tr><td><strong>R²</strong></td><td>PLS Results → R²</td><td>&gt; 0.26 substantial</td><td>Explanatory Power</td></tr>
+      <tr><td><strong>VIF</strong></td><td>Quality Criteria → Collinearity</td><td>&lt; 5.0</td><td>Multicollinearity</td></tr>
     </tbody>
   </table>
 
+  <h3>Endogenous vs Exogenous Variables</h3>
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon">➡️</div>
+      <div class="concept-title">Exogenous Variable</div>
+      <div class="concept-desc">Only sends arrows to other variables — never receives them. The independent variable in your model. Has no antecedent construct in the path diagram. In regression terms: the predictor (X).</div>
+      <div class="concept-formula">Arrows only pointing OUT</div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">⬅️</div>
+      <div class="concept-title">Endogenous Variable</div>
+      <div class="concept-desc">Receives arrows from other variables — it is influenced by at least one other construct. The dependent variable in your model. May also send arrows to other constructs (making it both a DV and IV simultaneously).</div>
+      <div class="concept-formula">Arrows pointing IN (and possibly out)</div>
+    </div>
+  </div>
+
+  <h3>EFA vs CFA — Two Very Different Approaches</h3>
+  <p>Both are factor analysis techniques but they serve completely different purposes. Choosing the wrong one is a common dissertation error.</p>
+
+  <table class="data-table">
+    <thead>
+      <tr><th>Criterion</th><th>EFA — Exploratory</th><th>CFA — Confirmatory</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Purpose</strong></td><td>Discover factor structure from data</td><td>Test a pre-specified factor structure</td></tr>
+      <tr><td><strong>Theory required?</strong></td><td>No — data-driven</td><td>Yes — theory-driven</td></tr>
+      <tr><td><strong>When to use</strong></td><td>Developing a new scale, no prior model</td><td>Validating an existing scale or construct</td></tr>
+      <tr><td><strong>Software</strong></td><td>SPSS, R (psych package)</td><td>AMOS, R (lavaan), SmartPLS</td></tr>
+      <tr><td><strong>PhD use</strong></td><td>Scale development studies</td><td>Most management research dissertations</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout callout-insight">
+    <div class="callout-label">💡 SmartPLS Bootstrapping — Why It Matters</div>
+    <p>The PLS algorithm gives you path coefficients — but not their significance. <strong>Bootstrapping</strong> is a resampling procedure that generates t-statistics and p-values for every path in your model. SmartPLS typically uses <strong>5,000 bootstrap subsamples</strong>. Without bootstrapping, you cannot make any claim about whether your hypotheses are supported. The bootstrapping output gives you: t-values, p-values, confidence intervals, and significance flags for every path coefficient.</p>
+  </div>
+
+  <h3>Inner Model vs Outer Model</h3>
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon">🔗</div>
+      <div class="concept-title">Inner Model (Structural Model)</div>
+      <div class="concept-desc">The relationships BETWEEN latent constructs. This is where your hypotheses live — path coefficients, R², and predictive relevance (Q²). Assessed after validating the outer model.</div>
+      <div class="concept-formula">Construct ↔ Construct paths</div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">📐</div>
+      <div class="concept-title">Outer Model (Measurement Model)</div>
+      <div class="concept-desc">How latent constructs are measured by their indicators. This is where you assess outer loadings, AVE, CR, and discriminant validity. Must be validated BEFORE assessing the inner model.</div>
+      <div class="concept-formula">Construct ↔ Indicator loadings</div>
+    </div>
+  </div>
+
+  <h3>Second-Order Constructs</h3>
+  <p>A second-order construct is an abstract higher-level construct that is itself measured by multiple first-order constructs rather than by direct indicators. This is used when a concept is too complex to be captured by a single set of indicators.</p>
+
+  <div class="callout callout-key">
+    <div class="callout-label">🔑 Example — Service Quality as a Second-Order Construct</div>
+    <p>"Service Quality" cannot be directly measured. Instead, it is captured through three first-order constructs: <strong>Reliability</strong> (can you depend on the service?), <strong>Responsiveness</strong> (how quickly do they respond?), and <strong>Assurance</strong> (do they inspire confidence?). Each first-order construct has its own set of indicators. Service Quality → Reliability, Responsiveness, Assurance → each with 3–4 indicators. SmartPLS handles second-order constructs using the repeated indicators approach or the two-stage approach.</p>
+  </div>
+
   <div class="callout callout-warning">
     <div class="callout-label">⚠️ SmartPLS Demo — Switch to SmartPLS</div>
-    <p><strong>Dr. Tan will now switch screens to demonstrate SmartPLS live.</strong> We will use the Deli99.csv dataset. Steps: Import data → Build path model → Run PLS Algorithm → Assess outer loadings → Run bootstrapping → Interpret path coefficients and significance. Follow along on your own laptop.</p>
+    <p><strong>Dr. Tan will now switch screens to demonstrate SmartPLS live.</strong> We will use the Deli99.csv dataset. Steps: Import data → Build path model → Run PLS Algorithm → Assess outer loadings → Check CR and AVE → Run bootstrapping → Interpret path coefficients and significance → Check VIF for multicollinearity. Follow along on your own laptop.</p>
   </div>
   </div>
 </section>

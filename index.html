@@ -681,6 +681,14 @@ function renderWordCloud(data){
 
 // Wait for full DOM before checking registration state
 document.addEventListener('DOMContentLoaded', function(){
+  // Instructor bypass — ?instructor=true skips registration entirely
+  var params = new URLSearchParams(window.location.search);
+  if(params.get('instructor') === 'true'){
+    localStorage.setItem('student_registered','yes');
+    localStorage.setItem('student_name_v1','Dr. Tan');
+    enterMemberView();
+    return;
+  }
   if(isRegistered()){
     enterMemberView();
   } else {

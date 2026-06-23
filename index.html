@@ -517,34 +517,15 @@ footer a{color:var(--cyan);text-decoration:none;}
 
 <script>
 const KEY = 'rm_v2';
-const SEED = [
-  {first:"Aisha",last:"Rahman",uni:"University Lecturer",country:"Bangladesh",prog:"PhD",stage:"Conducting Research & Collecting Data",domain:"Digital Finance and AI adoption in microfinance",tool:"SmartPLS",challenge:"Sample size and measurement invariance"},
-  {first:"Rajesh",last:"Kumar",uni:"Industry Professional",country:"India",prog:"PhD",stage:"Preparing a Research Proposal",domain:"Machine learning in healthcare diagnostics",tool:"Python",challenge:"Defining research gap and theoretical framework"},
-  {first:"Fatima",last:"Al-Zahra",uni:"University Lecturer",country:"UAE",prog:"DBA",stage:"Writing up Dissertation",domain:"AI-driven leadership and organisational change",tool:"SPSS",challenge:"Interpreting SEM results and writing discussion chapter"},
-  {first:"Muhammad",last:"Tariq",uni:"Industry Professional",country:"Pakistan",prog:"PhD",stage:"Carrying out Literature Review",domain:"Blockchain adoption in Islamic banking",tool:"SmartPLS",challenge:"Finding peer reviewed articles on blockchain in Islamic finance"},
-  {first:"Priya",last:"Nair",uni:"University Lecturer",country:"India",prog:"PhD",stage:"Preparing for Proposal Defense",domain:"EdTech and student engagement using AI tools",tool:"R",challenge:"Operationalising constructs and building conceptual framework"},
-  {first:"Omar",last:"Hussain",uni:"Retired",country:"Pakistan",prog:"DBA",stage:"Defending at Viva Voce",domain:"Digital transformation strategy in public sector",tool:"AMOS",challenge:"Handling committee questions on methodology robustness"},
-  {first:"Siti",last:"Aminah",uni:"University Lecturer",country:"Malaysia",prog:"PhD",stage:"Conducting Research & Collecting Data",domain:"Social media influence on consumer behaviour",tool:"SmartPLS",challenge:"Getting sufficient survey responses avoiding common method bias"},
-  {first:"Ahmed",last:"Al-Rashid",uni:"Industry Professional",country:"Saudi Arabia",prog:"DBA",stage:"Writing up Dissertation",domain:"Fintech regulation and compliance using AI",tool:"SPSS",challenge:"Aligning regulatory frameworks across different countries"},
-  {first:"Lina",last:"Chen",uni:"University Lecturer",country:"Singapore",prog:"PhD",stage:"Preparing a Research Proposal",domain:"Natural language processing for sentiment analysis in finance",tool:"Python",challenge:"Choosing between ML and SEM approaches"},
-  {first:"Kofi",last:"Asante",uni:"Industry Professional",country:"Nigeria",prog:"PhD",stage:"Carrying out Literature Review",domain:"Cryptocurrency adoption and financial inclusion in Africa",tool:"R",challenge:"Lack of localised datasets for African financial markets"},
-  {first:"Nadia",last:"Hassan",uni:"University Lecturer",country:"Egypt",prog:"DBA",stage:"Conducting Research & Collecting Data",domain:"Women entrepreneurship and digital platforms",tool:"SPSS",challenge:"Survey translation and cultural equivalence testing"},
-  {first:"Vikram",last:"Singh",uni:"Industry Professional",country:"India",prog:"PhD",stage:"Preparing for Proposal Defense",domain:"Supply chain resilience using predictive AI",tool:"Python",challenge:"Bridging operations management and AI research literature"},
-  {first:"Nurul",last:"Hidayah",uni:"University Lecturer",country:"Malaysia",prog:"PhD",stage:"Writing up Dissertation",domain:"Islamic fintech and customer trust",tool:"SmartPLS",challenge:"Discriminant validity issues with overlapping constructs"},
-  {first:"James",last:"Okafor",uni:"Industry Professional",country:"Nigeria",prog:"DBA",stage:"Preparing a Research Proposal",domain:"AI ethics and governance in emerging markets",tool:"None yet",challenge:"Understanding quantitative methods from scratch"},
-  {first:"Sara",last:"Malik",uni:"University Lecturer",country:"Pakistan",prog:"PhD",stage:"Conducting Research & Collecting Data",domain:"Mental health apps and user behaviour analytics",tool:"R",challenge:"IRB approval delays and participant recruitment"}
-];
 
 function getData(){
   try{
     const s=JSON.parse(localStorage.getItem(KEY)||'null');
     if(s&&s.length>0)return s;
   }catch{}
-  localStorage.setItem(KEY,JSON.stringify(SEED));
-  return SEED;
+  return [];
 }
 function saveData(arr){localStorage.setItem(KEY,JSON.stringify(arr));}
-
 function isRegistered(){return localStorage.getItem('student_registered')==='yes';}
 
 function enterMemberView(){
@@ -552,31 +533,35 @@ function enterMemberView(){
   document.getElementById('view-member').style.display='block';
   document.getElementById('nav-guest').style.display='none';
   document.getElementById('nav-member').style.display='flex';
-  const name=localStorage.getItem('student_name_v1')||'';
+  var name=localStorage.getItem('student_name_v1')||'';
   if(name) document.getElementById('wb-title').textContent='Welcome, '+name.split(' ')[0]+'!';
   renderDashboard(getData());
 }
 
-async function submitRegistration(){
-  const first=document.getElementById('f-first').value.trim();
-  const last=document.getElementById('f-last').value.trim();
-  const uni=document.getElementById('f-uni').value.trim();
-  const country=document.getElementById('f-country').value;
-  const prog=document.getElementById('f-prog').value;
-  const stage=document.getElementById('f-stage').value;
-  const domain=document.getElementById('f-domain').value.trim();
-  const tool=document.getElementById('f-tool').value;
-  const challenge=document.getElementById('f-challenge').value.trim();
+function submitRegistration(){
+  var first=document.getElementById('f-first').value.trim();
+  var last=document.getElementById('f-last').value.trim();
+  var uni=document.getElementById('f-uni').value.trim();
+  var country=document.getElementById('f-country').value;
+  var prog=document.getElementById('f-prog').value;
+  var stage=document.getElementById('f-stage').value;
+  var domain=document.getElementById('f-domain').value.trim();
+  var tool=document.getElementById('f-tool').value;
+  var challenge=document.getElementById('f-challenge').value.trim();
   if(!first||!last||!country||!prog||!stage){alert('Please fill in all required fields.');return;}
-  const btn=document.getElementById('submit-btn');
-  btn.disabled=true;btn.textContent='Registered! ✓';
-  const data=getData();
-  data.push({first,last,uni,country,prog,stage,domain,tool,challenge,ts:Date.now()});
+  var btn=document.getElementById('submit-btn');
+  btn.disabled=true; btn.textContent='Registered! ✓';
+  var data=getData();
+  data.push({first:first,last:last,uni:uni,country:country,prog:prog,stage:stage,domain:domain,tool:tool,challenge:challenge,ts:Date.now()});
   saveData(data);
   localStorage.setItem('student_name_v1',first+' '+last);
   localStorage.setItem('student_registered','yes');
   document.getElementById('reg-form').style.display='none';
   document.getElementById('form-success').style.display='block';
+}
+
+function enterClass(){
+  enterMemberView();
 }
 
 function resetData(){
@@ -595,70 +580,94 @@ function resetData(){
 }
 
 function renderDashboard(data){
-  const n=data.length;
-  const uniqueCountries=[...new Set(data.map(d=>d.country).filter(Boolean))];
+  var n=data.length;
+  var countries=data.map(function(d){return d.country;}).filter(Boolean);
+  var uniqueCountries=[...new Set(countries)];
   document.getElementById('live-count').textContent=n;
   document.getElementById('live-countries-count').textContent=uniqueCountries.length;
-
-  // ROSTER — full names with country flag-like chips
-  const rosterEl=document.getElementById('roster-list');
-  const rosterCount=document.getElementById('roster-count');
+  var rosterEl=document.getElementById('roster-list');
+  var rosterCount=document.getElementById('roster-count');
   if(rosterEl){
     if(!data.length){
       rosterEl.innerHTML='<span style="font-size:0.78rem;color:var(--muted);font-family:var(--mono);">Waiting for students to register...</span>';
     } else {
-      rosterEl.innerHTML=data.map((s,i)=>`
-        <div style="display:flex;align-items:center;gap:0.4rem;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:0.35rem 0.7rem;">
-          <span style="font-family:var(--mono);font-size:0.6rem;color:var(--muted);">${i+1}</span>
-          <span style="font-family:var(--sans);font-weight:600;font-size:0.8rem;color:var(--text);">${s.first} ${s.last}</span>
-          <span style="font-family:var(--mono);font-size:0.62rem;color:var(--cyan);padding:0.1rem 0.4rem;background:rgba(0,229,255,0.07);border-radius:3px;">${s.country||'?'}</span>
-          <span style="font-family:var(--mono);font-size:0.58rem;color:var(--muted);">${s.prog||''}</span>
-        </div>`).join('');
+      var html='';
+      data.forEach(function(s,i){
+        html+='<div style="display:flex;align-items:center;gap:0.4rem;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:0.35rem 0.7rem;">';
+        html+='<span style="font-family:var(--mono);font-size:0.6rem;color:var(--muted);">'+(i+1)+'</span>';
+        html+='<span style="font-family:var(--sans);font-weight:600;font-size:0.8rem;color:var(--text);">'+s.first+' '+s.last+'</span>';
+        html+='<span style="font-family:var(--mono);font-size:0.62rem;color:var(--cyan);padding:0.1rem 0.4rem;background:rgba(0,229,255,0.07);border-radius:3px;">'+(s.country||'?')+'</span>';
+        html+='<span style="font-family:var(--mono);font-size:0.58rem;color:var(--muted);">'+(s.prog||'')+'</span>';
+        html+='</div>';
+      });
+      rosterEl.innerHTML=html;
     }
     if(rosterCount) rosterCount.textContent=n+' registered';
   }
-
-  // country chips
-  const cc=countField(data,'country');
-  const ce=document.getElementById('country-chips');
-  ce.innerHTML=Object.entries(cc).sort((a,b)=>b[1]-a[1]).map(([c,n])=>`<span class="country-chip">${c} <strong>${n}</strong></span>`).join('')||'<span style="font-size:0.75rem;color:var(--muted);font-family:var(--mono)">No data</span>';
+  var cc=countField(data,'country');
+  var ce=document.getElementById('country-chips');
+  if(ce){
+    var chips=Object.entries(cc).sort(function(a,b){return b[1]-a[1];}).map(function(e){return '<span class="country-chip">'+e[0]+' <strong>'+e[1]+'</strong></span>';}).join('');
+    ce.innerHTML=chips||'<span style="font-size:0.75rem;color:var(--muted);font-family:var(--mono)">No data</span>';
+  }
   renderBars('stage-bars',data,'stage',['Preparing a Research Proposal','Preparing for Proposal Defense','Carrying out Literature Review','Conducting Research & Collecting Data','Writing up Dissertation','Defending at Viva Voce']);
   renderBars('tool-bars',data,'tool',['SPSS','SmartPLS','AMOS','R','Python','MATLAB','EViews','MAXQDA / NVivo','None yet','Other']);
   renderBars('prog-bars',data,'prog',['PhD','DBA','Masters','Other']);
   renderWordCloud(data);
 }
-function countField(data,field){const c={};data.forEach(d=>{const v=d[field];if(v)c[v]=(c[v]||0)+1;});return c;}
-function renderBars(elId,data,field,order){
-  const el=document.getElementById(elId);if(!el)return;
-  const counts=countField(data,field);const total=data.length||1;
-  if(!Object.keys(counts).length){el.innerHTML='<span style="font-size:0.75rem;color:var(--muted);font-family:var(--mono)">No data</span>';return;}
-  const items=order.filter(k=>counts[k]).map(k=>[k,counts[k]]);
-  Object.entries(counts).forEach(([k,v])=>{if(!order.includes(k))items.push([k,v]);});
-  items.sort((a,b)=>b[1]-a[1]);
-  el.innerHTML=items.map(([label,count])=>{
-    const pct=Math.round((count/total)*100);
-    const short=label.length>32?label.substring(0,30)+'…':label;
-    return `<div class="bar-item"><div class="bar-header"><span class="bar-label">${short}</span><span class="bar-val">${count} · ${pct}%</span></div><div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div></div>`;
-  }).join('');
-}
-function renderWordCloud(data){
-  const el=document.getElementById('word-cloud');if(!el)return;
-  const words={};
-  const stop=new Set(['and','the','a','of','in','to','for','is','with','that','my','i','on','at','an','are','from','this','it','be','as','by','not','or','have','we','they','was','but','more','can','about','how','their','has','been','which','what','would','will','also','so','do','some','its','our']);
-  data.forEach(d=>{[d.domain,d.challenge].filter(Boolean).forEach(text=>{text.toLowerCase().split(/\W+/).filter(w=>w.length>3&&!stop.has(w)).forEach(w=>{words[w]=(words[w]||0)+1;});});});
-  const sorted=Object.entries(words).sort((a,b)=>b[1]-a[1]).slice(0,30);
-  if(!sorted.length){el.innerHTML='<span style="font-size:0.75rem;color:var(--muted);font-family:var(--mono)">Words appear as students register...</span>';return;}
-  const maxW=sorted[0][1];
-  el.innerHTML=sorted.map(([w,c])=>`<span style="font-size:${(0.75+(c/maxW)*1.4).toFixed(2)}rem;opacity:${(0.5+(c/maxW)*0.5).toFixed(2)}">${w}</span>`).join('');
+
+function countField(data,field){
+  var c={};
+  data.forEach(function(d){var v=d[field];if(v)c[v]=(c[v]||0)+1;});
+  return c;
 }
 
-// ON LOAD — check if already registered
-if(isRegistered()){
-  enterMemberView();
-} else {
-  document.getElementById('view-guest').style.display='block';
-  document.getElementById('view-member').style.display='none';
+function renderBars(elId,data,field,order){
+  var el=document.getElementById(elId);if(!el)return;
+  var counts=countField(data,field);
+  var total=data.length||1;
+  if(!Object.keys(counts).length){el.innerHTML='<span style="font-size:0.75rem;color:var(--muted);font-family:var(--mono)">No data</span>';return;}
+  var items=order.filter(function(k){return counts[k];}).map(function(k){return [k,counts[k]];});
+  Object.entries(counts).forEach(function(e){if(order.indexOf(e[0])<0)items.push(e);});
+  items.sort(function(a,b){return b[1]-a[1];});
+  el.innerHTML=items.map(function(item){
+    var label=item[0]; var count=item[1];
+    var pct=Math.round((count/total)*100);
+    var short=label.length>32?label.substring(0,30)+'...':label;
+    return '<div class="bar-item"><div class="bar-header"><span class="bar-label">'+short+'</span><span class="bar-val">'+count+' · '+pct+'%</span></div><div class="bar-track"><div class="bar-fill" style="width:'+pct+'%"></div></div></div>';
+  }).join('');
 }
+
+function renderWordCloud(data){
+  var el=document.getElementById('word-cloud');if(!el)return;
+  var words={};
+  var stop={'and':1,'the':1,'a':1,'of':1,'in':1,'to':1,'for':1,'is':1,'with':1,'that':1,'my':1,'i':1,'on':1,'at':1,'an':1,'are':1,'from':1,'this':1,'it':1,'be':1,'as':1,'by':1,'not':1,'or':1,'have':1,'we':1,'they':1,'was':1,'but':1,'more':1,'can':1,'about':1,'how':1,'their':1,'has':1,'been':1,'which':1,'what':1,'would':1,'will':1,'also':1,'so':1,'do':1,'some':1,'its':1,'our':1};
+  data.forEach(function(d){
+    [d.domain,d.challenge].filter(Boolean).forEach(function(text){
+      text.toLowerCase().split(/\W+/).forEach(function(w){
+        if(w.length>3&&!stop[w])words[w]=(words[w]||0)+1;
+      });
+    });
+  });
+  var sorted=Object.entries(words).sort(function(a,b){return b[1]-a[1];}).slice(0,30);
+  if(!sorted.length){el.innerHTML='<span style="font-size:0.75rem;color:var(--muted);font-family:var(--mono)">Words appear as students register...</span>';return;}
+  var maxW=sorted[0][1];
+  el.innerHTML=sorted.map(function(e){
+    var sz=(0.75+(e[1]/maxW)*1.4).toFixed(2);
+    var op=(0.5+(e[1]/maxW)*0.5).toFixed(2);
+    return '<span style="font-size:'+sz+'rem;opacity:'+op+'">'+e[0]+'</span>';
+  }).join('');
+}
+
+// Wait for full DOM before checking registration state
+document.addEventListener('DOMContentLoaded', function(){
+  if(isRegistered()){
+    enterMemberView();
+  } else {
+    document.getElementById('view-guest').style.display='block';
+    document.getElementById('view-member').style.display='none';
+  }
+});
 </script>
 </body>
 </html>

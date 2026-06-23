@@ -518,12 +518,32 @@ footer a{color:var(--cyan);text-decoration:none;}
 <script>
 const KEY = 'rm_v2';
 
+const SEED=[
+  {first:"Aisha",last:"Rahman",uni:"University Lecturer",country:"Bangladesh",prog:"PhD",stage:"Conducting Research & Collecting Data",domain:"Digital Finance and AI adoption in microfinance",tool:"SmartPLS",challenge:"Sample size and measurement invariance"},
+  {first:"Rajesh",last:"Kumar",uni:"Industry Professional",country:"India",prog:"PhD",stage:"Preparing a Research Proposal",domain:"Machine learning in healthcare diagnostics",tool:"Python",challenge:"Defining research gap and theoretical framework"},
+  {first:"Fatima",last:"Al-Zahra",uni:"University Lecturer",country:"UAE",prog:"DBA",stage:"Writing up Dissertation",domain:"AI-driven leadership and organisational change",tool:"SPSS",challenge:"Interpreting SEM results and writing discussion chapter"},
+  {first:"Muhammad",last:"Tariq",uni:"Industry Professional",country:"Pakistan",prog:"PhD",stage:"Carrying out Literature Review",domain:"Blockchain adoption in Islamic banking",tool:"SmartPLS",challenge:"Finding peer reviewed articles on blockchain in Islamic finance"},
+  {first:"Priya",last:"Nair",uni:"University Lecturer",country:"India",prog:"PhD",stage:"Preparing for Proposal Defense",domain:"EdTech and student engagement using AI tools",tool:"R",challenge:"Operationalising constructs and building conceptual framework"},
+  {first:"Omar",last:"Hussain",uni:"Retired",country:"Pakistan",prog:"DBA",stage:"Defending at Viva Voce",domain:"Digital transformation strategy in public sector",tool:"AMOS",challenge:"Handling committee questions on methodology robustness"},
+  {first:"Siti",last:"Aminah",uni:"University Lecturer",country:"Malaysia",prog:"PhD",stage:"Conducting Research & Collecting Data",domain:"Social media influence on consumer behaviour",tool:"SmartPLS",challenge:"Getting sufficient survey responses avoiding common method bias"},
+  {first:"Ahmed",last:"Al-Rashid",uni:"Industry Professional",country:"Saudi Arabia",prog:"DBA",stage:"Writing up Dissertation",domain:"Fintech regulation and compliance using AI",tool:"SPSS",challenge:"Aligning regulatory frameworks across different countries"},
+  {first:"Lina",last:"Chen",uni:"University Lecturer",country:"Singapore",prog:"PhD",stage:"Preparing a Research Proposal",domain:"Natural language processing for sentiment analysis in finance",tool:"Python",challenge:"Choosing between ML and SEM approaches"},
+  {first:"Kofi",last:"Asante",uni:"Industry Professional",country:"Nigeria",prog:"PhD",stage:"Carrying out Literature Review",domain:"Cryptocurrency adoption and financial inclusion in Africa",tool:"R",challenge:"Lack of localised datasets for African financial markets"},
+  {first:"Nadia",last:"Hassan",uni:"University Lecturer",country:"Egypt",prog:"DBA",stage:"Conducting Research & Collecting Data",domain:"Women entrepreneurship and digital platforms",tool:"SPSS",challenge:"Survey translation and cultural equivalence testing"},
+  {first:"Vikram",last:"Singh",uni:"Industry Professional",country:"India",prog:"PhD",stage:"Preparing for Proposal Defense",domain:"Supply chain resilience using predictive AI",tool:"Python",challenge:"Bridging operations management and AI research literature"},
+  {first:"Nurul",last:"Hidayah",uni:"University Lecturer",country:"Malaysia",prog:"PhD",stage:"Writing up Dissertation",domain:"Islamic fintech and customer trust",tool:"SmartPLS",challenge:"Discriminant validity issues with overlapping constructs"},
+  {first:"James",last:"Okafor",uni:"Industry Professional",country:"Nigeria",prog:"DBA",stage:"Preparing a Research Proposal",domain:"AI ethics and governance in emerging markets",tool:"None yet",challenge:"Understanding quantitative methods from scratch"},
+  {first:"Sara",last:"Malik",uni:"University Lecturer",country:"Pakistan",prog:"PhD",stage:"Conducting Research & Collecting Data",domain:"Mental health apps and user behaviour analytics",tool:"R",challenge:"IRB approval delays and participant recruitment"}
+];
+
 function getData(){
   try{
     const s=JSON.parse(localStorage.getItem(KEY)||'null');
     if(s&&s.length>0)return s;
   }catch{}
-  return [];
+  // Return seed data and save it so dashboard shows students
+  localStorage.setItem(KEY,JSON.stringify(SEED));
+  return SEED;
 }
 function saveData(arr){localStorage.setItem(KEY,JSON.stringify(arr));}
 function isRegistered(){return localStorage.getItem('student_registered')==='yes';}

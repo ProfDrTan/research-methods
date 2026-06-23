@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ask Dr. Tan — Live Q&A</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#020817;--bg2:#0b1120;--bg3:#111827;--surface:#161f30;--border:#1e2d45;--cyan:#00e5ff;--violet:#7c3aed;--violet2:#a78bfa;--green:#10b981;--amber:#f59e0b;--red:#ef4444;--text:#e2e8f0;--muted:#64748b;--mono:'Space Mono',monospace;--sans:'Space Grotesk',sans-serif;--body:'Inter',sans-serif;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:var(--body);min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,229,255,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,0.025) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0;}
+
+nav{position:sticky;top:0;z-index:100;background:rgba(2,8,23,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:56px;}
+.nav-brand{font-family:var(--mono);font-size:0.8rem;color:var(--cyan);}
+.nav-links{display:flex;gap:0.4rem;}
+.nl{font-family:var(--mono);font-size:0.7rem;padding:0.28rem 0.7rem;border-radius:6px;border:1px solid var(--border);color:var(--muted);text-decoration:none;transition:all 0.2s;}
+.nl:hover{color:var(--cyan);border-color:var(--cyan);}
+
+.wrap{max-width:860px;margin:0 auto;padding:2rem 1.5rem;position:relative;z-index:1;}
+
+.hero{text-align:center;padding:2rem 0 2.5rem;}
+.hero-icon{font-size:3rem;margin-bottom:1rem;}
+.hero-title{font-family:var(--sans);font-weight:700;font-size:1.8rem;letter-spacing:-0.02em;margin-bottom:0.5rem;}
+.hero-sub{color:var(--muted);font-size:0.9rem;max-width:500px;margin:0 auto;}
+
+/* INPUT AREA */
+.ask-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.5rem;}
+.ask-label{font-family:var(--mono);font-size:0.65rem;letter-spacing:0.12em;color:var(--muted);text-transform:uppercase;margin-bottom:0.6rem;}
+.ask-textarea{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:1rem;color:var(--text);font-family:var(--body);font-size:0.95rem;min-height:100px;resize:vertical;outline:none;line-height:1.6;transition:border-color 0.2s;}
+.ask-textarea:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(0,229,255,0.07);}
+
+/* CONTEXT TOGGLES */
+.context-row{display:flex;gap:0.5rem;flex-wrap:wrap;margin:1rem 0;}
+.ctx-btn{font-family:var(--mono);font-size:0.65rem;padding:0.28rem 0.7rem;border-radius:5px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;transition:all 0.2s;}
+.ctx-btn.active{border-color:var(--violet2);color:var(--violet2);background:rgba(167,139,250,0.08);}
+.ctx-label{font-family:var(--mono);font-size:0.62rem;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.4rem;}
+
+.ask-actions{display:flex;gap:0.75rem;margin-top:1rem;align-items:center;}
+.ask-btn{font-family:var(--sans);font-weight:700;font-size:0.88rem;padding:0.75rem 1.75rem;background:linear-gradient(135deg,var(--cyan),#0097b2);color:var(--bg);border:none;border-radius:8px;cursor:pointer;transition:all 0.2s;}
+.ask-btn:hover{opacity:0.9;}
+.ask-btn:disabled{opacity:0.45;cursor:not-allowed;}
+.clear-btn{font-family:var(--mono);font-size:0.7rem;padding:0.75rem 1rem;background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:8px;cursor:pointer;transition:all 0.2s;}
+.clear-btn:hover{border-color:var(--red);color:var(--red);}
+
+/* RESPONSE AREA */
+.response-wrap{margin-top:1.5rem;}
+.response-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
+.response-header{padding:0.85rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:0.75rem;}
+.response-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--violet),var(--cyan));display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:0.7rem;font-weight:700;color:var(--bg);flex-shrink:0;}
+.response-name{font-family:var(--sans);font-weight:600;font-size:0.88rem;}
+.response-tag{font-family:var(--mono);font-size:0.6rem;padding:0.15rem 0.5rem;border-radius:4px;background:rgba(0,229,255,0.08);border:1px solid rgba(0,229,255,0.15);color:var(--cyan);margin-left:auto;}
+.response-body{padding:1.5rem;font-size:0.9rem;line-height:1.8;color:var(--text);}
+.response-body p{margin-bottom:0.85rem;}
+.response-body strong{color:var(--cyan);}
+.response-body em{color:var(--muted);}
+.response-body ul,.response-body ol{padding-left:1.25rem;margin-bottom:0.85rem;}
+.response-body li{margin-bottom:0.3rem;color:var(--muted);}
+.response-body li strong{color:var(--text);}
+.response-body h3{font-family:var(--sans);font-weight:700;font-size:0.95rem;color:var(--violet2);margin:1rem 0 0.5rem;}
+.response-body blockquote{border-left:3px solid var(--violet);padding:0.5rem 1rem;background:rgba(124,58,237,0.06);border-radius:0 6px 6px 0;margin:0.75rem 0;font-style:italic;color:var(--muted);}
+.response-body code{font-family:var(--mono);font-size:0.82rem;background:var(--bg3);padding:0.1rem 0.4rem;border-radius:4px;color:var(--cyan);}
+
+/* LOADING */
+.loading-dots{display:flex;gap:0.3rem;padding:1.5rem;}
+.loading-dots span{width:8px;height:8px;border-radius:50%;background:var(--cyan);animation:bounce 1.2s infinite;}
+.loading-dots span:nth-child(2){animation-delay:0.2s;}
+.loading-dots span:nth-child(3){animation-delay:0.4s;}
+@keyframes bounce{0%,100%{opacity:0.3;transform:translateY(0);}50%{opacity:1;transform:translateY(-4px);}}
+
+/* QUICK QUESTIONS */
+.quick-section{margin-top:2rem;}
+.quick-label{font-family:var(--mono);font-size:0.65rem;letter-spacing:0.12em;color:var(--muted);text-transform:uppercase;margin-bottom:0.75rem;}
+.quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;}
+.quick-card{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:0.75rem 1rem;cursor:pointer;transition:all 0.2s;text-align:left;}
+.quick-card:hover{border-color:rgba(167,139,250,0.4);background:rgba(124,58,237,0.05);}
+.qc-tag{font-family:var(--mono);font-size:0.58rem;color:var(--violet2);letter-spacing:0.07em;text-transform:uppercase;margin-bottom:0.3rem;}
+.qc-text{font-size:0.82rem;color:var(--text);line-height:1.4;}
+
+/* HISTORY */
+.history-section{margin-top:2rem;}
+.history-item{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1rem 1.25rem;margin-bottom:0.75rem;cursor:pointer;transition:all 0.2s;}
+.history-item:hover{border-color:rgba(0,229,255,0.2);}
+.history-q{font-size:0.85rem;color:var(--text);font-weight:500;margin-bottom:0.25rem;}
+.history-meta{font-family:var(--mono);font-size:0.62rem;color:var(--muted);}
+
+/* COPY BUTTON */
+.copy-btn{font-family:var(--mono);font-size:0.65rem;padding:0.25rem 0.65rem;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--muted);cursor:pointer;transition:all 0.2s;margin-top:0.5rem;}
+.copy-btn:hover{border-color:var(--green);color:var(--green);}
+
+@media(max-width:600px){.quick-grid{grid-template-columns:1fr;}.ask-actions{flex-wrap:wrap;}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">DR.TAN // LIVE Q&A</div>
+  <div class="nav-links">
+    <a href="lecture.html" class="nl">📖 Lecture</a>
+    <a href="quiz.html" class="nl">⚡ Quiz</a>
+    <a href="notes.html" class="nl">🔒 Notes</a>
+    <a href="/" class="nl">← Home</a>
+  </div>
+</nav>
+
+<div class="wrap">
+  <div class="hero">
+    <div class="hero-icon">🤖</div>
+    <div class="hero-title">Ask a Research Methods Question</div>
+    <div class="hero-sub">Powered by Claude AI. Professional, doctoral-level answers in seconds. Use during class, office hours, or self-study.</div>
+  </div>
+
+  <div class="ask-card">
+    <div class="ask-label">Your Question</div>
+    <textarea class="ask-textarea" id="question-input" placeholder="e.g. What is the difference between PLS-SEM and CB-SEM? When should I use each?&#10;&#10;Or: How do I justify my sample size for a quantitative study?&#10;&#10;Or: My AVE is 0.43 — what should I do?"></textarea>
+
+    <div class="ctx-label" style="margin-top:1rem;">Context (optional — helps tailor the answer)</div>
+    <div class="context-row">
+      <button class="ctx-btn" onclick="toggleCtx(this,'Hospitality & Tourism')">Hospitality & Tourism</button>
+      <button class="ctx-btn" onclick="toggleCtx(this,'Education')">Education</button>
+      <button class="ctx-btn" onclick="toggleCtx(this,'SME / Entrepreneurship')">SME / Entrepreneurship</button>
+      <button class="ctx-btn" onclick="toggleCtx(this,'Manufacturing')">Manufacturing</button>
+      <button class="ctx-btn" onclick="toggleCtx(this,'Digital Transformation')">Digital Transformation</button>
+      <button class="ctx-btn" onclick="toggleCtx(this,'Healthcare')">Healthcare</button>
+      <button class="ctx-btn" onclick="toggleCtx(this,'PhD Research')">PhD Research</button>
+      <button class="ctx-btn" onclick="toggleCtx(this,'DBA Research')">DBA Research</button>
+    </div>
+
+    <div class="ask-actions">
+      <button class="ask-btn" id="ask-btn" onclick="askQuestion()">Get Answer →</button>
+      <button class="clear-btn" onclick="clearAll()">Clear</button>
+      <span id="status" style="font-family:var(--mono);font-size:0.7rem;color:var(--muted);"></span>
+    </div>
+  </div>
+
+  <!-- RESPONSE -->
+  <div class="response-wrap" id="response-wrap" style="display:none;">
+    <div class="response-card">
+      <div class="response-header">
+        <div class="response-avatar">AI</div>
+        <div>
+          <div class="response-name">Research Methods Assistant</div>
+          <div style="font-family:var(--mono);font-size:0.62rem;color:var(--muted);">Powered by Claude · Dr. Tan's Research Methods Course</div>
+        </div>
+        <span class="response-tag" id="response-tag">—</span>
+      </div>
+      <div class="response-body" id="response-body">
+        <div class="loading-dots"><span></span><span></span><span></span></div>
+      </div>
+    </div>
+    <button class="copy-btn" onclick="copyResponse()">📋 Copy Answer</button>
+  </div>
+
+  <!-- QUICK QUESTIONS -->
+  <div class="quick-section">
+    <div class="quick-label">Quick Questions — Tap to Ask</div>
+    <div class="quick-grid">
+      <div class="quick-card" onclick="quickAsk('What is the minimum sample size for PLS-SEM? How do I calculate it?','PhD Research')">
+        <div class="qc-tag">Sample Size</div>
+        <div class="qc-text">What is the minimum sample size for PLS-SEM?</div>
+      </div>
+      <div class="quick-card" onclick="quickAsk('My AVE is 0.43. It is below the 0.50 threshold. What should I do?','PhD Research')">
+        <div class="qc-tag">SEM Quality</div>
+        <div class="qc-text">My AVE is 0.43 — below the threshold. What should I do?</div>
+      </div>
+      <div class="quick-card" onclick="quickAsk('What is the difference between reflective and formative measurement models? How do I decide which to use?','PhD Research')">
+        <div class="qc-tag">SEM</div>
+        <div class="qc-text">Reflective vs formative — how do I decide?</div>
+      </div>
+      <div class="quick-card" onclick="quickAsk('How do I justify using PLS-SEM instead of CB-SEM in my methodology chapter? What do I say to my supervisor?','PhD Research')">
+        <div class="qc-tag">Methodology</div>
+        <div class="qc-text">How do I justify PLS-SEM over CB-SEM to my supervisor?</div>
+      </div>
+      <div class="quick-card" onclick="quickAsk('My data is significantly skewed (skewness = 3.2). Which tests should I use and which should I avoid?','PhD Research')">
+        <div class="qc-tag">Assumptions</div>
+        <div class="qc-text">My data is significantly skewed — which tests can I use?</div>
+      </div>
+      <div class="quick-card" onclick="quickAsk('How do I write up my PLS-SEM results in APA format for my dissertation? Give me a template.','PhD Research')">
+        <div class="qc-tag">Writing Up</div>
+        <div class="qc-text">How do I write up PLS-SEM results in APA format?</div>
+      </div>
+      <div class="quick-card" onclick="quickAsk('What is the difference between mediation and moderation? How do I test each in SmartPLS?','PhD Research')">
+        <div class="qc-tag">SEM Advanced</div>
+        <div class="qc-text">Mediation vs moderation — how do I test each?</div>
+      </div>
+      <div class="quick-card" onclick="quickAsk('I am considering mixed methods for my research. Should I use explanatory sequential or exploratory sequential design? How do I decide?','PhD Research')">
+        <div class="qc-tag">Mixed Methods</div>
+        <div class="qc-text">Explanatory vs exploratory sequential — how do I choose?</div>
+      </div>
+      <div class="quick-card" onclick="quickAsk('What is discriminant validity and how do I establish it using the Fornell-Larcker criterion and HTMT ratio in SmartPLS?','PhD Research')">
+        <div class="qc-tag">SEM Quality</div>
+        <div class="qc-text">How do I establish discriminant validity in SmartPLS?</div>
+      </div>
+      <div class="quick-card" onclick="quickAsk('What are the most common mistakes PhD students make in their methodology chapter that examiners flag in viva?','PhD Research')">
+        <div class="qc-tag">Viva Prep</div>
+        <div class="qc-text">Common methodology mistakes that viva examiners catch?</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HISTORY -->
+  <div class="history-section" id="history-section" style="display:none;">
+    <div class="quick-label">Recent Questions</div>
+    <div id="history-list"></div>
+  </div>
+</div>
+
+<script>
+let selectedContexts = [];
+let history = JSON.parse(localStorage.getItem('ask_history') || '[]');
+let lastResponse = '';
+
+function toggleCtx(btn, ctx) {
+  btn.classList.toggle('active');
+  if(selectedContexts.includes(ctx)) {
+    selectedContexts = selectedContexts.filter(c => c !== ctx);
+  } else {
+    selectedContexts.push(ctx);
+  }
+}
+
+function quickAsk(question, ctx) {
+  document.getElementById('question-input').value = question;
+  selectedContexts = [ctx];
+  document.querySelectorAll('.ctx-btn').forEach(b => {
+    b.classList.toggle('active', b.textContent === ctx);
+  });
+  askQuestion();
+}
+
+async function askQuestion() {
+  const question = document.getElementById('question-input').value.trim();
+  if(!question) { document.getElementById('status').textContent = 'Please type a question first.'; return; }
+
+  const btn = document.getElementById('ask-btn');
+  btn.disabled = true;
+  document.getElementById('status').textContent = '';
+
+  const contextNote = selectedContexts.length > 0
+    ? `\n\nContext: The student's research is in the area of: ${selectedContexts.join(', ')}.`
+    : '';
+
+  const systemPrompt = `You are an expert research methodology assistant for Dr. Teik-Kheong Tan's doctoral research methods course at Stanford University. You answer questions from PhD and DBA candidates about quantitative research methods, qualitative research, mixed methods, SEM, SPSS, SmartPLS, and research methodology in general.
+
+Your answers are:
+- Professional and doctoral-level in depth
+- Practically oriented — always connect theory to what the student must DO
+- Illustrated with sector-specific examples (hospitality, education, manufacturing, SMEs, digital transformation) when helpful
+- Accurate with respect to current methodological standards (Hair et al. 2019 for PLS-SEM, APA 7th for reporting)
+- Concise but complete — aim for 250-400 words unless the question requires more
+- Formatted with clear structure using headers, bullet points, and bold key terms where helpful
+
+When answering questions about PLS-SEM, always reference SmartPLS and Hair et al. (2019) standards.
+When answering about qualitative methods, reference appropriate foundational texts.
+When answering about statistics, always mention effect sizes and not just p-values.
+Always end with a "Viva/Examiner Tip" if the question is relevant to dissertation defence.`;
+
+  const userPrompt = `${question}${contextNote}`;
+
+  document.getElementById('response-wrap').style.display = 'block';
+  document.getElementById('response-body').innerHTML = '<div class="loading-dots"><span></span><span></span><span></span></div>';
+  document.getElementById('response-tag').textContent = selectedContexts[0] || 'Research Methods';
+
+  document.getElementById('response-wrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 1000,
+        system: systemPrompt,
+        messages: [{ role: 'user', content: userPrompt }]
+      })
+    });
+
+    const data = await response.json();
+    const text = data.content?.map(c => c.text || '').join('') || 'No response received.';
+    lastResponse = text;
+
+    document.getElementById('response-body').innerHTML = formatResponse(text);
+
+    // Save to history
+    history.unshift({ question: question.substring(0,100)+(question.length>100?'...':''), context: selectedContexts[0]||'', time: new Date().toLocaleTimeString() });
+    if(history.length > 10) history = history.slice(0,10);
+    localStorage.setItem('ask_history', JSON.stringify(history));
+    renderHistory();
+
+  } catch(err) {
+    document.getElementById('response-body').innerHTML = `<p style="color:var(--red)">Error connecting to AI. Please check your connection and try again.</p><p style="color:var(--muted);font-size:0.82rem">${err.message}</p>`;
+  }
+
+  btn.disabled = false;
+}
+
+function formatResponse(text) {
+  // Convert markdown-like formatting to HTML
+  let html = text
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/`(.+?)`/g, '<code>$1</code>')
+    .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+    .replace(/^## (.+)$/gm, '<h3>$1</h3>')
+    .replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>')
+    .replace(/^- (.+)$/gm, '<li>$1</li>')
+    .replace(/^\d+\. (.+)$/gm, '<li>$1</li>');
+
+  // Wrap consecutive <li> elements in <ul>
+  html = html.replace(/(<li>.*<\/li>\n?)+/g, match => `<ul>${match}</ul>`);
+
+  // Wrap remaining text blocks in <p>
+  html = html.split('\n\n').map(block => {
+    block = block.trim();
+    if(!block) return '';
+    if(block.startsWith('<h3>') || block.startsWith('<ul>') || block.startsWith('<blockquote>')) return block;
+    return `<p>${block.replace(/\n/g, ' ')}</p>`;
+  }).join('');
+
+  return html || `<p>${text}</p>`;
+}
+
+function copyResponse() {
+  navigator.clipboard.writeText(lastResponse).then(() => {
+    const btn = document.querySelector('.copy-btn');
+    btn.textContent = '✅ Copied!';
+    setTimeout(() => btn.textContent = '📋 Copy Answer', 2000);
+  });
+}
+
+function clearAll() {
+  document.getElementById('question-input').value = '';
+  document.getElementById('response-wrap').style.display = 'none';
+  document.getElementById('status').textContent = '';
+  selectedContexts = [];
+  document.querySelectorAll('.ctx-btn').forEach(b => b.classList.remove('active'));
+  lastResponse = '';
+}
+
+function renderHistory() {
+  if(!history.length) { document.getElementById('history-section').style.display='none'; return; }
+  document.getElementById('history-section').style.display='block';
+  document.getElementById('history-list').innerHTML = history.map((h,i) =>
+    `<div class="history-item" onclick="document.getElementById('question-input').value='${h.question.replace(/'/g,"\\'")}';window.scrollTo(0,0);">
+      <div class="history-q">${h.question}</div>
+      <div class="history-meta">${h.context ? h.context + ' · ' : ''}${h.time}</div>
+    </div>`
+  ).join('');
+}
+
+renderHistory();
+</script>
+</body>
+</html>

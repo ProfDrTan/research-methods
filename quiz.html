@@ -296,6 +296,21 @@ nav{position:sticky;top:0;z-index:100;background:rgba(2,8,23,0.92);backdrop-filt
 
 <script>
 const API = 'https://rm-students.teikkheong.workers.dev';
+
+// Fetch with 5-second timeout — prevents UI freeze if Worker is slow
+async function apiFetch(url, opts={}) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 5000);
+  try {
+    const r = await fetch(url, {...opts, signal: controller.signal});
+    clearTimeout(timer);
+    return r;
+  } catch(e) {
+    clearTimeout(timer);
+    if(e.name === 'AbortError') throw new Error('Worker timeout — running in offline mode');
+    throw e;
+  }
+}
 const PIN = '6664';
 const NAME_KEY = 'student_name_v1';
 
@@ -458,7 +473,7 @@ function updateITimer(secs){
 async function launchQ(){
   if(!selQId){ alert('Select a question first.'); return; }
   try {
-    await fetch(API+'/quiz/launch', {
+    await apiFetch(API+'/quiz/launch', {
       method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({ questionId: selQId, duration: selDuration })
     });
@@ -469,12 +484,12 @@ async function launchQ(){
 }
 async function broadcastResults(){
   try {
-    await fetch(API+'/quiz/results', { method:'POST', headers:{'Content-Type':'application/json'}, body:'{}' });
+    await apiFetch(API+'/quiz/results', { method:'POST', headers:{'Content-Type':'application/json'}, body:'{}' });
   } catch(e){ alert('Error: '+e.message); }
 }
 async function closeQ(){
   try {
-    await fetch(API+'/quiz/close', { method:'POST', headers:{'Content-Type':'application/json'}, body:'{}' });
+    await apiFetch(API+'/quiz/close', { method:'POST', headers:{'Content-Type':'application/json'}, body:'{}' });
     clearITimer();
     buildQGrid();
     document.getElementById('results-panel').innerHTML = '<div class="no-data">No question active.</div>';
@@ -486,9 +501,9 @@ async function closeQ(){
 async function resetResp(){
   if(!confirm('Clear responses for current question?')) return;
   try {
-    const state = await (await fetch(API+'/quiz/state')).json();
+    const state = await (await apiFetch(API+'/quiz/state')).json();
     if(state.activeQ){
-      await fetch(API+'/quiz/launch', {
+      await apiFetch(API+'/quiz/launch', {
         method:'POST', headers:{'Content-Type':'application/json'},
         body: JSON.stringify({ questionId: state.activeQ, duration: selDuration })
       });
@@ -811,7 +826,7 @@ async function submitAns(qId, type){
   if(ans===null){ alert('Please select an answer.'); return; }
   const name = getStudentName();
   try {
-    await fetch(API+'/quiz/respond', {
+    await apiFetch(API+'/quiz/respond', {
       method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({ questionId: qId, name, answer: ans })
     });
@@ -855,7 +870,7 @@ async function showStudentResults(qId, allResp){
   const q = getQ(qId);
   if(!q) return;
   if(!allResp){
-    try { allResp = await (await fetch(API+'/quiz/responses')).json(); } catch{ allResp={}; }
+    try { allResp = await (await apiFetch(API+'/quiz/responses')).json(); } catch{ allResp={}; }
   }
   document.getElementById('s-wall').style.display='none';
   const qr = allResp[qId] || [];

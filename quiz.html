@@ -408,15 +408,19 @@ function tryInstructor(){
 }
 function checkPin(){
   if(document.getElementById('pin-in').value === PIN){
-    showScreen('iscreen');
-    document.getElementById('btn-i').classList.add('active');
-    document.getElementById('btn-s').classList.remove('active');
-    buildQGrid();
-    startIRefresh();
+    localStorage.setItem('instructor_auth','yes');
+    enterInstructor();
   } else {
     document.getElementById('pin-err').style.display = 'block';
     document.getElementById('pin-in').value = '';
   }
+}
+function enterInstructor(){
+  showScreen('iscreen');
+  document.getElementById('btn-i').classList.add('active');
+  document.getElementById('btn-s').classList.remove('active');
+  buildQGrid();
+  startIRefresh();
 }
 function showStudent(){
   const name = getStudentName();

@@ -81,7 +81,11 @@ async function run() {
     await new Promise(r => setTimeout(r, 400));
   }
 
-  addLog(`<br>🎉 Done! ${count} students injected. <a href="/" style="color:#00e5ff">→ View Live Dashboard</a>`, 'done');
+  // Also set registration so Dr. Tan goes straight into member view
+  localStorage.setItem('rm_v2', JSON.stringify(students));
+  localStorage.setItem('student_registered', 'yes');
+  localStorage.setItem('student_name_v1', 'Dr. Tan');
+  addLog(`<br>🎉 Done! ${count} students injected. <a href="/" style="color:#00e5ff">→ Enter Class Dashboard</a>`, 'done');
 }
 
 run();

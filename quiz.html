@@ -12,36 +12,40 @@ nav{background:#0b1120;border-bottom:1px solid #1e2d45;padding:0 1.5rem;display:
 .nav-links a{color:#64748b;text-decoration:none;margin-left:1rem;font-size:0.85rem;}
 .nav-links a:hover{color:#00e5ff;}
 .wrap{max-width:780px;margin:0 auto;padding:1.5rem 1rem;}
-
-/* NAME */
 .name-box{text-align:center;padding:5rem 1rem;}
 .name-box h2{font-size:1.6rem;font-weight:700;margin-bottom:0.5rem;}
 .name-box p{color:#64748b;margin-bottom:1.5rem;}
-#name-input{width:100%;max-width:380px;background:#111827;border:1px solid #1e2d45;border-radius:8px;padding:0.9rem;color:#e2e8f0;font-size:1rem;outline:none;margin-bottom:1rem;}
+#name-input{width:100%;max-width:380px;background:#111827;border:1px solid #1e2d45;border-radius:8px;padding:0.9rem;color:#e2e8f0;font-size:1rem;outline:none;margin-bottom:1rem;display:block;margin-left:auto;margin-right:auto;}
 #name-input:focus{border-color:#00e5ff;}
 #start-btn{padding:0.9rem 2.5rem;background:#00b4cc;color:#000;border:none;border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer;}
-
-/* QUIZ */
 .section-title{font-size:0.7rem;letter-spacing:0.15em;color:#a78bfa;text-transform:uppercase;margin:1.5rem 0 0.75rem;padding-bottom:0.5rem;border-bottom:1px solid #1e2d45;}
-.qcard{background:#161f30;border:1px solid #1e2d45;border-radius:10px;padding:1.25rem;margin-bottom:1rem;}
+.qcard{background:#161f30;border:1px solid #1e2d45;border-radius:10px;padding:1.25rem;margin-bottom:1rem;transition:border-color 0.3s;}
+.qcard.correct{border-color:#10b981;}
+.qcard.wrong{border-color:#ef4444;}
 .qnum{font-size:0.7rem;color:#64748b;font-family:monospace;margin-bottom:0.5rem;}
 .qtext{font-size:0.95rem;font-weight:600;line-height:1.45;margin-bottom:1rem;}
 .opt{display:block;width:100%;padding:0.65rem 1rem;border:1px solid #1e2d45;border-radius:7px;background:transparent;color:#e2e8f0;font-size:0.88rem;text-align:left;cursor:pointer;margin-bottom:0.45rem;}
-.opt:hover{border-color:#00e5ff;background:rgba(0,229,255,0.04);}
+.opt:hover:not([disabled]){border-color:#00e5ff;background:rgba(0,229,255,0.04);}
 .opt.sel{border-color:#7c3aed;background:rgba(124,58,237,0.15);color:#fff;}
+.opt.correct-ans{border-color:#10b981;background:rgba(16,185,129,0.15);color:#10b981;font-weight:700;}
+.opt.wrong-ans{border-color:#ef4444;background:rgba(239,68,68,0.1);color:#ef4444;}
+.opt[disabled]{cursor:default;}
+.feedback{margin-top:0.75rem;padding:0.6rem 0.85rem;border-radius:6px;font-size:0.85rem;font-weight:600;}
+.feedback.correct{background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);color:#10b981;}
+.feedback.wrong{background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.25);color:#ef4444;}
 .prog-bar{height:5px;background:#1e2d45;border-radius:3px;margin:0.5rem 0 1.5rem;}
 .prog-fill{height:100%;background:#00e5ff;border-radius:3px;transition:width 0.3s;}
 #prog-label{color:#64748b;font-size:0.82rem;}
-
-/* SUBMIT */
 .submit-area{text-align:center;padding:2rem 0;}
 #submit-btn{padding:1rem 3rem;background:#10b981;color:#fff;border:none;border-radius:10px;font-size:1.05rem;font-weight:700;cursor:pointer;}
 #submit-btn:disabled{background:#1e2d45;color:#64748b;cursor:not-allowed;}
-
-/* RESULTS */
 .score-box{background:#161f30;border:1px solid #1e2d45;border-radius:14px;padding:2rem;text-align:center;margin-bottom:1.5rem;}
 .score-big{font-family:monospace;font-size:3.5rem;font-weight:700;color:#00e5ff;}
 .score-grade{font-size:1.1rem;font-weight:700;margin-top:0.75rem;}
+.score-breakdown{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-top:1.25rem;}
+.breakdown-item{background:#111827;border-radius:8px;padding:0.85rem;text-align:center;}
+.breakdown-num{font-family:monospace;font-size:1.5rem;font-weight:700;}
+.breakdown-label{font-size:0.72rem;color:#64748b;margin-top:0.2rem;}
 .lb{background:#161f30;border:1px solid #1e2d45;border-radius:12px;overflow:hidden;margin-bottom:1.5rem;}
 .lb-head{padding:0.8rem 1.25rem;border-bottom:1px solid #1e2d45;font-size:0.7rem;letter-spacing:0.1em;color:#64748b;text-transform:uppercase;display:flex;justify-content:space-between;}
 .lb-row{padding:0.7rem 1.25rem;border-bottom:1px solid #1e2d45;display:flex;align-items:center;gap:0.75rem;font-size:0.88rem;}
@@ -53,7 +57,6 @@ nav{background:#0b1120;border-bottom:1px solid #1e2d45;padding:0 1.5rem;display:
 .lb-pct{font-family:monospace;font-size:0.72rem;color:#64748b;}
 #retry-btn{padding:0.75rem 2rem;background:transparent;border:1px solid #1e2d45;color:#64748b;border-radius:8px;font-size:0.9rem;font-weight:600;cursor:pointer;margin-top:0.5rem;}
 #retry-btn:hover{border-color:#00e5ff;color:#00e5ff;}
-
 .hidden{display:none;}
 </style>
 </head>
@@ -61,18 +64,18 @@ nav{background:#0b1120;border-bottom:1px solid #1e2d45;padding:0 1.5rem;display:
 <nav>
   <div class="brand">DR.TAN // LIVE QUIZ</div>
   <div class="nav-links">
-    <a href="lecture.html">📖 Lecture</a>
-    <a href="index.html">← Home</a>
+    <a href="lecture.html">Lecture</a>
+    <a href="index.html">Home</a>
   </div>
 </nav>
 
 <div id="pg-name">
   <div class="name-box">
-    <div style="font-size:2.5rem;margin-bottom:1rem;">📝</div>
+    <div style="font-size:2.5rem;margin-bottom:1rem;">&#128221;</div>
     <h2>Research Methods Quiz</h2>
-    <p>Enter your name to begin. All 52 questions across 6 sections.</p>
+    <p>Enter your name to begin. Answer each question and get instant feedback.</p>
     <input type="text" id="name-input" placeholder="Your full name e.g. Aisha Rahman"><br>
-    <button id="start-btn" onclick="startQuiz()">Start Quiz →</button>
+    <button id="start-btn" onclick="startQuiz()">Start Quiz &#8594;</button>
   </div>
 </div>
 
@@ -94,20 +97,30 @@ nav{background:#0b1120;border-bottom:1px solid #1e2d45;padding:0 1.5rem;display:
       <div class="score-big" id="r-score"></div>
       <div style="color:#64748b;">Your Score</div>
       <div class="score-grade" id="r-grade"></div>
+      <div class="score-breakdown">
+        <div class="breakdown-item">
+          <div class="breakdown-num" id="r-correct" style="color:#10b981;"></div>
+          <div class="breakdown-label">Correct</div>
+        </div>
+        <div class="breakdown-item">
+          <div class="breakdown-num" id="r-wrong" style="color:#ef4444;"></div>
+          <div class="breakdown-label">Incorrect</div>
+        </div>
+      </div>
     </div>
     <div class="lb">
-      <div class="lb-head"><span>🏆 Leaderboard</span><span id="lb-count"></span></div>
+      <div class="lb-head"><span>&#127942; Leaderboard</span><span id="lb-count"></span></div>
       <div id="lb-body"></div>
     </div>
     <div style="text-align:center;">
-      <button id="retry-btn" onclick="retry()">🔄 Try Again</button>
+      <button id="retry-btn" onclick="retry()">&#128260; Try Again</button>
     </div>
   </div>
 </div>
 
 <script>
-var SECTIONS = [{"label": "Quiz 1 \u2014 Scales & Tendency", "questions": [{"id": "q01", "tag": "Central Tendency", "text": "What is the mean in statistics?", "ctx": "Think about the arithmetic operation used to calculate it.", "options": ["The most frequently occurring score", "The middle score when data are ordered", "The arithmetic average of the scores", "The spread of scores from highest to lowest"], "correct": 2}, {"id": "q02", "tag": "Measurement Scales", "text": "Which measure is best for nominal data?", "ctx": "Nominal data has categories only \u2014 no order, no distance. Which statistic is valid?", "options": ["Mean", "Standard Deviation", "Median", "Mode"], "correct": 3}, {"id": "q03", "tag": "Central Tendency", "text": "Which is NOT a measure of central tendency?", "ctx": "Three of these four describe the \"middle\" of data. One describes something else entirely.", "options": ["Mode", "Median", "Mean", "Standard Deviation"], "correct": 3}, {"id": "q04", "tag": "Graphing", "text": "Which graph suits categorical data best?", "ctx": "Think about what type of data each chart is designed to display.", "options": ["Boxplot", "Histogram", "Bar chart", "Scatterplot"], "correct": 2}, {"id": "q05", "tag": "Dispersion", "text": "What does standard deviation measure?", "ctx": "It is a measure of dispersion \u2014 what does it tell you about your data?", "options": ["Central location", "Spread of scores", "Most frequent value", "Average rank"], "correct": 1}, {"id": "q06", "tag": "Measurement Scales", "text": "What type of data has a true zero point?", "ctx": "A true zero means the complete absence of the quantity being measured.", "options": ["Nominal", "Ordinal", "Interval", "Ratio"], "correct": 3}, {"id": "q07", "tag": "Measurement Scales", "text": "Which statistic is most appropriate for ordinal data?", "ctx": "Ordinal data has order but unequal intervals. Which measure respects this?", "options": ["Mode", "Mean", "Median", "Variance"], "correct": 2}, {"id": "q08", "tag": "Graphing", "text": "What is a histogram best used for?", "ctx": "Think about the type of data a histogram is designed to display.", "options": ["Distribution of continuous data", "Comparing groups", "Frequencies in pie form", "Displaying categories"], "correct": 0}, {"id": "q09", "tag": "Graphing", "text": "Which graph is best for nominal data?", "ctx": "Four chart types \u2014 which one is specifically designed for categorical data?", "options": ["Histogram", "Boxplot", "Line graph", "Bar chart"], "correct": 3}, {"id": "q10", "tag": "Central Tendency", "text": "Which statistic shows the most frequent value?", "ctx": "One measure of central tendency specifically identifies the value that appears most often.", "options": ["Mode", "Mean", "Range", "Median"], "correct": 0}]}, {"label": "Quiz 2 \u2014 Distribution & Correlation", "questions": [{"id": "q11", "tag": "Dispersion", "text": "Which is a measure of dispersion?", "ctx": "Dispersion describes spread. Three of these describe central tendency; one describes spread.", "options": ["Mean", "Standard Deviation", "Mode", "Median"], "correct": 1}, {"id": "q12", "tag": "Skewness", "text": "Which distribution has a tail to the right?", "ctx": "Think about where the tail stretches \u2014 right or left?", "options": ["Positively skewed", "Negatively skewed", "Leptokurtic", "Normal"], "correct": 0}, {"id": "q13", "tag": "Kurtosis", "text": "What does kurtosis describe?", "ctx": "You know mean (1st moment), SD (2nd), skewness (3rd) \u2014 what is the 4th moment?", "options": ["Symmetry", "Peakedness or flatness", "Skewness", "Centrality"], "correct": 1}, {"id": "q14", "tag": "Normal Distribution", "text": "How much data falls within \u00b12 standard deviations of the mean?", "ctx": "Recall the empirical rule \u2014 68%, 95%, 99.9%.", "options": ["68%", "99.9%", "95%", "50%"], "correct": 2}, {"id": "q15", "tag": "Correlation", "text": "What value indicates the strongest correlation?", "ctx": "Correlation ranges from -1 to +1. Strength is about the absolute value.", "options": ["0.65", "-0.90", "0.30", "-0.25"], "correct": 1}, {"id": "q16", "tag": "Correlation", "text": "Positive correlation means:", "ctx": "Think about how the two variables move in relation to each other.", "options": ["One goes up, the other down", "No relationship", "Both increase together", "Both decrease"], "correct": 2}, {"id": "q17", "tag": "Regression", "text": "What does regression analysis do?", "ctx": "Think about the purpose of regression beyond just describing relationships.", "options": ["Compare means", "Test variance", "Measure dispersion", "Predict an outcome"], "correct": 3}, {"id": "q18", "tag": "Research Variables", "text": "What is the dependent variable?", "ctx": "Think about which variable is being influenced or predicted in a study.", "options": ["Independent variable", "Outcome to predict", "Moderator", "Confounder"], "correct": 1}, {"id": "q19", "tag": "Central Tendency", "text": "Which measure of central tendency is MOST robust to extreme outliers?", "ctx": "A CEO earns $5 million; other employees earn $30k\u2013$50k. Which measure best represents the typical person?", "options": ["Mean", "Median", "Mode", "Variance"], "correct": 1}, {"id": "q20", "tag": "Normal Distribution", "text": "In a normal distribution, what percentage of data falls within \u00b11 SD of the mean?", "ctx": "Recall the three key percentages of the empirical rule.", "options": ["50%", "68%", "95%", "99.9%"], "correct": 1}]}, {"label": "Quiz 3 \u2014 Inferential Tests", "questions": [{"id": "q21", "tag": "Statistical Tests", "text": "Which test compares means between groups?", "ctx": "You want to know if satisfaction differs between male and female customers.", "options": ["Chi-square", "Z-test", "T-test", "Skew test"], "correct": 2}, {"id": "q22", "tag": "Statistical Tests", "text": "Which test is used for two nominal variables?", "ctx": "You want to test if gender (nominal) is related to employment category (nominal).", "options": ["Chi-square", "T-test", "Regression", "Histogram"], "correct": 0}, {"id": "q23", "tag": "p-values", "text": "A study reports p = 0.003. What does this correctly mean?", "ctx": "Carefully parse the exact meaning of a p-value \u2014 this is a classic viva question.", "options": ["0.3% probability the hypothesis is true", "99.7% chance the result is correct", "0.3% probability of this result if null hypothesis is true", "The effect is practically significant"], "correct": 2}, {"id": "q24", "tag": "Chi-Square", "text": "ABC Company: Is gender related to employment category? Which test?", "ctx": "Both variables are categorical (nominal). What test applies?", "options": ["Independent T-test", "Chi-Square", "Pearson Correlation", "Paired T-test"], "correct": 1}, {"id": "q25", "tag": "Correlation", "text": "Pearson r = -0.72 between study hours and exam anxiety. This indicates:", "ctx": "Interpret both direction AND strength.", "options": ["Weak negative relationship", "Strong positive relationship", "Strong negative \u2014 more study associated with lower anxiety", "No meaningful relationship"], "correct": 2}, {"id": "q26", "tag": "Statistical Tests", "text": "ABC Company: \"Is there a difference between beginning and current salaries?\" Which test?", "ctx": "The SAME employees measured at two different time points.", "options": ["Independent T-test", "Chi-Square", "Paired Samples T-test", "ANOVA"], "correct": 2}, {"id": "q27", "tag": "Regression", "text": "Which variable is predicted in a regression equation?", "ctx": "Regression has one outcome and one or more predictors.", "options": ["Independent variable", "Dependent variable", "Moderator", "Control variable"], "correct": 1}, {"id": "q28", "tag": "Statistical Tests", "text": "You want to compare satisfaction scores across THREE different countries. Which test?", "ctx": "More than two groups, continuous DV.", "options": ["Independent T-test", "Chi-Square", "ANOVA", "Paired T-test"], "correct": 2}, {"id": "q29", "tag": "Dispersion", "text": "Which measure of central tendency is most affected by extreme outliers?", "ctx": "A single very high or very low value \u2014 which statistic is most sensitive?", "options": ["Mode", "Median", "Mean", "Quartile"], "correct": 2}, {"id": "q30", "tag": "Research Design", "text": "A PhD student with non-normal data and 150 responses wants to test relationships. Which approach?", "ctx": "Think about the assumptions and sample size requirements of each method.", "options": ["CB-SEM with AMOS", "Multiple Regression only", "PLS-SEM with SmartPLS", "Descriptive statistics only"], "correct": 2}]}, {"label": "Quiz 4 \u2014 SEM Foundations", "questions": [{"id": "q31", "tag": "SEM vs Regression", "text": "What is one primary advantage of SEM over multiple regression?", "ctx": "Think about what SEM can model that regression fundamentally cannot handle.", "options": ["It avoids the need for a measurement model", "It simplifies data collection", "It allows simultaneous analysis of measurement and structural models", "It only uses observed variables"], "correct": 2}, {"id": "q32", "tag": "Latent Variables", "text": "Which best describes a latent variable in SEM?", "ctx": "Think about \"trust\", \"satisfaction\", \"intention\" \u2014 can you directly observe these?", "options": ["A variable that can be directly observed", "A construct measured by multiple indicators", "A manipulated independent variable", "A residual error term"], "correct": 1}, {"id": "q33", "tag": "SEM Terminology", "text": "In SEM, what is an endogenous variable?", "ctx": "Think about whether the variable receives arrows from other variables.", "options": ["It only influences other variables", "It is not in the structural model", "It is a dependent variable affected by other constructs", "It has no relationship with any other variable"], "correct": 2}, {"id": "q34", "tag": "PLS vs CB-SEM", "text": "Which condition supports choosing PLS-SEM over CB-SEM?", "ctx": "Recall the key differences in sample size, data requirements, and research purpose.", "options": ["Large sample, normally distributed data", "Theory-driven with high model specification", "Small sample, focus on prediction accuracy", "Need for reciprocal causation modelling"], "correct": 2}, {"id": "q35", "tag": "Measurement Model", "text": "Which defines a FORMATIVE measurement model?", "ctx": "Compare with reflective \u2014 in which direction do arrows flow?", "options": ["Indicators reflect the latent construct", "Indicators are interchangeable", "Indicators CAUSE the construct", "Indicators must be highly correlated"], "correct": 2}, {"id": "q36", "tag": "SEM Components", "text": "Which SEM component specifies relationships BETWEEN latent variables?", "ctx": "SEM has two components \u2014 one for measurement, one for relationships.", "options": ["Outer model", "Measurement model", "Structural model", "Confirmatory model"], "correct": 2}, {"id": "q37", "tag": "Quality Criteria", "text": "What is the minimum composite reliability threshold for exploratory research?", "ctx": "Recall the two thresholds \u2014 one for exploratory, one for confirmatory.", "options": ["0.3", "0.4", "0.6", "0.9"], "correct": 2}, {"id": "q38", "tag": "Quality Criteria", "text": "What minimum AVE value is acceptable for convergent validity?", "ctx": "AVE measures how much variance in indicators is captured by the construct.", "options": ["0.3", "0.5", "0.7", "0.9"], "correct": 1}, {"id": "q39", "tag": "Discriminant Validity", "text": "What statistical measure should exceed inter-construct correlations for discriminant validity?", "ctx": "The Fornell-Larcker criterion \u2014 what do you compare correlations against?", "options": ["Cronbach\\", ",", ",", ","], "correct": 3}, {"id": "q40", "tag": "SmartPLS", "text": "Which SmartPLS output reveals structural path significance?", "ctx": "You have run the PLS algorithm. What additional procedure gives you p-values for paths?", "options": ["It provides AVE values", "It shows indicator reliability", "Bootstrapping reveals path significance", "It generates initial weights"], "correct": 2}]}, {"label": "Quiz 5 \u2014 Advanced SEM", "questions": [{"id": "q41", "tag": "SEM", "text": "Which SEM method is most suitable for exploratory research with limited theory?", "ctx": "You are building a new model with limited prior research to guide you.", "options": ["CB-SEM", "LISREL", "PLS-SEM", "AMOS"], "correct": 2}, {"id": "q42", "tag": "SEM", "text": "Which is NOT a characteristic of SEM?", "ctx": "Three of these are genuine SEM capabilities. One is incorrect.", "options": ["Allows modelling of latent variables", "Can test mediation effects", "Relies only on observed data", "Accounts for measurement error"], "correct": 2}, {"id": "q43", "tag": "Factor Analysis", "text": "Which type of factor analysis is theory-driven?", "ctx": "One is exploratory; one is theory-driven and tests a pre-specified structure.", "options": ["Exploratory Factor Analysis (EFA)", "Confirmatory Factor Analysis (CFA)", "Principal Component Analysis (PCA)", "Partial Least Squares"], "correct": 1}, {"id": "q44", "tag": "SEM Terminology", "text": "In SEM, which type of variable only has arrows pointing OUTWARD?", "ctx": "Think about endogenous vs exogenous \u2014 which only influences, never being influenced?", "options": ["Endogenous variable", "Mediating variable", "Exogenous variable", "Criterion variable"], "correct": 2}, {"id": "q45", "tag": "SmartPLS", "text": "What does the OUTER MODEL represent in SmartPLS?", "ctx": "SEM has inner and outer models \u2014 what does the outer model contain?", "options": ["Relationships between latent variables", "Paths between DVs and IVs", "Measurement of latent constructs via observed indicators", "Path coefficient results"], "correct": 2}, {"id": "q46", "tag": "SEM", "text": "What describes a second-order construct?", "ctx": "Think about constructs that are themselves measured by other constructs rather than direct indicators.", "options": ["It contains only observed indicators", "It is not allowed in SEM models", "It is formed by multiple first-order constructs", "It cannot be measured by SmartPLS"], "correct": 2}]}, {"label": "Quiz 6 \u2014 Mixed Methods", "questions": [{"id": "q50", "tag": "Mixed Methods", "text": "What defines a mixed methods research design?", "ctx": "Think about what makes it \"mixed\" \u2014 what two traditions are combined?", "options": ["Using two different statistical tests", "Combining quantitative and qualitative data collection and analysis", "Using both SPSS and SmartPLS", "Surveying two different populations"], "correct": 1}, {"id": "q51", "tag": "Mixed Methods", "text": "In an EXPLANATORY SEQUENTIAL design, what happens first?", "ctx": "Think about the order of phases and the purpose of each.", "options": ["Qualitative data collected first to guide the survey", "Quantitative data collected first, then qualitative explains the results", "Both collected simultaneously", "A pilot study runs first"], "correct": 1}, {"id": "q52", "tag": "Mixed Methods", "text": "In an EXPLORATORY SEQUENTIAL design, what is the purpose of the qualitative phase?", "ctx": "This design starts with qual \u2014 why?", "options": ["To validate the quantitative findings", "To replace the need for statistics", "To inform and build the quantitative survey instrument", "To provide rich description only"], "correct": 2}, {"id": "q53", "tag": "Mixed Methods", "text": "Which mixed methods design collects quantitative and qualitative data at the SAME TIME?", "ctx": "Three designs exist \u2014 two sequential types and one concurrent.", "options": ["Explanatory Sequential", "Exploratory Sequential", "Convergent Parallel", "Embedded design"], "correct": 2}, {"id": "q54", "tag": "Mixed Methods", "text": "What is the primary purpose of using mixed methods in doctoral research?", "ctx": "Think about what combining approaches achieves that neither alone can.", "options": ["To make the dissertation longer", "To satisfy examiner requirements", "To achieve triangulation and a more complete understanding", "To avoid choosing between paradigms"], "correct": 2}, {"id": "q55", "tag": "Mixed Methods", "text": "A researcher surveys 300 managers (QUANT) then interviews 15 to explain unexpected findings. Which design?", "ctx": "Identify the order and purpose of each phase.", "options": ["Exploratory Sequential", "Convergent Parallel", "Explanatory Sequential", "Embedded design"], "correct": 2}]}];
-var SCORES_KEY = 'drtan_scores_v1';
+var SECTIONS = [{"label": "Quiz 1 \u2014 Scales & Tendency", "questions": [{"id": "q01", "tag": "Central Tendency", "text": "What is the mean in statistics?", "options": ["The most frequently occurring score", "The middle score when data are ordered", "The arithmetic average of the scores", "The spread of scores from highest to lowest"], "correct": 2}, {"id": "q02", "tag": "Measurement Scales", "text": "Which measure is best for nominal data?", "options": ["Mean", "Standard Deviation", "Median", "Mode"], "correct": 3}, {"id": "q03", "tag": "Central Tendency", "text": "Which is NOT a measure of central tendency?", "options": ["Mode", "Median", "Mean", "Standard Deviation"], "correct": 3}, {"id": "q04", "tag": "Graphing", "text": "Which graph suits categorical data best?", "options": ["Boxplot", "Histogram", "Bar chart", "Scatterplot"], "correct": 2}, {"id": "q05", "tag": "Dispersion", "text": "What does standard deviation measure?", "options": ["Central location", "Spread of scores", "Most frequent value", "Average rank"], "correct": 1}, {"id": "q06", "tag": "Measurement Scales", "text": "What type of data has a true zero?", "options": ["Nominal", "Ordinal", "Interval", "Ratio"], "correct": 3}, {"id": "q07", "tag": "Measurement Scales", "text": "Which statistic is appropriate for ordinal data?", "options": ["Mode", "Mean", "Median", "Variance"], "correct": 2}, {"id": "q08", "tag": "Graphing", "text": "What is a histogram best used for?", "options": ["Distribution of continuous data", "Comparing groups", "Frequencies in pie form", "Displaying categories"], "correct": 0}, {"id": "q09", "tag": "Graphing", "text": "Which graph is best for nominal data?", "options": ["Histogram", "Boxplot", "Line graph", "Bar chart"], "correct": 3}, {"id": "q10", "tag": "Central Tendency", "text": "Which statistic shows the most frequent value?", "options": ["Mode", "Mean", "Range", "Median"], "correct": 0}, {"id": "s01", "tag": "Scenario", "text": "A hotel asks guests to rate satisfaction: 1=Very dissatisfied to 5=Very satisfied. What measurement scale is this?", "options": ["Nominal", "Ordinal", "Interval", "Ratio"], "correct": 1}, {"id": "s02", "tag": "Scenario", "text": "A researcher groups SMEs into: Micro, Small, and Medium business. Which scale best describes this?", "options": ["Nominal", "Ordinal", "Interval", "Ratio"], "correct": 1}, {"id": "s03", "tag": "Scenario", "text": "A factory records defective products per day \u2014 0 on Monday, 12 on Tuesday. What scale is this?", "options": ["Nominal", "Ordinal", "Interval", "Ratio"], "correct": 3}, {"id": "s04", "tag": "Scenario", "text": "A researcher studies whether AI tutoring usage affects exam performance. What is the independent variable?", "options": ["Student exam performance", "AI tutoring usage", "Student GPA after exam", "The university course name"], "correct": 1}, {"id": "s05", "tag": "Scenario", "text": "A company classifies firms as: Not started, Planning, Implementing, Fully transformed. What scale?", "options": ["Nominal", "Ordinal", "Interval", "Ratio"], "correct": 1}, {"id": "s06", "tag": "Scenario", "text": "A tourism board records visitor nationality: Singapore, Malaysia, China, India, Australia, Japan. What scale?", "options": ["Nominal", "Ordinal", "Interval", "Ratio"], "correct": 0}]}, {"label": "Quiz 2 \u2014 Distribution & Correlation", "questions": [{"id": "q11", "tag": "Dispersion", "text": "Which is a measure of dispersion?", "options": ["Mean", "Standard Deviation", "Mode", "Median"], "correct": 1}, {"id": "q12", "tag": "Skewness", "text": "Which distribution has a tail to the right?", "options": ["Positively skewed", "Negatively skewed", "Leptokurtic", "Normal"], "correct": 0}, {"id": "q13", "tag": "Kurtosis", "text": "What does kurtosis describe?", "options": ["Symmetry", "Peakedness or flatness", "Skewness", "Centrality"], "correct": 1}, {"id": "q14", "tag": "Normal Distribution", "text": "How much data falls within plus or minus 2 SDs of the mean?", "options": ["68%", "99.9%", "95%", "50%"], "correct": 2}, {"id": "q15", "tag": "Correlation", "text": "What value indicates the strongest correlation?", "options": ["0.65", "-0.90", "0.30", "-0.25"], "correct": 1}, {"id": "q16", "tag": "Correlation", "text": "Positive correlation means:", "options": ["One goes up, other down", "No relationship", "Both increase together", "Both decrease"], "correct": 2}, {"id": "q17", "tag": "Regression", "text": "What does regression analysis do?", "options": ["Compare means", "Test variance", "Measure dispersion", "Predict an outcome"], "correct": 3}, {"id": "q18", "tag": "Variables", "text": "What is the dependent variable?", "options": ["Independent variable", "Outcome to predict", "Moderator", "Confounder"], "correct": 1}, {"id": "q19", "tag": "Central Tendency", "text": "Which measure is MOST robust to extreme outliers?", "options": ["Mean", "Median", "Mode", "Variance"], "correct": 1}, {"id": "q20", "tag": "Normal Distribution", "text": "Data within plus or minus 1 SD in a normal distribution?", "options": ["50%", "68%", "95%", "99.9%"], "correct": 1}, {"id": "s07", "tag": "Scenario", "text": "Most hotel guests spend $200/night but VIP guests spend $5,000+. Which measure best represents the typical guest?", "options": ["Mean", "Median", "Standard deviation", "Range"], "correct": 1}, {"id": "s08", "tag": "Scenario", "text": "Most students spend 30-60 mins on a learning platform but a few leave browser open for 10 hours. What describes this distribution?", "options": ["Perfectly normal", "Negatively skewed", "Positively skewed", "No variation"], "correct": 2}, {"id": "s09", "tag": "Scenario", "text": "Two production lines: both have average quality score 85. Line A is tightly clustered, Line B ranges 60-100. Which is true?", "options": ["Both perform exactly the same", "Line B has lower variability", "Line A has higher variability", "Line B has higher variability"], "correct": 3}, {"id": "s10", "tag": "Scenario", "text": "r = 0.72 between digital payment adoption and SME revenue. What can the researcher conclude?", "options": ["Digital payment definitely causes higher revenue", "There is a strong positive relationship", "There is no relationship", "Revenue causes digital payment adoption"], "correct": 1}, {"id": "s11", "tag": "Scenario", "text": "As hotel waiting time increases, satisfaction decreases. What type of relationship is this?", "options": ["Positive correlation", "Negative correlation", "No correlation", "Perfect normal distribution"], "correct": 1}, {"id": "s12", "tag": "Scenario", "text": "Two classes both average 70. Class A SD=5, Class B SD=20. Which interpretation is correct?", "options": ["Class A has more consistent scores", "Class B has more consistent scores", "Both have identical score patterns", "SD cannot compare consistency"], "correct": 0}]}, {"label": "Quiz 3 \u2014 Inferential Tests", "questions": [{"id": "q21", "tag": "Statistical Tests", "text": "Which test compares means between groups?", "options": ["Chi-square", "Z-test", "T-test", "Skew test"], "correct": 2}, {"id": "q22", "tag": "Statistical Tests", "text": "Which test is used for two nominal variables?", "options": ["Chi-square", "T-test", "Regression", "Histogram"], "correct": 0}, {"id": "q23", "tag": "p-values", "text": "p = 0.003 means:", "options": ["0.3% chance hypothesis is true", "99.7% result is correct", "0.3% probability if null hypothesis true", "Effect is practically significant"], "correct": 2}, {"id": "q24", "tag": "Chi-Square", "text": "Gender vs employment category \u2014 which test?", "options": ["Independent T-test", "Chi-Square", "Pearson Correlation", "Paired T-test"], "correct": 1}, {"id": "q25", "tag": "Correlation", "text": "r = -0.72 between study hours and anxiety indicates:", "options": ["Weak negative", "Strong positive", "Strong negative \u2014 more study = less anxiety", "No relationship"], "correct": 2}, {"id": "q26", "tag": "Statistical Tests", "text": "Beginning vs current salary \u2014 same employees. Which test?", "options": ["Independent T-test", "Chi-Square", "Paired Samples T-test", "ANOVA"], "correct": 2}, {"id": "q27", "tag": "Regression", "text": "Which variable is predicted in regression?", "options": ["Independent variable", "Dependent variable", "Moderator", "Control variable"], "correct": 1}, {"id": "q28", "tag": "ANOVA", "text": "Satisfaction across THREE countries \u2014 which test?", "options": ["Independent T-test", "Chi-Square", "ANOVA", "Paired T-test"], "correct": 2}, {"id": "q29", "tag": "Outliers", "text": "Which measure is most affected by extreme outliers?", "options": ["Mode", "Median", "Mean", "Quartile"], "correct": 2}, {"id": "q30", "tag": "Research Design", "text": "Non-normal data, 150 responses \u2014 which approach?", "options": ["CB-SEM with AMOS", "Multiple Regression only", "PLS-SEM with SmartPLS", "Descriptive statistics only"], "correct": 2}, {"id": "s13", "tag": "Scenario", "text": "Comparing exam scores between students taught via traditional vs AI-assisted tutorials (two independent groups). Which test?", "options": ["Paired samples t-test", "Independent samples t-test", "Chi-square test", "Pearson correlation"], "correct": 1}, {"id": "s14", "tag": "Scenario", "text": "A company measures employee productivity BEFORE and AFTER AI training for the SAME employees. Which test?", "options": ["Independent samples t-test", "Paired samples t-test", "One-way ANOVA", "Chi-square test"], "correct": 1}, {"id": "s15", "tag": "Scenario", "text": "Comparing satisfaction across budget hotels, boutique hotels, and luxury hotels. Which test?", "options": ["Independent samples t-test", "One-way ANOVA", "Paired samples t-test", "Pearson correlation"], "correct": 1}, {"id": "s16", "tag": "Scenario", "text": "Researcher wants to know if gender is associated with preferred payment app: GrabPay, Touch n Go, PayNow, or credit card. Which test?", "options": ["Chi-square test of independence", "Paired samples t-test", "Pearson correlation", "Regression"], "correct": 0}, {"id": "s17", "tag": "Scenario", "text": "SME researcher predicts monthly revenue using digital marketing spend, number of employees, and years in operation. Which method?", "options": ["Chi-square test", "Multiple regression", "Paired samples t-test", "One-sample t-test"], "correct": 1}, {"id": "s18", "tag": "Scenario", "text": "A study reports p = 0.03 comparing two teaching methods. What does this mean at the 0.05 significance level?", "options": ["The result is statistically significant", "The result proves the theory is true", "There is a 3% chance the alternative is false", "The effect is definitely large"], "correct": 0}]}, {"label": "Quiz 4 \u2014 SEM Foundations", "questions": [{"id": "q31", "tag": "SEM vs Regression", "text": "Primary advantage of SEM over regression?", "options": ["Avoids measurement model", "Simplifies data collection", "Simultaneous measurement and structural models", "Only uses observed variables"], "correct": 2}, {"id": "q32", "tag": "Latent Variables", "text": "What is a latent variable?", "options": ["Directly observable variable", "Construct measured by multiple indicators", "Manipulated independent variable", "Residual error term"], "correct": 1}, {"id": "q33", "tag": "SEM Terminology", "text": "What is an endogenous variable?", "options": ["Only influences others", "Not in structural model", "DV affected by other constructs", "No relationship with others"], "correct": 2}, {"id": "q34", "tag": "PLS vs CB-SEM", "text": "When to choose PLS-SEM over CB-SEM?", "options": ["Large sample, normal data", "Theory-driven, high specification", "Small sample, prediction focus", "Reciprocal causation needed"], "correct": 2}, {"id": "q35", "tag": "Measurement Model", "text": "What defines a FORMATIVE measurement model?", "options": ["Indicators reflect the construct", "Indicators are interchangeable", "Indicators CAUSE the construct", "Indicators must correlate highly"], "correct": 2}, {"id": "q36", "tag": "SEM Components", "text": "Which SEM component shows relationships BETWEEN constructs?", "options": ["Outer model", "Measurement model", "Structural model", "Confirmatory model"], "correct": 2}, {"id": "q37", "tag": "Quality Criteria", "text": "Minimum CR for exploratory research?", "options": ["0.3", "0.4", "0.6", "0.9"], "correct": 2}, {"id": "q38", "tag": "Quality Criteria", "text": "Minimum AVE for convergent validity?", "options": ["0.3", "0.5", "0.7", "0.9"], "correct": 1}, {"id": "q39", "tag": "Discriminant Validity", "text": "Fornell-Larcker: what must exceed inter-construct correlations?", "options": ["Cronbach Alpha", "Composite Reliability", "AVE", "Square root of AVE"], "correct": 3}, {"id": "q40", "tag": "SmartPLS", "text": "Which SmartPLS procedure reveals path significance?", "options": ["PLS Algorithm", "Outer loadings", "Bootstrapping", "Initial weights"], "correct": 2}, {"id": "s19", "tag": "Scenario", "text": "Customer satisfaction measured with: I am satisfied, I am happy, Service met expectations, I would rate positively. What type of model?", "options": ["Reflective", "Formative", "Nominal", "Experimental"], "correct": 0}, {"id": "s20", "tag": "Scenario", "text": "Digital readiness measured by: IT budget, Employee digital skills, Cloud infrastructure, Cybersecurity policy, Management support. What type?", "options": ["Reflective", "Formative", "Random", "Normal"], "correct": 1}, {"id": "s21", "tag": "Scenario", "text": "In SmartPLS, one indicator for service quality has a loading of 0.32. What should the researcher do first?", "options": ["Automatically delete it", "Check theoretical relevance and measurement quality", "Ignore it completely", "Change sample size"], "correct": 1}, {"id": "s22", "tag": "Scenario", "text": "A construct has composite reliability of 0.91. What does this suggest?", "options": ["Acceptable internal consistency", "No validity", "Model is causal", "Sample is normal"], "correct": 0}, {"id": "s23", "tag": "Scenario", "text": "A construct has AVE of 0.62. What does this indicate?", "options": ["Construct explains acceptable variance in its indicators", "Poor reliability", "Hypothesis rejected", "Dataset unusable"], "correct": 0}, {"id": "s24", "tag": "Scenario", "text": "Digital capability has path coefficient of 0.48 to business performance. Best interpretation?", "options": ["Positive relationship with business performance", "Explains exactly 48% of business performance", "Business performance causes digital capability", "Relationship is automatically significant"], "correct": 0}]}, {"label": "Quiz 5 \u2014 Advanced SEM", "questions": [{"id": "q41", "tag": "SEM", "text": "Best SEM for exploratory research with limited theory?", "options": ["CB-SEM", "LISREL", "PLS-SEM", "AMOS"], "correct": 2}, {"id": "q42", "tag": "SEM", "text": "Which is NOT a characteristic of SEM?", "options": ["Models latent variables", "Tests mediation effects", "Relies only on observed variables", "Accounts for measurement error"], "correct": 2}, {"id": "q43", "tag": "Factor Analysis", "text": "Which factor analysis is theory-driven?", "options": ["EFA", "CFA", "PCA", "PLS"], "correct": 1}, {"id": "q44", "tag": "SEM Terminology", "text": "In SEM, which variable only has arrows pointing OUT?", "options": ["Endogenous", "Mediating", "Exogenous", "Criterion"], "correct": 2}, {"id": "q45", "tag": "SmartPLS", "text": "What does the OUTER MODEL represent?", "options": ["Relationships between constructs", "Paths between DVs and IVs", "Measurement via observed indicators", "Path coefficient results"], "correct": 2}, {"id": "q46", "tag": "SEM", "text": "What is a second-order construct?", "options": ["Only observed indicators", "Not allowed in SEM", "Formed by first-order constructs", "Cannot be in SmartPLS"], "correct": 2}, {"id": "s25", "tag": "Scenario", "text": "AI tutoring improves student performance because it first increases engagement. Student engagement is the:", "options": ["Independent variable", "Dependent variable only", "Mediator", "Control variable"], "correct": 2}, {"id": "s26", "tag": "Scenario", "text": "Digital marketing improves SME revenue, but the effect is stronger for firms with high owner digital literacy. Owner digital literacy is a:", "options": ["Mediator", "Moderator", "Dependent variable", "Measurement error"], "correct": 1}, {"id": "s27", "tag": "Scenario", "text": "SmartPLS reports R-squared = 0.64 for customer loyalty. What does this mean?", "options": ["Model explains 64% of variance in customer loyalty", "Loyalty causes 64% of predictors", "Model is 64% accurate", "p-value is 0.64"], "correct": 0}, {"id": "s28", "tag": "Scenario", "text": "Path coefficient is 0.35 but bootstrapping shows p = 0.18. What should the researcher conclude?", "options": ["Relationship is positive but not statistically significant", "Relationship is definitely significant", "Model must be deleted", "Sample size is irrelevant"], "correct": 0}, {"id": "s29", "tag": "Scenario", "text": "Service quality and customer satisfaction are extremely highly correlated and fail discriminant validity. What is the concern?", "options": ["Constructs may not be empirically distinct", "Sample has no respondents", "DV is nominal", "Questionnaire must be translated"], "correct": 0}, {"id": "s30", "tag": "Scenario", "text": "A student deletes survey items to improve model fit, even though those items are important in the literature. Main problem?", "options": ["Letting statistics override theory", "Study has improved automatically", "Study became qualitative", "Sample size doubled"], "correct": 0}, {"id": "s37", "tag": "Viva Challenge", "text": "Comparing customer satisfaction across four restaurant types (fast food, casual, fine dining, cafe) on a 7-point scale. Which analysis?", "options": ["Pearson correlation", "One-way ANOVA", "Chi-square test", "Paired samples t-test"], "correct": 1}, {"id": "s38", "tag": "Viva Challenge", "text": "SMEs with higher digital adoption also report higher revenue. Researcher claims: digital adoption CAUSES revenue growth. Best critique?", "options": ["Too strong \u2014 correlation does not prove causation", "Correct if correlation is positive", "Should use nominal variables only", "Revenue cannot be measured"], "correct": 0}, {"id": "s39", "tag": "Viva Challenge", "text": "Management support affects digital readiness, digital readiness affects business performance. Direct path MS to BP becomes non-significant when digital readiness is included. What might this suggest?", "options": ["Digital readiness may mediate the relationship", "Management support is nominal", "Business performance is unmeasurable", "Model has no theoretical value"], "correct": 0}]}, {"label": "Quiz 6 \u2014 Mixed Methods", "questions": [{"id": "q50", "tag": "Mixed Methods", "text": "What defines mixed methods research?", "options": ["Two statistical tests", "Combining quant and qual", "Using SPSS and SmartPLS", "Surveying two populations"], "correct": 1}, {"id": "q51", "tag": "Mixed Methods", "text": "In EXPLANATORY SEQUENTIAL, what happens first?", "options": ["Qual guides the survey", "Quant first then qual explains", "Both simultaneously", "Pilot study first"], "correct": 1}, {"id": "q52", "tag": "Mixed Methods", "text": "In EXPLORATORY SEQUENTIAL, qual phase purpose?", "options": ["Validate quant findings", "Replace statistics", "Build the survey instrument", "Rich description only"], "correct": 2}, {"id": "q53", "tag": "Mixed Methods", "text": "Which design collects quant and qual SIMULTANEOUSLY?", "options": ["Explanatory Sequential", "Exploratory Sequential", "Convergent Parallel", "Embedded design"], "correct": 2}, {"id": "q54", "tag": "Mixed Methods", "text": "Primary purpose of mixed methods in doctoral research?", "options": ["Longer dissertation", "Examiner requirements", "Triangulation and complete understanding", "Avoid choosing paradigms"], "correct": 2}, {"id": "q55", "tag": "Mixed Methods", "text": "Survey 300 managers then interview 15 to explain findings \u2014 which design?", "options": ["Exploratory Sequential", "Convergent Parallel", "Explanatory Sequential", "Embedded design"], "correct": 2}, {"id": "s31", "tag": "Scenario", "text": "Researcher surveys 500 hotel guests, finds satisfaction is low, then interviews 20 guests to understand WHY. Which design?", "options": ["Exploratory sequential", "Explanatory sequential", "Convergent parallel", "Experimental"], "correct": 1}, {"id": "s32", "tag": "Scenario", "text": "Researcher interviews SME owners to discover barriers, then builds and tests a survey with 400 SMEs. Which design?", "options": ["Exploratory sequential", "Explanatory sequential", "Correlational", "One-way ANOVA"], "correct": 0}, {"id": "s33", "tag": "Scenario", "text": "Researcher collects survey and interview data from university students AT THE SAME TIME, then compares both. Which design?", "options": ["Explanatory sequential", "Exploratory sequential", "Convergent parallel", "Longitudinal experiment"], "correct": 2}, {"id": "s34", "tag": "Scenario", "text": "Survey shows students are satisfied with AI tutoring but interviews reveal anxiety and dependence. What should the researcher do?", "options": ["Ignore interviews \u2014 numbers are better", "Ignore survey \u2014 interviews are deeper", "Use contradiction as important mixed methods insight", "Delete conflicting data"], "correct": 2}, {"id": "s35", "tag": "Scenario", "text": "Why might a researcher combine survey data, interviews, and observation in a study of classroom AI use?", "options": ["Make the study longer", "Strengthen understanding from multiple sources", "Avoid writing a literature review", "Remove need for research questions"], "correct": 1}, {"id": "s36", "tag": "Scenario", "text": "PhD student has limited time and wants to understand why a quantitative relationship was not significant. Most suitable approach?", "options": ["Explanatory sequential design", "Pure experiment", "Nominal scale conversion", "One-way ANOVA only"], "correct": 0}, {"id": "s40", "tag": "Viva Challenge", "text": "A researcher measures entrepreneurial success using only one item: Are you successful? Yes/No. Main weakness?", "options": ["Construct too complex for a single binary item", "Variable has too many dimensions", "Data must be normally distributed", "Sample size is automatically too large"], "correct": 0}, {"id": "s41", "tag": "Viva Challenge", "text": "Student says: Because my questionnaire uses numbers 1-5, all variables are definitely ratio scale. Best response?", "options": ["Not necessarily \u2014 Likert responses are usually ordinal and may be treated as interval carefully", "Correct \u2014 all numbered responses are ratio", "Correct \u2014 all survey data are ratio", "Incorrect \u2014 all survey data are nominal"], "correct": 0}, {"id": "s42", "tag": "Viva Challenge", "text": "An SME income dataset has one company earning RM10 million monthly while most earn below RM100,000. Which statistic is most affected?", "options": ["Mean", "Median", "Mode", "Frequency count"], "correct": 0}]}];
+var SCORES_KEY = 'drtan_scores_v2';
 var answers = {};
 var totalQ = 0;
 var myName = '';
@@ -135,22 +148,24 @@ function buildQuiz() {
   var qnum = 0;
   totalQ = 0;
   SECTIONS.forEach(function(section) {
-    html += '<div class="section-title">⚡ ' + section.label + '</div>';
+    html += '<div class="section-title">&#9889; ' + section.label + '</div>';
     section.questions.forEach(function(q) {
       qnum++;
       totalQ++;
-      html += '<div class="qcard">';
+      html += '<div class="qcard" id="card_' + q.id + '">';
       html += '<div class="qnum">Q' + qnum + ' &bull; ' + q.tag + '</div>';
       html += '<div class="qtext">' + q.text + '</div>';
-      var optsHtml = '';
+      html += '<div id="opts_' + q.id + '">';
       for (var i = 0; i < q.options.length; i++) {
-        optsHtml += '<button class="opt" id="opt_' + q.id + '_' + i + '" ';
-        optsHtml += 'data-qid="' + q.id + '" data-idx="' + i + '" ';
-        optsHtml += 'onclick="pick(this)">';
-        optsHtml += String.fromCharCode(65+i) + ') ' + q.options[i];
-        optsHtml += '</button>';
+        html += '<button class="opt" id="opt_' + q.id + '_' + i + '"';
+        html += ' data-qid="' + q.id + '" data-idx="' + i + '" data-correct="' + q.correct + '"';
+        html += ' onclick="pick(this)">';
+        html += String.fromCharCode(65+i) + ') ' + q.options[i];
+        html += '</button>';
       }
-      html += optsHtml + '</div>';
+      html += '</div>';
+      html += '<div id="fb_' + q.id + '" class="feedback hidden"></div>';
+      html += '</div>';
     });
   });
   document.getElementById('quiz-body').innerHTML = html;
@@ -159,15 +174,41 @@ function buildQuiz() {
 
 function pick(btn) {
   var qid = btn.getAttribute('data-qid');
+  if (answers[qid] !== undefined) return; // already answered
   var idx = parseInt(btn.getAttribute('data-idx'));
-  // Deselect siblings
-  var parent = btn.parentNode;
-  var siblings = parent.querySelectorAll('.opt');
-  for (var i = 0; i < siblings.length; i++) {
-    siblings[i].classList.remove('sel');
+  var correct = parseInt(btn.getAttribute('data-correct'));
+  
+  // Disable all options for this question
+  var opts = document.getElementById('opts_' + qid).querySelectorAll('.opt');
+  for (var i = 0; i < opts.length; i++) {
+    opts[i].disabled = true;
   }
-  btn.classList.add('sel');
-  answers[qid] = idx;
+  
+  var isCorrect = (idx === correct);
+  answers[qid] = {idx: idx, correct: isCorrect};
+  
+  // Show feedback
+  btn.classList.add(isCorrect ? 'correct-ans' : 'wrong-ans');
+  if (!isCorrect) {
+    // Highlight correct answer
+    document.getElementById('opt_' + qid + '_' + correct).classList.add('correct-ans');
+  }
+  
+  // Show feedback message
+  var fb = document.getElementById('fb_' + qid);
+  fb.classList.remove('hidden');
+  if (isCorrect) {
+    fb.className = 'feedback correct';
+    fb.textContent = 'Correct!';
+  } else {
+    fb.className = 'feedback wrong';
+    fb.textContent = 'Incorrect — see the highlighted correct answer above.';
+  }
+  
+  // Update card border
+  var card = document.getElementById('card_' + qid);
+  card.classList.add(isCorrect ? 'correct' : 'wrong');
+  
   updateProg();
 }
 
@@ -180,7 +221,7 @@ function updateProg() {
   var hint = document.getElementById('submit-hint');
   if (done === totalQ) {
     btn.disabled = false;
-    hint.textContent = 'All answered — ready to submit!';
+    hint.textContent = 'All answered - ready to submit!';
     hint.style.color = '#10b981';
   } else {
     btn.disabled = true;
@@ -191,36 +232,37 @@ function updateProg() {
 
 function submitQuiz() {
   var correct = 0;
-  SECTIONS.forEach(function(section) {
-    section.questions.forEach(function(q) {
-      if (answers[q.id] === q.correct) correct++;
-    });
+  var wrong = 0;
+  Object.keys(answers).forEach(function(k) {
+    if (answers[k].correct) correct++;
+    else wrong++;
   });
   var pct = Math.round(correct/totalQ*100);
-  // Save score
   var scores = [];
   try { scores = JSON.parse(localStorage.getItem(SCORES_KEY) || '[]'); } catch(e) {}
   scores = scores.filter(function(s) { return s.name.toLowerCase() !== myName.toLowerCase(); });
-  scores.push({name: myName, score: correct, total: totalQ, pct: pct, ts: Date.now()});
+  scores.push({name: myName, score: correct, wrong: wrong, total: totalQ, pct: pct, ts: Date.now()});
   scores.sort(function(a,b) { return b.score - a.score; });
   if (scores.length > 50) scores = scores.slice(0,50);
   localStorage.setItem(SCORES_KEY, JSON.stringify(scores));
-  showResults(correct, totalQ, pct, scores);
+  showResults(correct, wrong, totalQ, pct, scores);
 }
 
-function showResults(score, total, pct, scores) {
-  document.getElementById('r-score').textContent = score + '/' + total;
-  var grade = pct >= 90 ? '🏆 Distinction!' : pct >= 75 ? '🎯 Merit!' : pct >= 60 ? '✅ Pass!' : '📚 Keep Studying!';
+function showResults(correct, wrong, total, pct, scores) {
+  document.getElementById('r-score').textContent = correct + '/' + total;
+  document.getElementById('r-correct').textContent = correct;
+  document.getElementById('r-wrong').textContent = wrong;
+  var grade = pct >= 90 ? 'Distinction!' : pct >= 75 ? 'Merit!' : pct >= 60 ? 'Pass!' : 'Keep Studying!';
   var gradeEl = document.getElementById('r-grade');
   gradeEl.textContent = grade;
   gradeEl.style.color = pct >= 60 ? '#10b981' : '#f59e0b';
   document.getElementById('lb-count').textContent = scores.length + ' students';
-  var medals = ['🥇','🥈','🥉'];
+  var medals = ['1st','2nd','3rd'];
   var html = '';
   scores.forEach(function(s, i) {
     var isMe = s.name.toLowerCase() === myName.toLowerCase();
     html += '<div class="lb-row' + (isMe?' me':'') + '">';
-    html += '<span class="lb-rank">' + (medals[i] || (i+1)) + '</span>';
+    html += '<span class="lb-rank">' + (i < 3 ? medals[i] : (i+1)) + '</span>';
     html += '<span class="lb-name">' + s.name + (isMe?' (you)':'') + '</span>';
     html += '<span class="lb-sc">' + s.score + '/' + s.total + '</span>';
     html += '<span class="lb-pct">' + s.pct + '%</span>';
@@ -236,7 +278,6 @@ function retry() {
   show('pg-quiz');
 }
 
-// Pre-fill name if known
 window.onload = function() {
   var saved = localStorage.getItem('student_name_v1');
   if (saved) document.getElementById('name-input').value = saved;

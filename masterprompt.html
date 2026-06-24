@@ -32,7 +32,7 @@ p{color:var(--muted);font-size:0.82rem;margin-bottom:1rem;}
   <p>Tap "Copy All" then paste into a new Claude conversation to resume exactly where you left off.</p>
   <div class="prompt-box" id="prompt-text">
 # MASTER PROMPT — Research Methods Refined by AI
-## Session Continuity Document · Version 2.0 · 24 June 2026
+## Session Continuity Document · Version 3.0 · 24 June 2026
 
 ---
 
@@ -56,10 +56,10 @@ You are assisting **Professor Dr. Teik-Kheong Tan, PhD · IEEE**, faculty at **S
 **Files in repo:**
 - `index.html` — registration-gated home page + live class dashboard
 - `lecture.html` — full 4-hour self-driven lecture (6 modules)
-- `quiz.html` — live quiz (6 banks, 55 questions, wall of shame)
+- `quiz.html` — self-contained quiz with home screen, 6 sections, 94 questions, instant right/wrong feedback, per-section leaderboard
 - `instructor.html` — instructor command centre (PIN 6664, pulls roster from Worker)
 - `notes.html` — PRIVATE speaker notes (phone only, never share screen)
-- `answers.html` — PRIVATE answer discussion scripts for all 55 questions
+- `answers.html` — PRIVATE answer discussion scripts for all 94 questions (55 original + 42 scenario scripts added 24 Jun 2026)
 - `ask.html` — live AI Q&A powered by Claude API
 - `seed.html` — inject 15 demo students for dashboard testing
 - `masterprompt.html` — this page (hidden, not linked anywhere)
@@ -105,7 +105,7 @@ print("OK:", result['commit']['sha'][:12])
 
 ### 2. THE QUIZ SYSTEM
 
-**55 questions across 6 banks:**
+**94 questions across 6 banks (52 original + 42 new scenario questions from Google Doc):**
 - Quiz 1: Central Tendency & Scales (10 MCQ) — after Module 1
 - Quiz 2: Distribution & Correlation (10 MCQ) — after Module 2
 - Quiz 3: Inferential Tests (10 MCQ) — after SPSS demo
@@ -113,8 +113,15 @@ print("OK:", result['commit']['sha'][:12])
 - Quiz 5: Advanced SEM & Reflection (9 Q incl. 2 Likert + 1 open) — end of Module 5
 - Quiz 6: Mixed Methods (6 MCQ) — after Module 6
 
-**Quiz flow (NEW as of 24 June 2026):**
-Professor Dr. Tan launches an ENTIRE quiz bank at once (not question by question). Students work through all questions at their own pace. Wall of shame shows who has NOT finished. Dr. Tan locks the quiz when time is up, then reveals and discusses answers using answers.html.
+**Quiz flow (FINAL as of 24 June 2026):**
+- Quiz is fully self-contained — NO Cloudflare Worker dependency
+- Student opens quiz.html → home screen shows 6 quiz section cards
+- Student enters name → clicks a section → answers all questions in that section
+- INSTANT right/wrong feedback on every question as they answer
+- After all answered → Submit → see score, correct/wrong count, and per-section leaderboard
+- Can proceed to next section via "Next Quiz" button
+- Scores stored in localStorage — leaderboard shows all students who used same device/browser
+- Dr. Tan discusses answers using answers.html (now has scripts for all 94 questions)
 
 **Wall of shame:** All registered student names shown in RED when quiz launched. Names disappear as students respond. Visible to ALL students on their screens — public social pressure. Session guard prevents stale results from prior sessions.
 
@@ -266,7 +273,7 @@ Every concept in lecture, notes, book must have examples from:
 
 ---
 
-*Master Prompt v2.0 · Generated 24 June 2026 · Research Methods Website, Quiz System, Speaker Notes & Book*
+*Master Prompt v3.0 · Updated 24 June 2026 · Research Methods Website, Quiz System, Speaker Notes & Book*
   </div>
 </div>
 

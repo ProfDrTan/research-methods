@@ -4,365 +4,243 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Live Quiz — Dr. Tan</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Space+Mono:wght@400;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
-:root{--bg:#020817;--surface:#161f30;--border:#1e2d45;--cyan:#00e5ff;--violet:#7c3aed;--green:#10b981;--amber:#f59e0b;--red:#ef4444;--text:#e2e8f0;--muted:#64748b;--mono:'Space Mono',monospace;--sans:'Space Grotesk',sans-serif;}
-body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;}
-
-nav{background:rgba(2,8,23,0.95);border-bottom:1px solid var(--border);padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:52px;position:sticky;top:0;z-index:100;}
-.nav-brand{font-family:var(--mono);font-size:0.8rem;color:var(--cyan);}
-.nav-links{display:flex;gap:0.4rem;}
-.nb{font-family:var(--sans);font-size:0.78rem;font-weight:500;padding:0.3rem 0.75rem;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;}
-.nb:hover,.nb.active{color:var(--cyan);border-color:var(--cyan);}
-
+body{background:#020817;color:#e2e8f0;font-family:Arial,sans-serif;min-height:100vh;}
+nav{background:#0b1120;border-bottom:1px solid #1e2d45;padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:52px;position:sticky;top:0;z-index:100;}
+.brand{font-family:monospace;font-size:0.85rem;color:#00e5ff;}
+.nav-links a{color:#64748b;text-decoration:none;margin-left:1rem;font-size:0.85rem;}
+.nav-links a:hover{color:#00e5ff;}
 .wrap{max-width:780px;margin:0 auto;padding:1.5rem 1rem;}
 
-/* NAME ENTRY */
-.name-screen{text-align:center;padding:4rem 1rem;}
-.name-screen h2{font-family:var(--sans);font-weight:700;font-size:1.4rem;margin-bottom:0.5rem;}
-.name-screen p{color:var(--muted);margin-bottom:1.5rem;}
-.name-input{width:100%;max-width:360px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:0.85rem;color:var(--text);font-size:1rem;outline:none;margin-bottom:0.75rem;display:block;margin-left:auto;margin-right:auto;}
-.name-input:focus{border-color:var(--cyan);}
-.start-btn{padding:0.85rem 2.5rem;background:linear-gradient(135deg,var(--cyan),#0097b2);color:#000;border:none;border-radius:8px;font-family:var(--sans);font-weight:700;font-size:1rem;cursor:pointer;}
+/* NAME */
+.name-box{text-align:center;padding:5rem 1rem;}
+.name-box h2{font-size:1.6rem;font-weight:700;margin-bottom:0.5rem;}
+.name-box p{color:#64748b;margin-bottom:1.5rem;}
+#name-input{width:100%;max-width:380px;background:#111827;border:1px solid #1e2d45;border-radius:8px;padding:0.9rem;color:#e2e8f0;font-size:1rem;outline:none;margin-bottom:1rem;}
+#name-input:focus{border-color:#00e5ff;}
+#start-btn{padding:0.9rem 2.5rem;background:#00b4cc;color:#000;border:none;border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer;}
 
 /* QUIZ */
-.quiz-header{margin-bottom:1.5rem;}
-.quiz-header h2{font-family:var(--sans);font-weight:700;font-size:1.2rem;margin-bottom:0.25rem;}
-.quiz-header p{color:var(--muted);font-size:0.85rem;}
-.progress-bar{height:6px;background:var(--border);border-radius:3px;margin-top:0.75rem;overflow:hidden;}
-.progress-fill{height:100%;background:linear-gradient(90deg,var(--cyan),var(--violet));border-radius:3px;transition:width 0.3s;}
+.section-title{font-size:0.7rem;letter-spacing:0.15em;color:#a78bfa;text-transform:uppercase;margin:1.5rem 0 0.75rem;padding-bottom:0.5rem;border-bottom:1px solid #1e2d45;}
+.qcard{background:#161f30;border:1px solid #1e2d45;border-radius:10px;padding:1.25rem;margin-bottom:1rem;}
+.qnum{font-size:0.7rem;color:#64748b;font-family:monospace;margin-bottom:0.5rem;}
+.qtext{font-size:0.95rem;font-weight:600;line-height:1.45;margin-bottom:1rem;}
+.opt{display:block;width:100%;padding:0.65rem 1rem;border:1px solid #1e2d45;border-radius:7px;background:transparent;color:#e2e8f0;font-size:0.88rem;text-align:left;cursor:pointer;margin-bottom:0.45rem;}
+.opt:hover{border-color:#00e5ff;background:rgba(0,229,255,0.04);}
+.opt.sel{border-color:#7c3aed;background:rgba(124,58,237,0.15);color:#fff;}
+.prog-bar{height:5px;background:#1e2d45;border-radius:3px;margin:0.5rem 0 1.5rem;}
+.prog-fill{height:100%;background:#00e5ff;border-radius:3px;transition:width 0.3s;}
+#prog-label{color:#64748b;font-size:0.82rem;}
 
-.section-header{font-family:var(--mono);font-size:0.65rem;letter-spacing:0.12em;color:var(--violet);text-transform:uppercase;margin:1.5rem 0 0.75rem;padding:0.5rem 0;border-bottom:1px solid var(--border);}
-
-.q-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.25rem;margin-bottom:1rem;}
-.q-num{font-family:var(--mono);font-size:0.62rem;color:var(--muted);margin-bottom:0.5rem;}
-.q-text{font-family:var(--sans);font-weight:600;font-size:0.95rem;line-height:1.45;margin-bottom:1rem;}
-.options{display:flex;flex-direction:column;gap:0.45rem;}
-.opt{padding:0.6rem 0.9rem;border:1px solid var(--border);border-radius:7px;cursor:pointer;font-size:0.86rem;display:flex;align-items:center;gap:0.6rem;background:transparent;color:var(--text);text-align:left;width:100%;transition:all 0.12s;}
-.opt:hover{border-color:var(--cyan);background:rgba(0,229,255,0.04);}
-.opt.selected{border-color:var(--violet);background:rgba(124,58,237,0.12);color:#fff;}
-.opt-letter{font-family:var(--mono);font-size:0.7rem;color:var(--muted);flex-shrink:0;width:16px;}
-
-.submit-section{text-align:center;padding:2rem 0;}
-.submit-btn{padding:1rem 3rem;background:linear-gradient(135deg,var(--green),#059669);color:#fff;border:none;border-radius:10px;font-family:var(--sans);font-weight:700;font-size:1.05rem;cursor:pointer;}
-.submit-btn:disabled{opacity:0.4;cursor:not-allowed;}
+/* SUBMIT */
+.submit-area{text-align:center;padding:2rem 0;}
+#submit-btn{padding:1rem 3rem;background:#10b981;color:#fff;border:none;border-radius:10px;font-size:1.05rem;font-weight:700;cursor:pointer;}
+#submit-btn:disabled{background:#1e2d45;color:#64748b;cursor:not-allowed;}
 
 /* RESULTS */
-.score-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:2rem;text-align:center;margin-bottom:1.5rem;}
-.score-num{font-family:var(--mono);font-size:3.5rem;font-weight:700;color:var(--cyan);}
-.score-label{color:var(--muted);font-size:0.9rem;margin-top:0.25rem;}
-.score-grade{font-family:var(--sans);font-weight:700;font-size:1.1rem;margin-top:0.75rem;}
-
-.leaderboard{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:1.5rem;}
-.lb-header{padding:0.85rem 1.25rem;border-bottom:1px solid var(--border);font-family:var(--mono);font-size:0.65rem;letter-spacing:0.1em;color:var(--muted);text-transform:uppercase;display:flex;justify-content:space-between;}
-.lb-row{padding:0.7rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:0.75rem;font-size:0.88rem;}
+.score-box{background:#161f30;border:1px solid #1e2d45;border-radius:14px;padding:2rem;text-align:center;margin-bottom:1.5rem;}
+.score-big{font-family:monospace;font-size:3.5rem;font-weight:700;color:#00e5ff;}
+.score-grade{font-size:1.1rem;font-weight:700;margin-top:0.75rem;}
+.lb{background:#161f30;border:1px solid #1e2d45;border-radius:12px;overflow:hidden;margin-bottom:1.5rem;}
+.lb-head{padding:0.8rem 1.25rem;border-bottom:1px solid #1e2d45;font-size:0.7rem;letter-spacing:0.1em;color:#64748b;text-transform:uppercase;display:flex;justify-content:space-between;}
+.lb-row{padding:0.7rem 1.25rem;border-bottom:1px solid #1e2d45;display:flex;align-items:center;gap:0.75rem;font-size:0.88rem;}
 .lb-row:last-child{border-bottom:none;}
-.lb-row.me{background:rgba(0,229,255,0.05);border-left:3px solid var(--cyan);}
-.lb-rank{font-family:var(--mono);font-size:0.72rem;color:var(--muted);width:24px;flex-shrink:0;}
-.lb-rank.gold{color:#f59e0b;font-weight:700;}
-.lb-rank.silver{color:#94a3b8;font-weight:700;}
-.lb-rank.bronze{color:#b45309;font-weight:700;}
+.lb-row.me{background:rgba(0,229,255,0.05);border-left:3px solid #00e5ff;}
+.lb-rank{font-family:monospace;font-size:0.72rem;color:#64748b;width:28px;}
 .lb-name{flex:1;font-weight:600;}
-.lb-score{font-family:var(--mono);font-size:0.82rem;color:var(--cyan);}
-.lb-pct{font-family:var(--mono);font-size:0.72rem;color:var(--muted);}
+.lb-sc{font-family:monospace;color:#00e5ff;}
+.lb-pct{font-family:monospace;font-size:0.72rem;color:#64748b;}
+#retry-btn{padding:0.75rem 2rem;background:transparent;border:1px solid #1e2d45;color:#64748b;border-radius:8px;font-size:0.9rem;font-weight:600;cursor:pointer;margin-top:0.5rem;}
+#retry-btn:hover{border-color:#00e5ff;color:#00e5ff;}
 
-.retry-btn{padding:0.75rem 2rem;background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:8px;font-family:var(--sans);font-weight:600;font-size:0.9rem;cursor:pointer;margin-top:0.5rem;}
-.retry-btn:hover{border-color:var(--cyan);color:var(--cyan);}
-
-/* SCREENS */
-.screen{display:none;}
-.screen.active{display:block;}
+.hidden{display:none;}
 </style>
 </head>
 <body>
 <nav>
-  <div class="nav-brand">DR.TAN // LIVE QUIZ</div>
+  <div class="brand">DR.TAN // LIVE QUIZ</div>
   <div class="nav-links">
-    <a href="lecture.html" class="nb">📖 Lecture</a>
-    <a href="index.html" class="nb">← Home</a>
+    <a href="lecture.html">📖 Lecture</a>
+    <a href="index.html">← Home</a>
   </div>
 </nav>
 
-<!-- NAME ENTRY -->
-<div class="screen active" id="screen-name">
-  <div class="name-screen">
+<div id="pg-name">
+  <div class="name-box">
     <div style="font-size:2.5rem;margin-bottom:1rem;">📝</div>
     <h2>Research Methods Quiz</h2>
-    <p>Enter your name to begin. All 55 questions across 6 sections.</p>
-    <input class="name-input" id="name-input" type="text" placeholder="Your full name e.g. Aisha Rahman"
-      onkeydown="if(event.key==='Enter')startQuiz()">
-    <br>
-    <button class="start-btn" onclick="startQuiz()">Start Quiz →</button>
+    <p>Enter your name to begin. All 52 questions across 6 sections.</p>
+    <input type="text" id="name-input" placeholder="Your full name e.g. Aisha Rahman"><br>
+    <button id="start-btn" onclick="startQuiz()">Start Quiz →</button>
   </div>
 </div>
 
-<!-- QUIZ -->
-<div class="screen" id="screen-quiz">
+<div id="pg-quiz" class="hidden">
   <div class="wrap">
-    <div class="quiz-header">
-      <h2>Research Methods — All Sections</h2>
-      <p id="quiz-progress-label">0 of 55 answered</p>
-      <div class="progress-bar"><div class="progress-fill" id="quiz-progress" style="width:0%"></div></div>
-    </div>
+    <div id="prog-label">0 answered</div>
+    <div class="prog-bar"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
     <div id="quiz-body"></div>
-    <div class="submit-section">
-      <button class="submit-btn" id="submit-btn" onclick="submitQuiz()" disabled>Submit All Answers</button>
-      <p style="color:var(--muted);font-size:0.78rem;margin-top:0.75rem;" id="submit-hint">Answer all questions to submit</p>
+    <div class="submit-area">
+      <button id="submit-btn" disabled onclick="submitQuiz()">Submit All Answers</button>
+      <p style="color:#64748b;font-size:0.8rem;margin-top:0.75rem;" id="submit-hint">Answer all questions to submit</p>
     </div>
   </div>
 </div>
 
-<!-- RESULTS -->
-<div class="screen" id="screen-results">
+<div id="pg-results" class="hidden">
   <div class="wrap">
-    <div class="score-card">
-      <div class="score-num" id="r-score">0/55</div>
-      <div class="score-label">Your Score</div>
+    <div class="score-box">
+      <div class="score-big" id="r-score"></div>
+      <div style="color:#64748b;">Your Score</div>
       <div class="score-grade" id="r-grade"></div>
     </div>
-    <div class="leaderboard">
-      <div class="lb-header"><span>Leaderboard</span><span id="lb-count"></span></div>
+    <div class="lb">
+      <div class="lb-head"><span>🏆 Leaderboard</span><span id="lb-count"></span></div>
       <div id="lb-body"></div>
     </div>
     <div style="text-align:center;">
-      <button class="retry-btn" onclick="retryQuiz()">🔄 Try Again</button>
+      <button id="retry-btn" onclick="retry()">🔄 Try Again</button>
     </div>
   </div>
 </div>
 
 <script>
-const BREAKS = {
-  1:{label:'Quiz 1 — Central Tendency & Scales',questions:[
-    {id:'q01',tag:'Central Tendency',type:'mcq',text:'What is the mean in statistics?',context:'Think about the arithmetic operation used to calculate it.',options:['The most frequently occurring score','The middle score when data are ordered','The arithmetic average of the scores','The spread of scores from highest to lowest'],correct:2,explanation:'The mean is the arithmetic average — sum all scores and divide by n. It uses every value, which makes it sensitive to outliers.'},
-    {id:'q02',tag:'Measurement Scales',type:'mcq',text:'Which measure is best for nominal data?',context:'Nominal data has categories only — no order, no distance. Which statistic is valid?',options:['Mean','Standard Deviation','Median','Mode'],correct:3,explanation:'The Mode is the only valid measure of central tendency for nominal data. You can only count frequencies and report the most common category.'},
-    {id:'q03',tag:'Central Tendency',type:'mcq',text:'Which is NOT a measure of central tendency?',context:'Three of these four describe the "middle" of data. One describes something else entirely.',options:['Mode','Median','Mean','Standard Deviation'],correct:3,explanation:'Standard Deviation measures spread (dispersion), not central tendency. The three measures of central tendency are mean, median, and mode.'},
-    {id:'q04',tag:'Graphing',type:'mcq',text:'Which graph suits categorical data best?',context:'Think about what type of data each chart is designed to display.',options:['Boxplot','Histogram','Bar chart','Scatterplot'],correct:2,explanation:'Bar charts display frequencies or counts for categorical (nominal or ordinal) data. Histograms are for continuous data; boxplots show distributions; scatterplots show relationships between two continuous variables.'},
-    {id:'q05',tag:'Dispersion',type:'mcq',text:'What does standard deviation measure?',context:'It is a measure of dispersion — what does it tell you about your data?',options:['Central location','Spread of scores','Most frequent value','Average rank'],correct:1,explanation:'Standard deviation measures how spread out scores are around the mean. A small SD means scores cluster tightly; a large SD means they are widely dispersed.'},
-    {id:'q06',tag:'Measurement Scales',type:'mcq',text:'What type of data has a true zero point?',context:'A true zero means the complete absence of the quantity being measured.',options:['Nominal','Ordinal','Interval','Ratio'],correct:3,explanation:'Ratio scale has a true zero — salary, age, weight, defect rate. Zero means NONE of the quantity exists. This enables ratio statements: Factory A has TWICE the defect rate of Factory B. Company X earns THREE TIMES the revenue of Company Y. You cannot make ratio statements with interval data — 40 degrees Celsius is NOT twice as hot as 20 degrees because 0 Celsius does not mean no heat. In your dissertation: classify every variable before choosing tests. Revenue, headcount, years in operation, defect rates — ratio. Likert scale items — interval. Country of origin — nominal. Getting this wrong invalidates your statistical choices.'},
-    {id:'q07',tag:'Measurement Scales',type:'mcq',text:'Which statistic is most appropriate for ordinal data?',context:'Ordinal data has order but unequal intervals. Which measure respects this?',options:['Mode','Mean','Median','Variance'],correct:2,explanation:'The Median is appropriate for ordinal data because it respects the order without assuming equal intervals between ranks. The mean assumes equal intervals which ordinal data cannot guarantee.'},
-    {id:'q08',tag:'Graphing',type:'mcq',text:'What is a histogram best used for?',context:'Think about the type of data a histogram is designed to display.',options:['Distribution of continuous data','Comparing groups','Frequencies in pie form','Displaying categories'],correct:0,explanation:'Histograms show the distribution of one continuous variable by grouping values into bins. They reveal shape, spread, skewness, and outliers in your data.'},
-    {id:'q09',tag:'Graphing',type:'mcq',text:'Which graph is best for nominal data?',context:'Four chart types — which one is specifically designed for categorical data?',options:['Histogram','Boxplot','Line graph','Bar chart'],correct:3,explanation:'Bar charts display counts or frequencies for nominal categories. Each bar represents a category; height shows frequency or percentage.'},
-    {id:'q10',tag:'Central Tendency',type:'mcq',text:'Which statistic shows the most frequent value?',context:'One measure of central tendency specifically identifies the value that appears most often.',options:['Mode','Mean','Range','Median'],correct:0,explanation:'The Mode is the most frequently occurring value. It is the only measure valid for nominal data and can be used with any scale level.'}
-  ]},
-  2:{label:'Quiz 2 — Distribution, Dispersion & Correlation',questions:[
-    {id:'q11',tag:'Dispersion',type:'mcq',text:'Which is a measure of dispersion?',context:'Dispersion describes spread. Three of these describe central tendency; one describes spread.',options:['Mean','Standard Deviation','Mode','Median'],correct:1,explanation:'Standard Deviation is a measure of dispersion — it quantifies how spread out scores are around the mean. Mean, mode, and median all describe central tendency.'},
-    {id:'q12',tag:'Skewness',type:'mcq',text:'Which distribution has a tail to the right?',context:'Think about where the tail stretches — right or left?',options:['Positively skewed','Negatively skewed','Leptokurtic','Normal'],correct:0,explanation:'Positive skew (right skew) has a long tail to the right. The bulk of data sits on the left with a few high outliers pulling the tail rightward. Income distributions are a classic example.'},
-    {id:'q13',tag:'Kurtosis',type:'mcq',text:'What does kurtosis describe?',context:'You know mean (1st moment), SD (2nd), skewness (3rd) — what is the 4th moment?',options:['Symmetry','Peakedness or flatness','Skewness','Centrality'],correct:1,explanation:'Kurtosis is the 4th moment — it describes the peakedness (leptokurtic, +ve) or flatness (platykurtic, -ve) of a distribution relative to a normal curve.'},
-    {id:'q14',tag:'Normal Distribution',type:'mcq',text:'How much data falls within ±2 standard deviations of the mean?',context:'Recall the empirical rule — 68%, 95%, 99.9%.',options:['68%','99.9%','95%','50%'],correct:2,explanation:'The 68-95-99.9 rule is one of the most important numbers in statistics — memorise it permanently. It underpins confidence intervals, z-scores, and hypothesis testing. Practical meaning: exam scores with mean 65 and SD 10 — 68% of students score between 55 and 75 (plus or minus 1 SD), 95% score between 45 and 85 (plus or minus 2 SD). In SEM: when SmartPLS bootstrapping reports a 95% confidence interval, it uses plus or minus 2 SD logic. If the confidence interval for a path coefficient does not include zero — the path is significant. This rule connects descriptive statistics directly to inferential testing.'},
-    {id:'q15',tag:'Correlation',type:'mcq',text:'What value indicates the strongest correlation?',context:'Correlation ranges from -1 to +1. Strength is about the absolute value.',options:['0.65','-0.90','0.30','-0.25'],correct:1,explanation:'Correlation strength is ALWAYS about the absolute value — the sign shows direction only. Negative 0.90 is stronger than positive 0.65 because 0.90 is closer to 1.0. Social science benchmarks: absolute r below 0.3 is weak, 0.3 to 0.5 is moderate, above 0.5 is strong, above 0.7 is very strong. In your results chapter: always report both direction and strength. Never just say there is a significant correlation — tell your examiner HOW strong and in WHICH direction. A correlation of negative 0.90 between study hours and exam anxiety is one of the strongest relationships you can find in education research.'},
-    {id:'q16',tag:'Correlation',type:'mcq',text:'Positive correlation means:',context:'Think about how the two variables move in relation to each other.',options:['One goes up, the other down','No relationship','Both increase together','Both decrease'],correct:2,explanation:'Positive correlation: both variables move in the same direction. Training hours and productivity — more training, higher output. Marketing spend and sales — more advertising, more revenue. Negative correlation: variables move in opposite directions. Stress and satisfaction — higher stress, lower satisfaction. Price and demand — higher price, lower quantity. Critical warning: correlation does NOT imply causation. Ice cream sales correlate positively with drowning rates — both increase in summer. The season is the real cause. In your dissertation: when you report correlations, always discuss the plausible mechanism behind the relationship. Why would these variables move together?'},
-    {id:'q17',tag:'Regression',type:'mcq',text:'What does regression analysis do?',context:'Think about the purpose of regression beyond just describing relationships.',options:['Compare means','Test variance','Measure dispersion','Predict an outcome'],correct:3,explanation:'Regression is more powerful than correlation because it tells you the DIRECTION and MAGNITUDE of relationships AND allows you to control for other variables simultaneously. The equation Y equals a plus b1X1 plus b2X2 plus epsilon. Each b coefficient means: for every one unit increase in X, Y changes by b units, HOLDING ALL OTHER VARIABLES CONSTANT. In manufacturing: Y is defect rate, X1 is training hours (b1 equals negative 0.3), X2 is machine age. Every additional training hour reduces defects by 0.3 units. You can now predict outcomes and make evidence-based management decisions — this is applied research at its best.'},
-    {id:'q18',tag:'Research Variables',type:'mcq',text:'What is the dependent variable?',context:'Think about which variable is being influenced or predicted in a study.',options:['Independent variable','Outcome to predict','Moderator','Confounder'],correct:1,explanation:'The dependent variable is what you want to explain or predict. The independent variable is the predictor or cause. Every hypothesis follows this structure: IV positively influences DV. Arrow goes from IV to DV. In SEM: DVs are called endogenous variables (arrows point IN). IVs are called exogenous variables (arrows point OUT). A variable can be BOTH: Satisfaction is the DV with respect to Service Quality but the IV with respect to Loyalty. This is mediation — Satisfaction mediates the Service Quality to Loyalty relationship. Understanding variable roles is foundational to building your conceptual framework.'},
-    {id:'q19',tag:'Central Tendency',type:'mcq',text:'Which measure of central tendency is MOST robust to extreme outliers?',context:'A CEO earns $5 million; other employees earn $30k–$50k. Which measure best represents the typical person?',options:['Mean','Median','Mode','Variance'],correct:1,explanation:'The Median is not pulled by extreme values — it simply reports the middle value. The Mean would be hugely inflated by the CEO salary.'},
-    {id:'q20',tag:'Normal Distribution',type:'mcq',text:'In a normal distribution, what percentage of data falls within ±1 SD of the mean?',context:'Recall the three key percentages of the empirical rule.',options:['50%','68%','95%','99.9%'],correct:1,explanation:'68% within plus or minus 1 SD is the starting point of the empirical rule. Connect it to real data: employee engagement with mean 4.5 and SD 0.8 — 68% of employees score between 3.7 and 5.3. One-third of your sample falls outside this range — either highly engaged or disengaged. This is useful for identifying segments worth investigating. In quality control: manufacturing process with mean output 1,000 units per hour and SD 50 — 68% of hours produce between 950 and 1,050. Any hour below 900 or above 1,100 is statistically unusual and warrants investigation. Statistics is not abstract — every number tells a management story.'}
-  ]},
-  3:{label:'Quiz 3 — Inferential Statistics & Statistical Tests',questions:[
-    {id:'q21',tag:'Statistical Tests',type:'mcq',text:'Which test compares means between groups?',context:'You want to know if satisfaction differs between male and female customers.',options:['Chi-square','Z-test','T-test','Skew test'],correct:2,explanation:'T-tests compare means between groups. Independent samples t-test for two separate groups; paired t-test for the same group measured twice. Chi-square is for categorical data only.'},
-    {id:'q22',tag:'Statistical Tests',type:'mcq',text:'Which test is used for two nominal variables?',context:'You want to test if gender (nominal) is related to employment category (nominal).',options:['Chi-square','T-test','Regression','Histogram'],correct:0,explanation:'Chi-Square tests the association between two categorical (nominal or ordinal) variables. In the ABC Company case, we used chi-square to test whether gender is related to employment category.'},
-    {id:'q23',tag:'p-values',type:'mcq',text:'A study reports p = 0.003. What does this correctly mean?',context:'Carefully parse the exact meaning of a p-value — this is a classic viva question.',options:['0.3% probability the hypothesis is true','99.7% chance the result is correct','0.3% probability of this result if null hypothesis is true','The effect is practically significant'],correct:2,explanation:'The p-value is the probability of observing your result (or something more extreme) IF the null hypothesis were true. It does not tell you whether your hypothesis is correct or the effect is important.'},
-    {id:'q24',tag:'Chi-Square',type:'mcq',text:'ABC Company: Is gender related to employment category? Which test?',context:'Both variables are categorical (nominal). What test applies?',options:['Independent T-test','Chi-Square','Pearson Correlation','Paired T-test'],correct:1,explanation:'Chi-Square is correct — both gender and employment category are nominal variables. Chi-Square tests whether the distribution of one categorical variable differs across levels of another.'},
-    {id:'q25',tag:'Correlation',type:'mcq',text:'Pearson r = -0.72 between study hours and exam anxiety. This indicates:',context:'Interpret both direction AND strength.',options:['Weak negative relationship','Strong positive relationship','Strong negative — more study associated with lower anxiety','No meaningful relationship'],correct:2,explanation:'Interpreting correlation requires THREE elements: direction, magnitude, and significance. Direction: negative means inverse relationship — more study hours, less anxiety. Magnitude: 0.72 is strong — absolute r above 0.5 is strong, above 0.7 is very strong in social science. Significance: p less than 0.05 confirms this is not due to chance. Practical meaning: this tells educators that study skills interventions may simultaneously reduce exam anxiety — an actionable implication drawn directly from a single coefficient. In your dissertation: never just report the number. Always interpret it in context and translate it into a practical recommendation.'},
-    {id:'q26',tag:'Statistical Tests',type:'mcq',text:'ABC Company: "Is there a difference between beginning and current salaries?" Which test?',context:'The SAME employees measured at two different time points.',options:['Independent T-test','Chi-Square','Paired Samples T-test','ANOVA'],correct:2,explanation:'Paired Samples T-test compares two measurements from the SAME group. Each employee has a beginning salary and a current salary — this is a matched pairs (repeated measures) design.'},
-    {id:'q27',tag:'Regression',type:'mcq',text:'Which variable is predicted in a regression equation?',context:'Regression has one outcome and one or more predictors.',options:['Independent variable','Dependent variable','Moderator','Control variable'],correct:1,explanation:'In regression, Y is the outcome — what you want to predict. Everything else is a predictor. Multiple regression: Y equals a plus b1X1 plus b2X2 plus b3X3. In hospitality: predict hotel RevPAR (Y) from occupancy rate (X1), average room rate (X2), and star rating (X3). The b coefficient for each predictor shows its UNIQUE contribution to Y, holding all other predictors constant. This is the key advantage over simple correlation — regression separates the individual effects of multiple predictors simultaneously. R-squared tells you what percentage of variance in Y is explained by all predictors together. Adjusted R-squared is more accurate for multiple predictors.'},
-    {id:'q28',tag:'Statistical Tests',type:'mcq',text:'You want to compare satisfaction scores across THREE different countries. Which test?',context:'More than two groups, continuous DV.',options:['Independent T-test','Chi-Square','ANOVA','Paired T-test'],correct:2,explanation:'ANOVA (Analysis of Variance) compares means across three or more independent groups. T-test is limited to two groups only. ANOVA tells you IF there are differences; post-hoc tests tell you WHERE.'},
-    {id:'q29',tag:'Dispersion',type:'mcq',text:'Which measure of central tendency is most affected by extreme outliers?',context:'A single very high or very low value — which statistic is most sensitive?',options:['Mode','Median','Mean','Quartile'],correct:2,explanation:'The mean is calculated as the sum of ALL values divided by n — therefore every single value including extreme outliers pulls it. Adding one billionaire to a room of 100 average earners changes the mean income dramatically but the median barely moves — it is still the middle-ranked person. In manufacturing: one catastrophic batch with 10,000 defects inflates the mean defect rate across all batches. The median tells you what your typical batch looks like. In your dissertation: report which measure you used and WHY, based on the shape of your distribution. Showing you understand when each measure is appropriate demonstrates methodological sophistication to your examiner.'},
-    {id:'q30',tag:'Research Design',type:'mcq',text:'A PhD student with non-normal data and 150 responses wants to test relationships. Which approach?',context:'Think about the assumptions and sample size requirements of each method.',options:['CB-SEM with AMOS','Multiple Regression only','PLS-SEM with SmartPLS','Descriptive statistics only'],correct:2,explanation:'150 responses and non-normal data describes a large proportion of DBA and PhD dissertations in Asian management contexts. CB-SEM requires multivariate normality, large samples above 200, and confirmatory purpose. PLS-SEM requires none of these — it is distribution-free, works with smaller samples, and is ideal for exploration and prediction. Sample size rule for PLS-SEM: minimum 10 times the largest number of arrows pointing to any single construct. If your most complex construct has 4 arrows pointing to it — minimum sample is 40. But target 100 plus for robust results. Cite Hair et al. 2019 when justifying PLS-SEM in your methodology chapter.'}
-  ]},
-  4:{label:'Quiz 4 — SEM Foundations & SmartPLS',questions:[
-    {id:'q31',tag:'SEM vs Regression',type:'mcq',text:'What is one primary advantage of SEM over multiple regression?',context:'Think about what SEM can model that regression fundamentally cannot handle.',options:['It avoids the need for a measurement model','It simplifies data collection','It allows simultaneous analysis of measurement and structural models','It only uses observed variables'],correct:2,explanation:'SEM simultaneously tests the measurement model (how constructs are measured) and the structural model (relationships between constructs). Regression can only work with directly observed variables and one DV at a time.'},
-    {id:'q32',tag:'Latent Variables',type:'mcq',text:'Which best describes a latent variable in SEM?',context:'Think about "trust", "satisfaction", "intention" — can you directly observe these?',options:['A variable that can be directly observed','A construct measured by multiple indicators','A manipulated independent variable','A residual error term'],correct:1,explanation:'Latent variables are the reason SEM exists. The most important constructs in management — trust, commitment, innovation capability, digital readiness, leadership quality — cannot be directly observed. We infer them from observable indicators. Customer Trust cannot be seen — but we ask: I believe this company keeps its promises (indicator 1), I feel confident in this company\'s integrity (indicator 2), I trust this company to do what is right (indicator 3). These observable items REFLECT the underlying latent Trust construct. SEM simultaneously estimates how well each indicator measures the construct (outer loadings) and how constructs relate to each other (path coefficients). This dual estimation is not possible with regression.'},
-    {id:'q33',tag:'SEM Terminology',type:'mcq',text:'In SEM, what is an endogenous variable?',context:'Think about whether the variable receives arrows from other variables.',options:['It only influences other variables','It is not in the structural model','It is a dependent variable affected by other constructs','It has no relationship with any other variable'],correct:2,explanation:'Simple translation: exogenous equals independent variable — arrows only point OUT, no arrows come IN. Endogenous equals dependent variable — at least one arrow points IN. A variable can be BOTH: it receives an arrow from one construct and sends an arrow to another — this is a mediating variable. In hospitality: Service Quality is exogenous (no arrows in). Satisfaction is endogenous with respect to Service Quality, but exogenous with respect to Loyalty. Loyalty is purely endogenous. Draw your conceptual framework before running SmartPLS — identify the role of every construct. Each arrow in your diagram corresponds to one hypothesis in your study.'},
-    {id:'q34',tag:'PLS vs CB-SEM',type:'mcq',text:'Which condition supports choosing PLS-SEM over CB-SEM?',context:'Recall the key differences in sample size, data requirements, and research purpose.',options:['Large sample, normally distributed data','Theory-driven with high model specification','Small sample, focus on prediction accuracy','Need for reciprocal causation modelling'],correct:2,explanation:'The decision between PLS-SEM and CB-SEM is a common viva question. PLS-SEM when: sample below 250, non-normal data, exploratory or predictive research, complex model, free software needed. CB-SEM when: sample above 300, data approaches normality, confirmatory theory testing, absolute fit indices required. Honest answer for most DBA students: PLS-SEM is appropriate for your research. Defend it with Hair et al. 2019 and Ringle et al. 2022. Do not feel pressured to use AMOS just because it sounds more sophisticated — PLS-SEM is published in MIS Quarterly, Journal of Marketing, and Tourism Management.'},
-    {id:'q35',tag:'Measurement Model',type:'mcq',text:'Which defines a FORMATIVE measurement model?',context:'Compare with reflective — in which direction do arrows flow?',options:['Indicators reflect the latent construct','Indicators are interchangeable','Indicators CAUSE the construct','Indicators must be highly correlated'],correct:2,explanation:'Formative: indicators CAUSE the construct (arrows from indicators TO construct). They are not interchangeable — each adds unique meaning. Reflective: construct CAUSES indicators (arrows from construct TO indicators).'},
-    {id:'q36',tag:'SEM Components',type:'mcq',text:'Which SEM component specifies relationships BETWEEN latent variables?',context:'SEM has two components — one for measurement, one for relationships.',options:['Outer model','Measurement model','Structural model','Confirmatory model'],correct:2,explanation:'The structural model (inner model in SmartPLS) specifies the hypothesised relationships between latent constructs — the path coefficients and their significance. The measurement model links indicators to constructs.'},
-    {id:'q37',tag:'Quality Criteria',type:'mcq',text:'What is the minimum composite reliability threshold for exploratory research?',context:'Recall the two thresholds — one for exploratory, one for confirmatory.',options:['0.3','0.4','0.6','0.9'],correct:2,explanation:'CR measures internal consistency — do all indicators hang together reliably? CR is preferred over Cronbach Alpha in PLS-SEM because it accounts for different indicator loadings rather than assuming equal contribution. Thresholds: CR above 0.6 for exploratory research (Bagozzi and Yi, 1988). CR above 0.7 for standard confirmatory research (Hair et al., 2019). CR above 0.9 is potentially problematic — your indicators are so similar they are essentially asking the same question. This is indicator redundancy. Sweet spot: CR between 0.7 and 0.9. In SmartPLS: find CR in the Quality Criteria panel after running the PLS Algorithm. Report it in a table alongside AVE and Cronbach Alpha in your measurement model results chapter.'},
-    {id:'q38',tag:'Quality Criteria',type:'mcq',text:'What minimum AVE value is acceptable for convergent validity?',context:'AVE measures how much variance in indicators is captured by the construct.',options:['0.3','0.5','0.7','0.9'],correct:1,explanation:'AVE above 0.50 means the construct explains MORE than 50% of the variance in its indicators — more signal than noise. AVE equals 0.43 means your indicators only explain 43% of their own variance — 57% is measurement error. What to do when AVE is below 0.50: examine individual outer loadings. Remove any item with loading below 0.4. Check if removal improves AVE. If not, reconsider your scale items entirely. Real consequence: if your Trust construct has AVE equals 0.43 and your structural model shows Trust significantly predicts Loyalty — your examiner will challenge whether Trust is being validly measured. You cannot trust (literally) path coefficients from a construct that fails convergent validity.'},
-    {id:'q39',tag:'Discriminant Validity',type:'mcq',text:'What statistical measure should exceed inter-construct correlations for discriminant validity?',context:'The Fornell-Larcker criterion — what do you compare correlations against?',options:['Cronbach\'s Alpha','Composite Reliability','Average Variance Extracted (AVE)','Square root of AVE'],correct:3,explanation:'The Fornell-Larcker criterion: square root of AVE for each construct must exceed its correlations with all other constructs. Example: Trust has AVE equals 0.62, square root equals 0.79. The correlation between Trust and Satisfaction is 0.71. Check: is 0.79 greater than 0.71? Yes — discriminant validity holds. If correlation between two constructs EXCEEDS the square root of either\'s AVE — respondents cannot distinguish between those constructs. Common problem: Trust and Commitment in DBA research often correlate so highly they fail discriminant validity. Solution: review your items, consider dropping one construct, or report the limitation transparently and argue theoretically why the high correlation makes conceptual sense.'},
-    {id:'q40',tag:'SmartPLS',type:'mcq',text:'Which SmartPLS output reveals structural path significance?',context:'You have run the PLS algorithm. What additional procedure gives you p-values for paths?',options:['It provides AVE values','It shows indicator reliability','Bootstrapping reveals path significance','It generates initial weights'],correct:2,explanation:'The PLS Algorithm gives path coefficients (beta values) but NOT their significance. Bootstrapping generates significance. How it works: SmartPLS draws 5,000 sub-samples with replacement and runs the PLS algorithm on each. The distribution of 5,000 beta estimates gives you a standard error. T-statistic equals coefficient divided by standard error. T above 1.96 means p less than 0.05. T above 2.576 means p less than 0.01. In SmartPLS: right-click model, select Bootstrapping, set 5,000 subsamples, two-tailed, run. Report beta coefficient, t-value, p-value, and 95% confidence interval for EVERY path. All four are required. Missing any one of them is an incomplete results table.'}
-  ]},
-  5:{label:'Quiz 5 — Advanced SEM & Reflection',questions:[
-    {id:'q41',tag:'SEM',type:'mcq',text:'Which SEM method is most suitable for exploratory research with limited theory?',context:'You are building a new model with limited prior research to guide you.',options:['CB-SEM','LISREL','PLS-SEM','AMOS'],correct:2,explanation:'PLS-SEM is the right tool when you are exploring new territory — new context, new constructs, or relationships not extensively studied before. Most DBA research fits this profile: applying established frameworks in new ASEAN contexts, samples of 100 to 300, data that is rarely normally distributed. CB-SEM is right when you have well-established theory, large samples above 300, normally distributed data, and you are CONFIRMING what prior research predicted. Key insight: exploratory does NOT mean less rigorous. PLS-SEM is published in Financial Times Top 50 journals. Defend your choice confidently with Hair et al. 2019.'},
-    {id:'q42',tag:'SEM',type:'mcq',text:'Which is NOT a characteristic of SEM?',context:'Three of these are genuine SEM capabilities. One is incorrect.',options:['Allows modelling of latent variables','Can test mediation effects','Relies only on observed data','Accounts for measurement error'],correct:2,explanation:'SEM was specifically designed to OVERCOME the limitation of relying only on observed variables — that is regression\'s constraint. SEM\'s four defining characteristics: models latent variables (unobservable constructs), accounts for measurement error in every indicator, tests measurement and structural models simultaneously, and handles multiple dependent variables at once. What SEM CANNOT do: CB-SEM cannot handle very small samples or non-normal data. PLS-SEM cannot provide absolute fit indices like CFI and RMSEA. Knowing what a method cannot do is as important as knowing what it can — especially when your examiner asks about limitations.'s limitation. SEM\'s defining strength is its ability to model latent (unobserved) constructs and correct for measurement error.'},
-    {id:'q43',tag:'Factor Analysis',type:'mcq',text:'Which type of factor analysis is theory-driven?',context:'One is exploratory; one is theory-driven and tests a pre-specified structure.',options:['Exploratory Factor Analysis (EFA)','Confirmatory Factor Analysis (CFA)','Principal Component Analysis (PCA)','Partial Least Squares'],correct:1,explanation:'EFA and CFA have completely different purposes. EFA (Exploratory): you have survey items and want to DISCOVER which cluster together. The data determines the structure. Use when: developing a new scale, no clear theoretical guidance. CFA (Confirmatory): you ALREADY KNOW which items measure which construct from theory. You are TESTING whether your pre-specified structure fits the data. Use when: validating established scales. In most DBA dissertations: you use existing validated scales — SERVQUAL, TAM, TQM items. You know which items measure which construct. This is CFA territory. PLS-SEM essentially performs CFA as part of its measurement model assessment. Only use EFA if you have developed new items or significantly adapted existing scales.'},
-    {id:'q44',tag:'SEM Terminology',type:'mcq',text:'In SEM, which type of variable only has arrows pointing OUTWARD?',context:'Think about endogenous vs exogenous — which only influences, never being influenced?',options:['Endogenous variable','Mediating variable','Exogenous variable','Criterion variable'],correct:2,explanation:'Simplest rule: look at the arrows in your path diagram. Exogenous: arrows only point OUT — no arrows come IN. This construct has no causes within your model. It is your starting independent variable. Endogenous: at least one arrow points IN — this construct is caused by something else. Practical test right now: in your SmartPLS path diagram, count arrows in and arrows out for each construct. Zero arrows in equals exogenous. One or more arrows in equals endogenous. Your research hypotheses correspond directly to arrows — each arrow IS one hypothesis. H1: Service Quality positively influences Satisfaction equals one arrow from Service Quality to Satisfaction in your diagram.'},
-    {id:'q45',tag:'SmartPLS',type:'mcq',text:'What does the OUTER MODEL represent in SmartPLS?',context:'SEM has inner and outer models — what does the outer model contain?',options:['Relationships between latent variables','Paths between DVs and IVs','Measurement of latent constructs via observed indicators','Path coefficient results'],correct:2,explanation:'The outer model (measurement model) shows how latent constructs are measured by their observed indicators — the loadings. The inner model (structural model) shows relationships between constructs.'},
-    {id:'q46',tag:'SEM',type:'mcq',text:'What describes a second-order construct?',context:'Think about constructs that are themselves measured by other constructs rather than direct indicators.',options:['It contains only observed indicators','It is not allowed in SEM models','It is formed by multiple first-order constructs','It cannot be measured by SmartPLS'],correct:2,explanation:'Second-order constructs exist when a concept is too complex for a single set of indicators. Instead it is measured by multiple first-order constructs, each measured by their own indicators. SERVQUAL example: Service Quality (second-order) comprises Tangibles, Reliability, Responsiveness, Assurance, and Empathy (five first-order constructs). Each first-order construct has 4 to 5 indicators. In SmartPLS: use the repeated indicators approach or two-stage approach. Why use second-order? Reduces model complexity, tests whether dimensions form a coherent higher-order concept, produces more parsimonious models easier to defend in viva. Be prepared to justify: why do these first-order constructs belong to a single second-order construct? What theoretical argument supports this grouping?'},
-    {id:'q47',tag:'Confidence Check',type:'likert',text:'How confident are you in choosing the right statistical test for your own research?',context:'1 = Not confident at all, 7 = Could justify my choice to an examiner today.',scale:{min:1,max:7,minLabel:'Not confident',maxLabel:'Fully confident'}},
-    {id:'q48',tag:'SEM Readiness',type:'likert',text:'How ready are you to build and run a PLS-SEM model in SmartPLS independently?',context:'1 = Need much more guidance, 7 = I could do it right now without help.',scale:{min:1,max:7,minLabel:'Need more help',maxLabel:'Ready now'}},
-    {id:'q49',tag:'Open Question',type:'open',text:'What is the ONE concept from today you most want Dr. Tan to clarify before you leave?',context:'Be specific — your question helps everyone. Results appear as a live word cloud.'}
-  ]},
-  6:{label:'Quiz 6 — Mixed Methods Research',questions:[
-    {id:'q50',tag:'Mixed Methods',type:'mcq',text:'What defines a mixed methods research design?',context:'Think about what makes it "mixed" — what two traditions are combined?',options:['Using two different statistical tests','Combining quantitative and qualitative data collection and analysis','Using both SPSS and SmartPLS','Surveying two different populations'],correct:1,explanation:'Mixed methods is the fastest-growing research methodology in management, education, and health research. The rationale: every methodology has blind spots. Quantitative tells you WHAT and HOW MUCH but rarely WHY. Qualitative tells you WHY and HOW but from a small, non-generalisable sample. Mixed methods gives you BOTH. In practice: survey 300 hotel employees and find compensation does NOT predict job satisfaction — unexpected. Interview 15 employees and discover recognition and growth matter far more than pay in this cultural context. The qualitative phase explains what the quantitative phase could not. This kind of insight is what makes a DBA dissertation genuinely valuable to practitioners.'},
-    {id:'q51',tag:'Mixed Methods',type:'mcq',text:'In an EXPLANATORY SEQUENTIAL design, what happens first?',context:'Think about the order of phases and the purpose of each.',options:['Qualitative data collected first to guide the survey','Quantitative data collected first, then qualitative explains the results','Both collected simultaneously','A pilot study runs first'],correct:1,explanation:'Explanatory Sequential mirrors the natural research process. You run your survey and analysis first. Then you ask: what do I not understand? What is surprising? What needs deeper investigation? Those are the questions you take into your qualitative phase. The qualitative sample is PURPOSIVELY selected based on quantitative findings — you interview the outliers, the extreme cases, the unexpected responders. The integration point is clear: qualitative findings EXPLAIN the quantitative results. Your dissertation flows naturally: quantitative results chapter, qualitative results chapter, integrated discussion where both strands are brought together and synthesised.'},
-    {id:'q52',tag:'Mixed Methods',type:'mcq',text:'In an EXPLORATORY SEQUENTIAL design, what is the purpose of the qualitative phase?',context:'This design starts with qual — why?',options:['To validate the quantitative findings','To replace the need for statistics','To inform and build the quantitative survey instrument','To provide rich description only'],correct:2,explanation:'Exploratory Sequential is the design for genuinely new territory — new constructs, new cultural contexts, phenomena too poorly understood to survey without prior exploration. The qualitative phase is not preliminary — it IS the foundation. You conduct deep interviews or focus groups, analyse themes rigorously, and the themes BECOME your survey items, the concepts BECOME your hypotheses. If you are studying digital transformation in Malaysian family businesses — no validated scale exists for this exact context. Exploratory Sequential is your design. This requires the most methodological sophistication but produces the most original theoretical contributions.'},
-    {id:'q53',tag:'Mixed Methods',type:'mcq',text:'Which mixed methods design collects quantitative and qualitative data at the SAME TIME?',context:'Three designs exist — two sequential types and one concurrent.',options:['Explanatory Sequential','Exploratory Sequential','Convergent Parallel','Embedded design'],correct:2,explanation:'Convergent Parallel is the triangulation design — both strands run simultaneously and independently, then compared at interpretation. KEY: the qualitative researcher should not know quantitative results while collecting qualitative data, to avoid confirmation bias. Convergence: both strands point to same finding — very strongly supported. Divergence: strands contradict — the contradiction itself is a finding revealing complexity neither method alone could detect. Time-efficient (simultaneous) but resource-intensive (two full studies at once). For DBA candidates with organisational access: survey all employees quantitatively while simultaneously observing and interviewing a sub-group qualitatively.'},
-    {id:'q54',tag:'Mixed Methods',type:'mcq',text:'What is the primary purpose of using mixed methods in doctoral research?',context:'Think about what combining approaches achieves that neither alone can.',options:['To make the dissertation longer','To satisfy examiner requirements','To achieve triangulation and a more complete understanding','To avoid choosing between paradigms'],correct:2,explanation:'Triangulation is what makes mixed methods more than just doing two studies. True triangulation means findings from both strands INFORM each other and produce understanding NEITHER could achieve alone. Like GPS: one satellite gives a circle of possible locations, three satellites give a precise fix. Each additional strand narrows the uncertainty. Quantitative: digital adoption significantly predicts SME performance (beta equals 0.48, p less than 0.001). Qualitative: explains HOW this happens — through the owner\'s mindset change, peer influence, and government incentive awareness. Together: you know WHAT, HOW MUCH, and WHY. That is a dissertation contribution worth defending at any viva.'},
-    {id:'q55',tag:'Mixed Methods',type:'mcq',text:'A researcher surveys 300 managers (QUANT) then interviews 15 to explain unexpected findings. Which design?',context:'Identify the order and purpose of each phase.',options:['Exploratory Sequential','Convergent Parallel','Explanatory Sequential','Embedded design'],correct:2,explanation:'Recognising designs from scenarios is a viva skill. Clues in this question: 300 managers surveyed FIRST (quantitative), unexpected findings emerge, 15 managers interviewed SECOND (qualitative), purpose is to EXPLAIN the unexpected findings — Explanatory Sequential. Key words to recognise: to EXPLAIN or UNDERSTAND after quantitative results equals Explanatory Sequential. To INFORM the survey or DEVELOP items before quantitative equals Exploratory Sequential. AT THE SAME TIME or SIMULTANEOUSLY equals Convergent Parallel. In your viva: I used an Explanatory Sequential mixed methods design. I first collected quantitative data from 200 participants. I then conducted 15 in-depth interviews to explain the unexpected finding that compensation did not predict retention in my sample.'}
-  ]}
-};
+var SECTIONS = [{"label": "Quiz 1 \u2014 Scales & Tendency", "questions": [{"id": "q01", "tag": "Central Tendency", "text": "What is the mean in statistics?", "ctx": "Think about the arithmetic operation used to calculate it.", "options": ["The most frequently occurring score", "The middle score when data are ordered", "The arithmetic average of the scores", "The spread of scores from highest to lowest"], "correct": 2}, {"id": "q02", "tag": "Measurement Scales", "text": "Which measure is best for nominal data?", "ctx": "Nominal data has categories only \u2014 no order, no distance. Which statistic is valid?", "options": ["Mean", "Standard Deviation", "Median", "Mode"], "correct": 3}, {"id": "q03", "tag": "Central Tendency", "text": "Which is NOT a measure of central tendency?", "ctx": "Three of these four describe the \"middle\" of data. One describes something else entirely.", "options": ["Mode", "Median", "Mean", "Standard Deviation"], "correct": 3}, {"id": "q04", "tag": "Graphing", "text": "Which graph suits categorical data best?", "ctx": "Think about what type of data each chart is designed to display.", "options": ["Boxplot", "Histogram", "Bar chart", "Scatterplot"], "correct": 2}, {"id": "q05", "tag": "Dispersion", "text": "What does standard deviation measure?", "ctx": "It is a measure of dispersion \u2014 what does it tell you about your data?", "options": ["Central location", "Spread of scores", "Most frequent value", "Average rank"], "correct": 1}, {"id": "q06", "tag": "Measurement Scales", "text": "What type of data has a true zero point?", "ctx": "A true zero means the complete absence of the quantity being measured.", "options": ["Nominal", "Ordinal", "Interval", "Ratio"], "correct": 3}, {"id": "q07", "tag": "Measurement Scales", "text": "Which statistic is most appropriate for ordinal data?", "ctx": "Ordinal data has order but unequal intervals. Which measure respects this?", "options": ["Mode", "Mean", "Median", "Variance"], "correct": 2}, {"id": "q08", "tag": "Graphing", "text": "What is a histogram best used for?", "ctx": "Think about the type of data a histogram is designed to display.", "options": ["Distribution of continuous data", "Comparing groups", "Frequencies in pie form", "Displaying categories"], "correct": 0}, {"id": "q09", "tag": "Graphing", "text": "Which graph is best for nominal data?", "ctx": "Four chart types \u2014 which one is specifically designed for categorical data?", "options": ["Histogram", "Boxplot", "Line graph", "Bar chart"], "correct": 3}, {"id": "q10", "tag": "Central Tendency", "text": "Which statistic shows the most frequent value?", "ctx": "One measure of central tendency specifically identifies the value that appears most often.", "options": ["Mode", "Mean", "Range", "Median"], "correct": 0}]}, {"label": "Quiz 2 \u2014 Distribution & Correlation", "questions": [{"id": "q11", "tag": "Dispersion", "text": "Which is a measure of dispersion?", "ctx": "Dispersion describes spread. Three of these describe central tendency; one describes spread.", "options": ["Mean", "Standard Deviation", "Mode", "Median"], "correct": 1}, {"id": "q12", "tag": "Skewness", "text": "Which distribution has a tail to the right?", "ctx": "Think about where the tail stretches \u2014 right or left?", "options": ["Positively skewed", "Negatively skewed", "Leptokurtic", "Normal"], "correct": 0}, {"id": "q13", "tag": "Kurtosis", "text": "What does kurtosis describe?", "ctx": "You know mean (1st moment), SD (2nd), skewness (3rd) \u2014 what is the 4th moment?", "options": ["Symmetry", "Peakedness or flatness", "Skewness", "Centrality"], "correct": 1}, {"id": "q14", "tag": "Normal Distribution", "text": "How much data falls within \u00b12 standard deviations of the mean?", "ctx": "Recall the empirical rule \u2014 68%, 95%, 99.9%.", "options": ["68%", "99.9%", "95%", "50%"], "correct": 2}, {"id": "q15", "tag": "Correlation", "text": "What value indicates the strongest correlation?", "ctx": "Correlation ranges from -1 to +1. Strength is about the absolute value.", "options": ["0.65", "-0.90", "0.30", "-0.25"], "correct": 1}, {"id": "q16", "tag": "Correlation", "text": "Positive correlation means:", "ctx": "Think about how the two variables move in relation to each other.", "options": ["One goes up, the other down", "No relationship", "Both increase together", "Both decrease"], "correct": 2}, {"id": "q17", "tag": "Regression", "text": "What does regression analysis do?", "ctx": "Think about the purpose of regression beyond just describing relationships.", "options": ["Compare means", "Test variance", "Measure dispersion", "Predict an outcome"], "correct": 3}, {"id": "q18", "tag": "Research Variables", "text": "What is the dependent variable?", "ctx": "Think about which variable is being influenced or predicted in a study.", "options": ["Independent variable", "Outcome to predict", "Moderator", "Confounder"], "correct": 1}, {"id": "q19", "tag": "Central Tendency", "text": "Which measure of central tendency is MOST robust to extreme outliers?", "ctx": "A CEO earns $5 million; other employees earn $30k\u2013$50k. Which measure best represents the typical person?", "options": ["Mean", "Median", "Mode", "Variance"], "correct": 1}, {"id": "q20", "tag": "Normal Distribution", "text": "In a normal distribution, what percentage of data falls within \u00b11 SD of the mean?", "ctx": "Recall the three key percentages of the empirical rule.", "options": ["50%", "68%", "95%", "99.9%"], "correct": 1}]}, {"label": "Quiz 3 \u2014 Inferential Tests", "questions": [{"id": "q21", "tag": "Statistical Tests", "text": "Which test compares means between groups?", "ctx": "You want to know if satisfaction differs between male and female customers.", "options": ["Chi-square", "Z-test", "T-test", "Skew test"], "correct": 2}, {"id": "q22", "tag": "Statistical Tests", "text": "Which test is used for two nominal variables?", "ctx": "You want to test if gender (nominal) is related to employment category (nominal).", "options": ["Chi-square", "T-test", "Regression", "Histogram"], "correct": 0}, {"id": "q23", "tag": "p-values", "text": "A study reports p = 0.003. What does this correctly mean?", "ctx": "Carefully parse the exact meaning of a p-value \u2014 this is a classic viva question.", "options": ["0.3% probability the hypothesis is true", "99.7% chance the result is correct", "0.3% probability of this result if null hypothesis is true", "The effect is practically significant"], "correct": 2}, {"id": "q24", "tag": "Chi-Square", "text": "ABC Company: Is gender related to employment category? Which test?", "ctx": "Both variables are categorical (nominal). What test applies?", "options": ["Independent T-test", "Chi-Square", "Pearson Correlation", "Paired T-test"], "correct": 1}, {"id": "q25", "tag": "Correlation", "text": "Pearson r = -0.72 between study hours and exam anxiety. This indicates:", "ctx": "Interpret both direction AND strength.", "options": ["Weak negative relationship", "Strong positive relationship", "Strong negative \u2014 more study associated with lower anxiety", "No meaningful relationship"], "correct": 2}, {"id": "q26", "tag": "Statistical Tests", "text": "ABC Company: \"Is there a difference between beginning and current salaries?\" Which test?", "ctx": "The SAME employees measured at two different time points.", "options": ["Independent T-test", "Chi-Square", "Paired Samples T-test", "ANOVA"], "correct": 2}, {"id": "q27", "tag": "Regression", "text": "Which variable is predicted in a regression equation?", "ctx": "Regression has one outcome and one or more predictors.", "options": ["Independent variable", "Dependent variable", "Moderator", "Control variable"], "correct": 1}, {"id": "q28", "tag": "Statistical Tests", "text": "You want to compare satisfaction scores across THREE different countries. Which test?", "ctx": "More than two groups, continuous DV.", "options": ["Independent T-test", "Chi-Square", "ANOVA", "Paired T-test"], "correct": 2}, {"id": "q29", "tag": "Dispersion", "text": "Which measure of central tendency is most affected by extreme outliers?", "ctx": "A single very high or very low value \u2014 which statistic is most sensitive?", "options": ["Mode", "Median", "Mean", "Quartile"], "correct": 2}, {"id": "q30", "tag": "Research Design", "text": "A PhD student with non-normal data and 150 responses wants to test relationships. Which approach?", "ctx": "Think about the assumptions and sample size requirements of each method.", "options": ["CB-SEM with AMOS", "Multiple Regression only", "PLS-SEM with SmartPLS", "Descriptive statistics only"], "correct": 2}]}, {"label": "Quiz 4 \u2014 SEM Foundations", "questions": [{"id": "q31", "tag": "SEM vs Regression", "text": "What is one primary advantage of SEM over multiple regression?", "ctx": "Think about what SEM can model that regression fundamentally cannot handle.", "options": ["It avoids the need for a measurement model", "It simplifies data collection", "It allows simultaneous analysis of measurement and structural models", "It only uses observed variables"], "correct": 2}, {"id": "q32", "tag": "Latent Variables", "text": "Which best describes a latent variable in SEM?", "ctx": "Think about \"trust\", \"satisfaction\", \"intention\" \u2014 can you directly observe these?", "options": ["A variable that can be directly observed", "A construct measured by multiple indicators", "A manipulated independent variable", "A residual error term"], "correct": 1}, {"id": "q33", "tag": "SEM Terminology", "text": "In SEM, what is an endogenous variable?", "ctx": "Think about whether the variable receives arrows from other variables.", "options": ["It only influences other variables", "It is not in the structural model", "It is a dependent variable affected by other constructs", "It has no relationship with any other variable"], "correct": 2}, {"id": "q34", "tag": "PLS vs CB-SEM", "text": "Which condition supports choosing PLS-SEM over CB-SEM?", "ctx": "Recall the key differences in sample size, data requirements, and research purpose.", "options": ["Large sample, normally distributed data", "Theory-driven with high model specification", "Small sample, focus on prediction accuracy", "Need for reciprocal causation modelling"], "correct": 2}, {"id": "q35", "tag": "Measurement Model", "text": "Which defines a FORMATIVE measurement model?", "ctx": "Compare with reflective \u2014 in which direction do arrows flow?", "options": ["Indicators reflect the latent construct", "Indicators are interchangeable", "Indicators CAUSE the construct", "Indicators must be highly correlated"], "correct": 2}, {"id": "q36", "tag": "SEM Components", "text": "Which SEM component specifies relationships BETWEEN latent variables?", "ctx": "SEM has two components \u2014 one for measurement, one for relationships.", "options": ["Outer model", "Measurement model", "Structural model", "Confirmatory model"], "correct": 2}, {"id": "q37", "tag": "Quality Criteria", "text": "What is the minimum composite reliability threshold for exploratory research?", "ctx": "Recall the two thresholds \u2014 one for exploratory, one for confirmatory.", "options": ["0.3", "0.4", "0.6", "0.9"], "correct": 2}, {"id": "q38", "tag": "Quality Criteria", "text": "What minimum AVE value is acceptable for convergent validity?", "ctx": "AVE measures how much variance in indicators is captured by the construct.", "options": ["0.3", "0.5", "0.7", "0.9"], "correct": 1}, {"id": "q39", "tag": "Discriminant Validity", "text": "What statistical measure should exceed inter-construct correlations for discriminant validity?", "ctx": "The Fornell-Larcker criterion \u2014 what do you compare correlations against?", "options": ["Cronbach\\", ",", ",", ","], "correct": 3}, {"id": "q40", "tag": "SmartPLS", "text": "Which SmartPLS output reveals structural path significance?", "ctx": "You have run the PLS algorithm. What additional procedure gives you p-values for paths?", "options": ["It provides AVE values", "It shows indicator reliability", "Bootstrapping reveals path significance", "It generates initial weights"], "correct": 2}]}, {"label": "Quiz 5 \u2014 Advanced SEM", "questions": [{"id": "q41", "tag": "SEM", "text": "Which SEM method is most suitable for exploratory research with limited theory?", "ctx": "You are building a new model with limited prior research to guide you.", "options": ["CB-SEM", "LISREL", "PLS-SEM", "AMOS"], "correct": 2}, {"id": "q42", "tag": "SEM", "text": "Which is NOT a characteristic of SEM?", "ctx": "Three of these are genuine SEM capabilities. One is incorrect.", "options": ["Allows modelling of latent variables", "Can test mediation effects", "Relies only on observed data", "Accounts for measurement error"], "correct": 2}, {"id": "q43", "tag": "Factor Analysis", "text": "Which type of factor analysis is theory-driven?", "ctx": "One is exploratory; one is theory-driven and tests a pre-specified structure.", "options": ["Exploratory Factor Analysis (EFA)", "Confirmatory Factor Analysis (CFA)", "Principal Component Analysis (PCA)", "Partial Least Squares"], "correct": 1}, {"id": "q44", "tag": "SEM Terminology", "text": "In SEM, which type of variable only has arrows pointing OUTWARD?", "ctx": "Think about endogenous vs exogenous \u2014 which only influences, never being influenced?", "options": ["Endogenous variable", "Mediating variable", "Exogenous variable", "Criterion variable"], "correct": 2}, {"id": "q45", "tag": "SmartPLS", "text": "What does the OUTER MODEL represent in SmartPLS?", "ctx": "SEM has inner and outer models \u2014 what does the outer model contain?", "options": ["Relationships between latent variables", "Paths between DVs and IVs", "Measurement of latent constructs via observed indicators", "Path coefficient results"], "correct": 2}, {"id": "q46", "tag": "SEM", "text": "What describes a second-order construct?", "ctx": "Think about constructs that are themselves measured by other constructs rather than direct indicators.", "options": ["It contains only observed indicators", "It is not allowed in SEM models", "It is formed by multiple first-order constructs", "It cannot be measured by SmartPLS"], "correct": 2}]}, {"label": "Quiz 6 \u2014 Mixed Methods", "questions": [{"id": "q50", "tag": "Mixed Methods", "text": "What defines a mixed methods research design?", "ctx": "Think about what makes it \"mixed\" \u2014 what two traditions are combined?", "options": ["Using two different statistical tests", "Combining quantitative and qualitative data collection and analysis", "Using both SPSS and SmartPLS", "Surveying two different populations"], "correct": 1}, {"id": "q51", "tag": "Mixed Methods", "text": "In an EXPLANATORY SEQUENTIAL design, what happens first?", "ctx": "Think about the order of phases and the purpose of each.", "options": ["Qualitative data collected first to guide the survey", "Quantitative data collected first, then qualitative explains the results", "Both collected simultaneously", "A pilot study runs first"], "correct": 1}, {"id": "q52", "tag": "Mixed Methods", "text": "In an EXPLORATORY SEQUENTIAL design, what is the purpose of the qualitative phase?", "ctx": "This design starts with qual \u2014 why?", "options": ["To validate the quantitative findings", "To replace the need for statistics", "To inform and build the quantitative survey instrument", "To provide rich description only"], "correct": 2}, {"id": "q53", "tag": "Mixed Methods", "text": "Which mixed methods design collects quantitative and qualitative data at the SAME TIME?", "ctx": "Three designs exist \u2014 two sequential types and one concurrent.", "options": ["Explanatory Sequential", "Exploratory Sequential", "Convergent Parallel", "Embedded design"], "correct": 2}, {"id": "q54", "tag": "Mixed Methods", "text": "What is the primary purpose of using mixed methods in doctoral research?", "ctx": "Think about what combining approaches achieves that neither alone can.", "options": ["To make the dissertation longer", "To satisfy examiner requirements", "To achieve triangulation and a more complete understanding", "To avoid choosing between paradigms"], "correct": 2}, {"id": "q55", "tag": "Mixed Methods", "text": "A researcher surveys 300 managers (QUANT) then interviews 15 to explain unexpected findings. Which design?", "ctx": "Identify the order and purpose of each phase.", "options": ["Exploratory Sequential", "Convergent Parallel", "Explanatory Sequential", "Embedded design"], "correct": 2}]}];
+var SCORES_KEY = 'drtan_scores_v1';
+var answers = {};
+var totalQ = 0;
+var myName = '';
 
-const SCORES_KEY = 'drtan_quiz_scores';
-let studentName = '';
-let answers = {}; // {qId: selectedOption}
-let totalQ = 0;
+function show(id) {
+  document.getElementById('pg-name').classList.add('hidden');
+  document.getElementById('pg-quiz').classList.add('hidden');
+  document.getElementById('pg-results').classList.add('hidden');
+  document.getElementById(id).classList.remove('hidden');
+  window.scrollTo(0,0);
+}
 
-// Get all questions flat
-function getAllQuestions(){
-  const all = [];
-  Object.entries(BREAKS).forEach(([num, bank]) => {
-    bank.questions.filter(q => q.type === 'mcq').forEach(q => {
-      all.push({...q, bankNum: num, bankLabel: bank.label});
+function startQuiz() {
+  var n = document.getElementById('name-input').value.trim();
+  if (!n) { alert('Please enter your name.'); return; }
+  myName = n;
+  localStorage.setItem('student_name_v1', n);
+  answers = {};
+  buildQuiz();
+  show('pg-quiz');
+}
+
+function buildQuiz() {
+  var html = '';
+  var qnum = 0;
+  totalQ = 0;
+  SECTIONS.forEach(function(section) {
+    html += '<div class="section-title">⚡ ' + section.label + '</div>';
+    section.questions.forEach(function(q) {
+      qnum++;
+      totalQ++;
+      html += '<div class="qcard">';
+      html += '<div class="qnum">Q' + qnum + ' &bull; ' + q.tag + '</div>';
+      html += '<div class="qtext">' + q.text + '</div>';
+      var optsHtml = '';
+      for (var i = 0; i < q.options.length; i++) {
+        optsHtml += '<button class="opt" id="opt_' + q.id + '_' + i + '" ';
+        optsHtml += 'data-qid="' + q.id + '" data-idx="' + i + '" ';
+        optsHtml += 'onclick="pick(this)">';
+        optsHtml += String.fromCharCode(65+i) + ') ' + q.options[i];
+        optsHtml += '</button>';
+      }
+      html += optsHtml + '</div>';
     });
   });
-  return all;
-}
-
-// ── START ──
-function startQuiz(){
-  const val = document.getElementById('name-input').value.trim();
-  if(!val){ alert('Please enter your name.'); return; }
-  studentName = val;
-  localStorage.setItem('student_name_v1', val);
-  localStorage.setItem('student_registered', 'yes');
-  answers = {};
-  buildQuiz();
-  showScreen('screen-quiz');
-}
-
-function buildQuiz(){
-  const allQ = getAllQuestions();
-  totalQ = allQ.length;
-  let html = '';
-  let lastBank = '';
-  
-  allQ.forEach((q, i) => {
-    if(q.bankLabel !== lastBank){
-      lastBank = q.bankLabel;
-      html += `<div class="section-header">⚡ ${q.bankLabel}</div>`;
-    }
-    html += `<div class="q-card" id="card-${q.id}">
-      <div class="q-num">Q${i+1} · ${q.tag||''}</div>
-      <div class="q-text">${q.text}</div>
-      ${q.context ? `<div style="font-size:0.8rem;color:var(--muted);font-style:italic;margin-bottom:0.75rem;">${q.context}</div>` : ''}
-      <div class="options" id="opts-${q.id}">
-        ${q.options.map((o,oi) => `
-          <button class="opt" id="opt-${q.id}-${oi}" onclick="selectAnswer('${q.id}',${oi},'${o.replace(/'/g,"\'")}')">
-            <span class="opt-letter">${String.fromCharCode(65+oi)})</span>${o}
-          </button>`).join('')}
-      </div>
-    </div>`;
-  });
-  
   document.getElementById('quiz-body').innerHTML = html;
+  updateProg();
 }
 
-function selectAnswer(qId, optIdx){
-  // Look up option text from question bank
-  const allQ = getAllQuestions();
-  const q = allQ.find(x => x.id === qId);
-  const optText = q ? q.options[optIdx] : '';
-  // Deselect all options for this question
-  const el = document.getElementById('opts-'+qId);
-  el.querySelectorAll('.opt').forEach(b => b.classList.remove('selected'));
-  // Select chosen
-  document.getElementById('opt-'+qId+'-'+optIdx).classList.add('selected');
-  answers[qId] = {idx: optIdx, text: optText};
-  updateProgress();
+function pick(btn) {
+  var qid = btn.getAttribute('data-qid');
+  var idx = parseInt(btn.getAttribute('data-idx'));
+  // Deselect siblings
+  var parent = btn.parentNode;
+  var siblings = parent.querySelectorAll('.opt');
+  for (var i = 0; i < siblings.length; i++) {
+    siblings[i].classList.remove('sel');
+  }
+  btn.classList.add('sel');
+  answers[qid] = idx;
+  updateProg();
 }
 
-function updateProgress(){
-  const answered = Object.keys(answers).length;
-  const pct = Math.round((answered / totalQ) * 100);
-  document.getElementById('quiz-progress').style.width = pct + '%';
-  document.getElementById('quiz-progress-label').textContent = `${answered} of ${totalQ} answered`;
-  const btn = document.getElementById('submit-btn');
-  const hint = document.getElementById('submit-hint');
-  if(answered === totalQ){
+function updateProg() {
+  var done = Object.keys(answers).length;
+  var pct = totalQ > 0 ? Math.round(done/totalQ*100) : 0;
+  document.getElementById('prog-fill').style.width = pct + '%';
+  document.getElementById('prog-label').textContent = done + ' of ' + totalQ + ' answered';
+  var btn = document.getElementById('submit-btn');
+  var hint = document.getElementById('submit-hint');
+  if (done === totalQ) {
     btn.disabled = false;
-    hint.textContent = 'All questions answered — ready to submit!';
-    hint.style.color = 'var(--green)';
+    hint.textContent = 'All answered — ready to submit!';
+    hint.style.color = '#10b981';
   } else {
     btn.disabled = true;
-    hint.textContent = `${totalQ - answered} questions remaining`;
-    hint.style.color = 'var(--muted)';
+    hint.textContent = (totalQ - done) + ' questions remaining';
+    hint.style.color = '#64748b';
   }
 }
 
-// ── SUBMIT ──
-function submitQuiz(){
-  const allQ = getAllQuestions();
-  let correct = 0;
-  allQ.forEach(q => {
-    const ans = answers[q.id];
-    if(ans && ans.idx === q.correct) correct++;
+function submitQuiz() {
+  var correct = 0;
+  SECTIONS.forEach(function(section) {
+    section.questions.forEach(function(q) {
+      if (answers[q.id] === q.correct) correct++;
+    });
   });
-  
-  const score = correct;
-  const total = allQ.length;
-  const pct = Math.round((score/total)*100);
-  
-  // Save to leaderboard
-  const scores = JSON.parse(localStorage.getItem(SCORES_KEY)||'[]');
-  // Remove previous entry for this student
-  const filtered = scores.filter(s => s.name.toLowerCase() !== studentName.toLowerCase());
-  filtered.push({name: studentName, score, total, pct, ts: Date.now()});
-  // Sort by score desc
-  filtered.sort((a,b) => b.score - a.score || b.ts - a.ts);
-  // Keep top 50
-  const top = filtered.slice(0, 50);
-  localStorage.setItem(SCORES_KEY, JSON.stringify(top));
-  
-  showResults(score, total, pct, top);
-  showScreen('screen-results');
+  var pct = Math.round(correct/totalQ*100);
+  // Save score
+  var scores = [];
+  try { scores = JSON.parse(localStorage.getItem(SCORES_KEY) || '[]'); } catch(e) {}
+  scores = scores.filter(function(s) { return s.name.toLowerCase() !== myName.toLowerCase(); });
+  scores.push({name: myName, score: correct, total: totalQ, pct: pct, ts: Date.now()});
+  scores.sort(function(a,b) { return b.score - a.score; });
+  if (scores.length > 50) scores = scores.slice(0,50);
+  localStorage.setItem(SCORES_KEY, JSON.stringify(scores));
+  showResults(correct, totalQ, pct, scores);
 }
 
-function showResults(score, total, pct, scores){
-  document.getElementById('r-score').textContent = `${score}/${total}`;
-  
-  let grade = '';
-  if(pct >= 90) grade = '🏆 Distinction — Outstanding!';
-  else if(pct >= 75) grade = '🎯 Merit — Well Done!';
-  else if(pct >= 60) grade = '✅ Pass — Good Effort!';
-  else grade = '📚 Keep Studying — You'll Get There!';
-  document.getElementById('r-grade').textContent = grade;
-  document.getElementById('r-grade').style.color = pct >= 60 ? 'var(--green)' : 'var(--amber)';
-  
+function showResults(score, total, pct, scores) {
+  document.getElementById('r-score').textContent = score + '/' + total;
+  var grade = pct >= 90 ? '🏆 Distinction!' : pct >= 75 ? '🎯 Merit!' : pct >= 60 ? '✅ Pass!' : '📚 Keep Studying!';
+  var gradeEl = document.getElementById('r-grade');
+  gradeEl.textContent = grade;
+  gradeEl.style.color = pct >= 60 ? '#10b981' : '#f59e0b';
   document.getElementById('lb-count').textContent = scores.length + ' students';
-  
-  const medals = ['🥇', '🥈', '🥉'];
-  document.getElementById('lb-body').innerHTML = scores.map((s, i) => {
-    const isMe = s.name.toLowerCase() === studentName.toLowerCase();
-    const rank = medals[i] || (i+1);
-    return `<div class="lb-row ${isMe?'me':''}">
-      <span class="lb-rank ${i===0?'gold':i===1?'silver':i===2?'bronze':''}">${rank}</span>
-      <span class="lb-name">${s.name} ${isMe?'(you)':''}</span>
-      <span class="lb-score">${s.score}/${s.total}</span>
-      <span class="lb-pct">${s.pct}%</span>
-    </div>`;
-  }).join('');
+  var medals = ['🥇','🥈','🥉'];
+  var html = '';
+  scores.forEach(function(s, i) {
+    var isMe = s.name.toLowerCase() === myName.toLowerCase();
+    html += '<div class="lb-row' + (isMe?' me':'') + '">';
+    html += '<span class="lb-rank">' + (medals[i] || (i+1)) + '</span>';
+    html += '<span class="lb-name">' + s.name + (isMe?' (you)':'') + '</span>';
+    html += '<span class="lb-sc">' + s.score + '/' + s.total + '</span>';
+    html += '<span class="lb-pct">' + s.pct + '%</span>';
+    html += '</div>';
+  });
+  document.getElementById('lb-body').innerHTML = html;
+  show('pg-results');
 }
 
-function retryQuiz(){
+function retry() {
   answers = {};
   buildQuiz();
-  showScreen('screen-quiz');
-  window.scrollTo(0,0);
+  show('pg-quiz');
 }
 
-function showScreen(id){
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  window.scrollTo(0,0);
-}
-
-// Check if name already stored
-window.addEventListener('DOMContentLoaded', function(){
-  const saved = localStorage.getItem('student_name_v1');
-  if(saved){
-    document.getElementById('name-input').value = saved;
-  }
-});
+// Pre-fill name if known
+window.onload = function() {
+  var saved = localStorage.getItem('student_name_v1');
+  if (saved) document.getElementById('name-input').value = saved;
+};
 </script>
 </body>
 </html>

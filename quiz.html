@@ -241,7 +241,7 @@ function pick(btn) {
     fb.textContent = '\u2705 Correct!';
   } else {
     fb.className = 'feedback wrong';
-    fb.textContent = '\u274C Incorrect. Listen to Dr. Tan for the explanation.';
+    fb.textContent = '\u274C Incorrect.';
   }
   document.getElementById('card_' + qid).classList.add(isCorrect ? 'correct' : 'wrong');
   updateProg();

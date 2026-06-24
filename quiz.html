@@ -7,195 +7,131 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Space+Mono:wght@400;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
-:root{
-  --bg:#020817;--surface:#161f30;--border:#1e2d45;
-  --cyan:#00e5ff;--violet:#7c3aed;--green:#10b981;
-  --amber:#f59e0b;--red:#ef4444;--text:#e2e8f0;--muted:#64748b;
-  --mono:'Space Mono',monospace;--sans:'Space Grotesk',sans-serif;
-}
+:root{--bg:#020817;--surface:#161f30;--border:#1e2d45;--cyan:#00e5ff;--violet:#7c3aed;--green:#10b981;--amber:#f59e0b;--red:#ef4444;--text:#e2e8f0;--muted:#64748b;--mono:'Space Mono',monospace;--sans:'Space Grotesk',sans-serif;}
 body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;}
 
-/* NAV */
 nav{background:rgba(2,8,23,0.95);border-bottom:1px solid var(--border);padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:52px;position:sticky;top:0;z-index:100;}
 .nav-brand{font-family:var(--mono);font-size:0.8rem;color:var(--cyan);}
 .nav-links{display:flex;gap:0.4rem;}
-.nb{font-family:var(--sans);font-size:0.78rem;font-weight:500;padding:0.3rem 0.75rem;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:0.3rem;}
-.nb:hover,.nb.active{color:var(--cyan);border-color:var(--cyan);background:rgba(0,229,255,0.06);}
+.nb{font-family:var(--sans);font-size:0.78rem;font-weight:500;padding:0.3rem 0.75rem;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;}
+.nb:hover,.nb.active{color:var(--cyan);border-color:var(--cyan);}
 
-/* SCREENS */
-.screen{display:none;padding:2rem 1rem;max-width:720px;margin:0 auto;}
-.screen.active{display:block;}
+.wrap{max-width:780px;margin:0 auto;padding:1.5rem 1rem;}
 
-/* WAITING */
-.wait-box{text-align:center;padding:4rem 1rem;}
-.wait-icon{font-size:3.5rem;margin-bottom:1rem;}
-.wait-title{font-family:var(--sans);font-weight:700;font-size:1.4rem;margin-bottom:0.5rem;}
-.wait-sub{color:var(--muted);font-size:0.9rem;margin-bottom:1rem;}
-.wait-name{font-family:var(--mono);font-size:0.78rem;color:var(--cyan);margin-top:1rem;}
-.live-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);animation:pulse 2s infinite;margin-right:0.4rem;}
-@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
+/* NAME ENTRY */
+.name-screen{text-align:center;padding:4rem 1rem;}
+.name-screen h2{font-family:var(--sans);font-weight:700;font-size:1.4rem;margin-bottom:0.5rem;}
+.name-screen p{color:var(--muted);margin-bottom:1.5rem;}
+.name-input{width:100%;max-width:360px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:0.85rem;color:var(--text);font-size:1rem;outline:none;margin-bottom:0.75rem;display:block;margin-left:auto;margin-right:auto;}
+.name-input:focus{border-color:var(--cyan);}
+.start-btn{padding:0.85rem 2.5rem;background:linear-gradient(135deg,var(--cyan),#0097b2);color:#000;border:none;border-radius:8px;font-family:var(--sans);font-weight:700;font-size:1rem;cursor:pointer;}
 
-/* QUESTION */
-.q-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.5rem;margin-bottom:1rem;}
-.q-tag{font-family:var(--mono);font-size:0.65rem;color:var(--amber);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.6rem;}
-.q-text{font-family:var(--sans);font-weight:700;font-size:1.05rem;line-height:1.4;margin-bottom:1.25rem;}
-.q-context{font-size:0.82rem;color:var(--muted);margin-bottom:1.25rem;font-style:italic;}
-.options{display:flex;flex-direction:column;gap:0.6rem;}
-.opt{padding:0.7rem 1rem;border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:0.88rem;transition:all 0.15s;display:flex;align-items:center;gap:0.75rem;background:transparent;color:var(--text);text-align:left;}
+/* QUIZ */
+.quiz-header{margin-bottom:1.5rem;}
+.quiz-header h2{font-family:var(--sans);font-weight:700;font-size:1.2rem;margin-bottom:0.25rem;}
+.quiz-header p{color:var(--muted);font-size:0.85rem;}
+.progress-bar{height:6px;background:var(--border);border-radius:3px;margin-top:0.75rem;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--cyan),var(--violet));border-radius:3px;transition:width 0.3s;}
+
+.section-header{font-family:var(--mono);font-size:0.65rem;letter-spacing:0.12em;color:var(--violet);text-transform:uppercase;margin:1.5rem 0 0.75rem;padding:0.5rem 0;border-bottom:1px solid var(--border);}
+
+.q-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.25rem;margin-bottom:1rem;}
+.q-num{font-family:var(--mono);font-size:0.62rem;color:var(--muted);margin-bottom:0.5rem;}
+.q-text{font-family:var(--sans);font-weight:600;font-size:0.95rem;line-height:1.45;margin-bottom:1rem;}
+.options{display:flex;flex-direction:column;gap:0.45rem;}
+.opt{padding:0.6rem 0.9rem;border:1px solid var(--border);border-radius:7px;cursor:pointer;font-size:0.86rem;display:flex;align-items:center;gap:0.6rem;background:transparent;color:var(--text);text-align:left;width:100%;transition:all 0.12s;}
 .opt:hover{border-color:var(--cyan);background:rgba(0,229,255,0.04);}
-.opt.selected{border-color:var(--violet);background:rgba(124,58,237,0.1);color:#fff;}
-.opt.correct{border-color:var(--green);background:rgba(16,185,129,0.1);color:var(--green);}
-.opt.wrong{border-color:var(--red);background:rgba(239,68,68,0.08);color:var(--red);}
-.opt-letter{font-family:var(--mono);font-size:0.72rem;color:var(--muted);flex-shrink:0;width:18px;}
-.submit-btn{width:100%;margin-top:1rem;padding:0.85rem;background:linear-gradient(135deg,var(--cyan),#0097b2);color:#000;border:none;border-radius:8px;font-family:var(--sans);font-weight:700;font-size:0.95rem;cursor:pointer;}
+.opt.selected{border-color:var(--violet);background:rgba(124,58,237,0.12);color:#fff;}
+.opt-letter{font-family:var(--mono);font-size:0.7rem;color:var(--muted);flex-shrink:0;width:16px;}
+
+.submit-section{text-align:center;padding:2rem 0;}
+.submit-btn{padding:1rem 3rem;background:linear-gradient(135deg,var(--green),#059669);color:#fff;border:none;border-radius:10px;font-family:var(--sans);font-weight:700;font-size:1.05rem;cursor:pointer;}
 .submit-btn:disabled{opacity:0.4;cursor:not-allowed;}
 
-/* TIMER */
-.timer-bar{height:4px;background:var(--border);border-radius:2px;margin-bottom:1rem;overflow:hidden;}
-.timer-fill{height:100%;background:var(--cyan);border-radius:2px;transition:width 1s linear;}
-
-/* THANK YOU */
-.ty-box{text-align:center;padding:3rem 1rem;}
-.ty-icon{font-size:3rem;margin-bottom:0.75rem;}
-.ty-title{font-family:var(--sans);font-weight:700;font-size:1.2rem;margin-bottom:0.4rem;}
-.ty-sub{color:var(--muted);font-size:0.88rem;}
-
-/* WALL OF SHAME */
-.wall{background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.2);border-radius:10px;padding:1rem;margin-top:1.5rem;}
-.wall-title{font-family:var(--mono);font-size:0.62rem;color:var(--red);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.75rem;}
-.wall-chips{display:flex;flex-wrap:wrap;gap:0.4rem;}
-.wall-chip{padding:0.35rem 0.75rem;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:6px;font-size:0.82rem;font-weight:600;color:var(--red);}
-.wall-done{text-align:center;padding:1rem;color:var(--green);font-weight:700;}
-
 /* RESULTS */
-.result-bar{background:var(--surface);border-radius:8px;margin-bottom:0.5rem;overflow:hidden;}
-.rb-top{display:flex;justify-content:space-between;padding:0.5rem 0.75rem;}
-.rb-label{font-size:0.85rem;}
-.rb-val{font-family:var(--mono);font-size:0.7rem;color:var(--muted);}
-.rb-track{height:8px;background:var(--border);}
-.rb-fill{height:100%;background:linear-gradient(90deg,var(--cyan),var(--violet));transition:width 0.5s;}
-.rb-fill.correct{background:linear-gradient(90deg,var(--green),#059669);}
-.explanation{background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.2);border-radius:8px;padding:1rem;margin-top:1rem;font-size:0.84rem;line-height:1.6;color:var(--text);}
-.exp-label{font-family:var(--mono);font-size:0.6rem;color:var(--green);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.4rem;}
+.score-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:2rem;text-align:center;margin-bottom:1.5rem;}
+.score-num{font-family:var(--mono);font-size:3.5rem;font-weight:700;color:var(--cyan);}
+.score-label{color:var(--muted);font-size:0.9rem;margin-top:0.25rem;}
+.score-grade{font-family:var(--sans);font-weight:700;font-size:1.1rem;margin-top:0.75rem;}
 
-/* PIN */
-.pin-wrap{max-width:340px;margin:3rem auto;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:2rem;text-align:center;}
-.pin-icon{font-size:2rem;margin-bottom:0.75rem;}
-.pin-title{font-family:var(--sans);font-weight:700;font-size:1rem;margin-bottom:0.3rem;}
-.pin-sub{font-size:0.8rem;color:var(--muted);margin-bottom:1.25rem;}
-.pin-input{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:0.75rem;color:var(--text);font-family:var(--mono);font-size:1.4rem;text-align:center;outline:none;margin-bottom:0.75rem;}
-.pin-input:focus{border-color:var(--cyan);}
-.pin-btn{width:100%;padding:0.75rem;background:linear-gradient(135deg,var(--violet),#5b21b6);color:#fff;border:none;border-radius:8px;font-family:var(--sans);font-weight:700;font-size:0.9rem;cursor:pointer;}
-.pin-err{color:var(--red);font-size:0.78rem;margin-top:0.5rem;font-family:var(--mono);}
+.leaderboard{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:1.5rem;}
+.lb-header{padding:0.85rem 1.25rem;border-bottom:1px solid var(--border);font-family:var(--mono);font-size:0.65rem;letter-spacing:0.1em;color:var(--muted);text-transform:uppercase;display:flex;justify-content:space-between;}
+.lb-row{padding:0.7rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:0.75rem;font-size:0.88rem;}
+.lb-row:last-child{border-bottom:none;}
+.lb-row.me{background:rgba(0,229,255,0.05);border-left:3px solid var(--cyan);}
+.lb-rank{font-family:var(--mono);font-size:0.72rem;color:var(--muted);width:24px;flex-shrink:0;}
+.lb-rank.gold{color:#f59e0b;font-weight:700;}
+.lb-rank.silver{color:#94a3b8;font-weight:700;}
+.lb-rank.bronze{color:#b45309;font-weight:700;}
+.lb-name{flex:1;font-weight:600;}
+.lb-score{font-family:var(--mono);font-size:0.82rem;color:var(--cyan);}
+.lb-pct{font-family:var(--mono);font-size:0.72rem;color:var(--muted);}
 
-/* INSTRUCTOR */
-.i-panel{display:grid;grid-template-columns:300px 1fr;gap:1rem;}
-.panel{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1rem;}
-.panel-title{font-family:var(--mono);font-size:0.62rem;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.85rem;}
-.btabs{display:flex;flex-direction:column;gap:0.35rem;margin-bottom:0.85rem;}
-.btab{padding:0.45rem 0.65rem;border:1px solid var(--border);border-radius:6px;font-size:0.78rem;cursor:pointer;text-align:left;background:transparent;color:var(--muted);transition:all 0.15s;}
-.btab:hover,.btab.sel{border-color:var(--amber);color:var(--amber);background:rgba(245,158,11,0.06);}
-.qlist{display:flex;flex-direction:column;gap:0.3rem;max-height:280px;overflow-y:auto;margin-bottom:0.75rem;}
-.qitem{padding:0.4rem 0.6rem;border:1px solid var(--border);border-radius:5px;font-size:0.78rem;cursor:pointer;background:transparent;color:var(--muted);text-align:left;}
-.qitem:hover,.qitem.sel{border-color:var(--violet);color:var(--violet);background:rgba(124,58,237,0.06);}
-.ibtn{width:100%;padding:0.65rem;border:none;border-radius:7px;font-family:var(--sans);font-weight:700;font-size:0.85rem;cursor:pointer;margin-bottom:0.4rem;}
-.ibtn.launch{background:linear-gradient(135deg,var(--amber),#d97706);color:#000;}
-.ibtn.close{background:transparent;border:1px solid rgba(239,68,68,0.4);color:var(--red);}
-.ibtn.reveal{background:linear-gradient(135deg,var(--green),#059669);color:#fff;}
-.ibtn:disabled{opacity:0.35;cursor:not-allowed;}
-.stat-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;margin-bottom:0.75rem;}
-.stat{background:var(--bg);border-radius:7px;padding:0.6rem;text-align:center;}
-.stat-n{font-family:var(--mono);font-size:1.4rem;font-weight:700;color:var(--cyan);}
-.stat-l{font-size:0.68rem;color:var(--muted);}
-@media(max-width:700px){.i-panel{grid-template-columns:1fr;}}
+.retry-btn{padding:0.75rem 2rem;background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:8px;font-family:var(--sans);font-weight:600;font-size:0.9rem;cursor:pointer;margin-top:0.5rem;}
+.retry-btn:hover{border-color:var(--cyan);color:var(--cyan);}
+
+/* SCREENS */
+.screen{display:none;}
+.screen.active{display:block;}
 </style>
 </head>
 <body>
 <nav>
   <div class="nav-brand">DR.TAN // LIVE QUIZ</div>
   <div class="nav-links">
-    <button class="nb" id="btn-i" onclick="showInstructor()">⚙ Instructor</button>
-    <button class="nb active" id="btn-s" onclick="showStudent()">👤 Student</button>
     <a href="lecture.html" class="nb">📖 Lecture</a>
     <a href="index.html" class="nb">← Home</a>
   </div>
 </nav>
 
-<!-- STUDENT SCREEN -->
-<div class="screen active" id="sscreen">
-  <div id="s-wait" class="wait-box">
-    <div class="live-dot"></div>
-    <div class="wait-icon">⏳</div>
-    <div class="wait-title">Waiting for Dr. Tan...</div>
-    <div class="wait-sub">A question will appear here the moment it is launched. Keep this page open.</div>
-    <div class="wait-name" id="s-wait-name"></div>
-    <div id="s-wall" style="display:none;margin-top:1.5rem;"></div>
-  </div>
-  <div id="s-question" style="display:none;"></div>
-  <div id="s-ty" style="display:none;" class="ty-box">
-    <div class="ty-icon">✅</div>
-    <div class="ty-title">Answer submitted!</div>
-    <div class="ty-sub">Waiting for Dr. Tan to reveal results.</div>
-    <div id="s-wall-ty" style="display:none;margin-top:1.5rem;"></div>
-  </div>
-  <div id="s-results" style="display:none;"></div>
-</div>
-
-<!-- INSTRUCTOR PIN SCREEN -->
-<div class="screen" id="ipin">
-  <div class="pin-wrap">
-    <div class="pin-icon">🔐</div>
-    <div class="pin-title">Instructor Access</div>
-    <div class="pin-sub">Enter PIN to access control panel</div>
-    <input type="tel" class="pin-input" id="pin-in" maxlength="4" placeholder="PIN" autocomplete="off"
-      oninput="this.value=this.value.replace(/[^0-9]/g,'')"
-      onkeydown="if(event.key==='Enter')checkPin()">
-    <button class="pin-btn" onclick="checkPin()">Unlock →</button>
-    <div class="pin-err" id="pin-err"></div>
+<!-- NAME ENTRY -->
+<div class="screen active" id="screen-name">
+  <div class="name-screen">
+    <div style="font-size:2.5rem;margin-bottom:1rem;">📝</div>
+    <h2>Research Methods Quiz</h2>
+    <p>Enter your name to begin. All 55 questions across 6 sections.</p>
+    <input class="name-input" id="name-input" type="text" placeholder="Your full name e.g. Aisha Rahman"
+      onkeydown="if(event.key==='Enter')startQuiz()">
+    <br>
+    <button class="start-btn" onclick="startQuiz()">Start Quiz →</button>
   </div>
 </div>
 
-<!-- INSTRUCTOR PANEL -->
-<div class="screen" id="iscreen">
-  <div class="stat-row">
-    <div class="stat"><div class="stat-n" id="i-students">0</div><div class="stat-l">Students</div></div>
-    <div class="stat"><div class="stat-n" id="i-responded" style="color:var(--green)">0</div><div class="stat-l">Answered</div></div>
-    <div class="stat"><div class="stat-n" id="i-pending" style="color:var(--red)">0</div><div class="stat-l">Pending</div></div>
-  </div>
-  <div class="i-panel">
-    <div>
-      <div class="panel">
-        <div class="panel-title">Quiz Banks</div>
-        <div class="btabs" id="i-btabs"></div>
-        <div class="panel-title" style="margin-top:0.5rem;">Questions</div>
-        <div class="qlist" id="i-qlist"></div>
-        <button class="ibtn launch" id="i-launch" onclick="launchQ()" disabled>▶ Launch</button>
-        <button class="ibtn close" id="i-close" onclick="closeQ()" style="display:none;">■ Close</button>
-        <button class="ibtn reveal" id="i-reveal" onclick="revealQ()" style="display:none;">📊 Reveal Results</button>
-      </div>
+<!-- QUIZ -->
+<div class="screen" id="screen-quiz">
+  <div class="wrap">
+    <div class="quiz-header">
+      <h2>Research Methods — All Sections</h2>
+      <p id="quiz-progress-label">0 of 55 answered</p>
+      <div class="progress-bar"><div class="progress-fill" id="quiz-progress" style="width:0%"></div></div>
     </div>
-    <div>
-      <div class="panel">
-        <div class="panel-title">⚠ Still Pending</div>
-        <div id="i-wall"><div style="color:var(--muted);font-size:0.78rem;">No active question</div></div>
-      </div>
-      <div class="panel" style="margin-top:0.75rem;">
-        <div class="panel-title">Live Results</div>
-        <div id="i-results"><div style="color:var(--muted);font-size:0.78rem;">No responses yet</div></div>
-      </div>
+    <div id="quiz-body"></div>
+    <div class="submit-section">
+      <button class="submit-btn" id="submit-btn" onclick="submitQuiz()" disabled>Submit All Answers</button>
+      <p style="color:var(--muted);font-size:0.78rem;margin-top:0.75rem;" id="submit-hint">Answer all questions to submit</p>
+    </div>
+  </div>
+</div>
+
+<!-- RESULTS -->
+<div class="screen" id="screen-results">
+  <div class="wrap">
+    <div class="score-card">
+      <div class="score-num" id="r-score">0/55</div>
+      <div class="score-label">Your Score</div>
+      <div class="score-grade" id="r-grade"></div>
+    </div>
+    <div class="leaderboard">
+      <div class="lb-header"><span>Leaderboard</span><span id="lb-count"></span></div>
+      <div id="lb-body"></div>
+    </div>
+    <div style="text-align:center;">
+      <button class="retry-btn" onclick="retryQuiz()">🔄 Try Again</button>
     </div>
   </div>
 </div>
 
 <script>
-const API = 'https://rm-students.teikkheong.workers.dev';
-const PIN = '6664';
-const KEY = 'rm_v2';
-// SESSION_START removed - no longer needed
-
-let selQuiz = 1, selQ = null, pollTimer = null;
-let studentDone = false, lastStateQ = null, lastShowResults = false;
-
 const BREAKS = {
   1:{label:'Quiz 1 — Central Tendency & Scales',questions:[
     {id:'q01',tag:'Central Tendency',type:'mcq',text:'What is the mean in statistics?',context:'Think about the arithmetic operation used to calculate it.',options:['The most frequently occurring score','The middle score when data are ordered','The arithmetic average of the scores','The spread of scores from highest to lowest'],correct:2,explanation:'The mean is the arithmetic average — sum all scores and divide by n. It uses every value, which makes it sensitive to outliers.'},
@@ -266,342 +202,163 @@ const BREAKS = {
   ]}
 };
 
-// ── UTILS ──
-function getStudentName(){
-  return localStorage.getItem('student_name_v1') || '';
+const SCORES_KEY = 'drtan_quiz_scores';
+let studentName = '';
+let answers = {}; // {qId: selectedOption}
+let totalQ = 0;
+
+// Get all questions flat
+function getAllQuestions(){
+  const all = [];
+  Object.entries(BREAKS).forEach(([num, bank]) => {
+    bank.questions.filter(q => q.type === 'mcq').forEach(q => {
+      all.push({...q, bankNum: num, bankLabel: bank.label});
+    });
+  });
+  return all;
 }
 
-function setStudentName(name){
-  localStorage.setItem('student_name_v1', name);
+// ── START ──
+function startQuiz(){
+  const val = document.getElementById('name-input').value.trim();
+  if(!val){ alert('Please enter your name.'); return; }
+  studentName = val;
+  localStorage.setItem('student_name_v1', val);
   localStorage.setItem('student_registered', 'yes');
+  answers = {};
+  buildQuiz();
+  showScreen('screen-quiz');
 }
 
-function getStudents(){
-  try{ return JSON.parse(localStorage.getItem(KEY)||'[]'); }catch{ return []; }
+function buildQuiz(){
+  const allQ = getAllQuestions();
+  totalQ = allQ.length;
+  let html = '';
+  let lastBank = '';
+  
+  allQ.forEach((q, i) => {
+    if(q.bankLabel !== lastBank){
+      lastBank = q.bankLabel;
+      html += `<div class="section-header">⚡ ${q.bankLabel}</div>`;
+    }
+    html += `<div class="q-card" id="card-${q.id}">
+      <div class="q-num">Q${i+1} · ${q.tag||''}</div>
+      <div class="q-text">${q.text}</div>
+      ${q.context ? `<div style="font-size:0.8rem;color:var(--muted);font-style:italic;margin-bottom:0.75rem;">${q.context}</div>` : ''}
+      <div class="options" id="opts-${q.id}">
+        ${q.options.map((o,oi) => `
+          <button class="opt" id="opt-${q.id}-${oi}" onclick="selectAnswer('${q.id}',${oi},'${o.replace(/'/g,"\'")}')">
+            <span class="opt-letter">${String.fromCharCode(65+oi)})</span>${o}
+          </button>`).join('')}
+      </div>
+    </div>`;
+  });
+  
+  document.getElementById('quiz-body').innerHTML = html;
 }
 
-async function apiFetch(url, opts={}){
-  const c = new AbortController();
-  setTimeout(()=>c.abort(), 5000);
-  try{
-    const r = await fetch(url, {...opts, signal:c.signal});
-    return r;
-  }catch(e){ throw e; }
+function selectAnswer(qId, optIdx, optText){
+  // Deselect all options for this question
+  const q = document.getElementById(`opts-${qId}`);
+  q.querySelectorAll('.opt').forEach(b => b.classList.remove('selected'));
+  // Select chosen
+  document.getElementById(`opt-${qId}-${optIdx}`).classList.add('selected');
+  answers[qId] = {idx: optIdx, text: optText};
+  updateProgress();
 }
 
-// ── SCREENS ──
+function updateProgress(){
+  const answered = Object.keys(answers).length;
+  const pct = Math.round((answered / totalQ) * 100);
+  document.getElementById('quiz-progress').style.width = pct + '%';
+  document.getElementById('quiz-progress-label').textContent = `${answered} of ${totalQ} answered`;
+  const btn = document.getElementById('submit-btn');
+  const hint = document.getElementById('submit-hint');
+  if(answered === totalQ){
+    btn.disabled = false;
+    hint.textContent = 'All questions answered — ready to submit!';
+    hint.style.color = 'var(--green)';
+  } else {
+    btn.disabled = true;
+    hint.textContent = `${totalQ - answered} questions remaining`;
+    hint.style.color = 'var(--muted)';
+  }
+}
+
+// ── SUBMIT ──
+function submitQuiz(){
+  const allQ = getAllQuestions();
+  let correct = 0;
+  allQ.forEach(q => {
+    const ans = answers[q.id];
+    if(ans && ans.idx === q.correct) correct++;
+  });
+  
+  const score = correct;
+  const total = allQ.length;
+  const pct = Math.round((score/total)*100);
+  
+  // Save to leaderboard
+  const scores = JSON.parse(localStorage.getItem(SCORES_KEY)||'[]');
+  // Remove previous entry for this student
+  const filtered = scores.filter(s => s.name.toLowerCase() !== studentName.toLowerCase());
+  filtered.push({name: studentName, score, total, pct, ts: Date.now()});
+  // Sort by score desc
+  filtered.sort((a,b) => b.score - a.score || b.ts - a.ts);
+  // Keep top 50
+  const top = filtered.slice(0, 50);
+  localStorage.setItem(SCORES_KEY, JSON.stringify(top));
+  
+  showResults(score, total, pct, top);
+  showScreen('screen-results');
+}
+
+function showResults(score, total, pct, scores){
+  document.getElementById('r-score').textContent = `${score}/${total}`;
+  
+  let grade = '';
+  if(pct >= 90) grade = '🏆 Distinction — Outstanding!';
+  else if(pct >= 75) grade = '🎯 Merit — Well Done!';
+  else if(pct >= 60) grade = '✅ Pass — Good Effort!';
+  else grade = '📚 Keep Studying — You'll Get There!';
+  document.getElementById('r-grade').textContent = grade;
+  document.getElementById('r-grade').style.color = pct >= 60 ? 'var(--green)' : 'var(--amber)';
+  
+  document.getElementById('lb-count').textContent = scores.length + ' students';
+  
+  const medals = ['🥇', '🥈', '🥉'];
+  document.getElementById('lb-body').innerHTML = scores.map((s, i) => {
+    const isMe = s.name.toLowerCase() === studentName.toLowerCase();
+    const rank = medals[i] || (i+1);
+    return `<div class="lb-row ${isMe?'me':''}">
+      <span class="lb-rank ${i===0?'gold':i===1?'silver':i===2?'bronze':''}">${rank}</span>
+      <span class="lb-name">${s.name} ${isMe?'(you)':''}</span>
+      <span class="lb-score">${s.score}/${s.total}</span>
+      <span class="lb-pct">${s.pct}%</span>
+    </div>`;
+  }).join('');
+}
+
+function retryQuiz(){
+  answers = {};
+  buildQuiz();
+  showScreen('screen-quiz');
+  window.scrollTo(0,0);
+}
+
 function showScreen(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
 }
 
-function showStudent(){
-  document.getElementById('btn-s').classList.add('active');
-  document.getElementById('btn-i').classList.remove('active');
-  showScreen('sscreen');
-  const name = getStudentName();
-  if(name){
-    document.getElementById('s-wait-name').textContent = '👤 ' + name;
-  } else {
-    document.getElementById('s-wait-name').textContent = '';
+// Check if name already stored
+window.addEventListener('DOMContentLoaded', function(){
+  const saved = localStorage.getItem('student_name_v1');
+  if(saved){
+    document.getElementById('name-input').value = saved;
   }
-  document.getElementById('s-wait').style.display = 'block';
-  document.getElementById('s-question').style.display = 'none';
-  document.getElementById('s-ty').style.display = 'none';
-  document.getElementById('s-results').style.display = 'none';
-  startStudentPoll();
-}
-
-function showInstructor(){
-  document.getElementById('btn-i').classList.add('active');
-  document.getElementById('btn-s').classList.remove('active');
-  showScreen('ipin');
-  setTimeout(()=>{ try{document.getElementById('pin-in').focus();}catch(e){} }, 100);
-}
-
-// ── PIN ──
-function checkPin(){
-  const v = document.getElementById('pin-in').value.trim();
-  if(v === PIN){
-    document.getElementById('pin-err').textContent = '';
-    showScreen('iscreen');
-    renderInstructor();
-    startInstructorPoll();
-  } else {
-    document.getElementById('pin-err').textContent = 'Incorrect PIN';
-    document.getElementById('pin-in').value = '';
-  }
-}
-
-// ── STUDENT POLL ──
-function startStudentPoll(){
-  if(pollTimer) clearInterval(pollTimer);
-  checkStudentState();
-  pollTimer = setInterval(checkStudentState, 2500);
-}
-
-async function checkStudentState(){
-  try{
-    const [sr, rr] = await Promise.all([
-      apiFetch(API+'/quiz/state'),
-      apiFetch(API+'/quiz/responses')
-    ]);
-    const state = await sr.json();
-    const allResp = await rr.json();
-    // Update wall of shame
-    renderWall(state, allResp, 's-wall');
-
-    if(state.showResults && state.activeQ){
-      if(lastShowResults !== true || lastStateQ !== state.activeQ){
-        lastShowResults = true; lastStateQ = state.activeQ;
-        renderStudentResults(state.activeQ, allResp);
-      }
-      return;
-    }
-    lastShowResults = false;
-    if(!state.activeQ){
-      lastStateQ = null; studentDone = false;
-      showStudentSection('wait'); return;
-    }
-    if(state.activeQ !== lastStateQ){
-      lastStateQ = state.activeQ; studentDone = false;
-      renderStudentQuestion(state);
-      showStudentSection('question');
-      return;
-    }
-    if(studentDone){ showStudentSection('ty'); renderWall(state, allResp, 's-wall-ty'); }
-  }catch(e){}
-}
-
-function showStudentSection(which){
-  document.getElementById('s-wait').style.display = which==='wait' ? 'block' : 'none';
-  document.getElementById('s-question').style.display = which==='question' ? 'block' : 'none';
-  document.getElementById('s-ty').style.display = which==='ty' ? 'block' : 'none';
-  document.getElementById('s-results').style.display = which==='results' ? 'block' : 'none';
-}
-
-function renderStudentQuestion(state){
-  const allQ = Object.values(BREAKS).flatMap(b=>b.questions);
-  const q = allQ.find(x=>x.id===state.activeQ);
-  if(!q) return;
-  const el = document.getElementById('s-question');
-  el.innerHTML = `
-    <div class="timer-bar"><div class="timer-fill" id="s-timer" style="width:100%"></div></div>
-    <div class="q-card">
-      <div class="q-tag">${q.tag||''}</div>
-      <div class="q-text">${q.text}</div>
-      ${q.context?`<div class="q-context">${q.context}</div>`:''}
-      <div class="options" id="s-opts">
-        ${q.options.map((o,i)=>`
-          <button class="opt" onclick="selectOpt(this,'${o}')">
-            <span class="opt-letter">${String.fromCharCode(65+i)})</span>${o}
-          </button>`).join('')}
-      </div>
-      <button class="submit-btn" id="s-submit" onclick="submitAnswer('${state.activeQ}')" disabled>Submit Answer</button>
-    </div>`;
-  // Start timer
-  if(state.launchedAt && state.duration){
-    const elapsed = (Date.now() - state.launchedAt)/1000;
-    const pct = Math.max(0, 100 - (elapsed/state.duration)*100);
-    const fill = document.getElementById('s-timer');
-    if(fill) fill.style.width = pct + '%';
-  }
-}
-
-let selAnswer = null;
-function selectOpt(btn, answer){
-  document.querySelectorAll('#s-opts .opt').forEach(b=>b.classList.remove('selected'));
-  btn.classList.add('selected');
-  selAnswer = answer;
-  document.getElementById('s-submit').disabled = false;
-}
-
-async function submitAnswer(qId){
-  if(!selAnswer) return;
-  const name = getStudentName() || 'Student';
-  document.getElementById('s-submit').disabled = true;
-  try{
-    await apiFetch(API+'/quiz/respond', {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({questionId:qId, name:name, answer:selAnswer})
-    });
-  }catch(e){}
-  studentDone = true;
-  showStudentSection('ty');
-}
-
-function renderStudentResults(qId, allResp){
-  const allQ = Object.values(BREAKS).flatMap(b=>b.questions);
-  const q = allQ.find(x=>x.id===qId);
-  if(!q) return;
-  const responses = allResp[qId]||[];
-  const total = responses.length||1;
-  const counts = {};
-  q.options.forEach((_,i)=>counts[i]=0);
-  responses.forEach(r=>{
-    const idx = q.options.indexOf(r.answer);
-    if(idx>=0) counts[idx]=(counts[idx]||0)+1;
-  });
-  const el = document.getElementById('s-results');
-  el.innerHTML = `
-    <div class="q-card">
-      <div class="q-tag">Results</div>
-      <div class="q-text">${q.text}</div>
-      ${q.options.map((o,i)=>{
-        const pct=Math.round(((counts[i]||0)/total)*100);
-        const correct=i===q.correct;
-        return `<div class="result-bar">
-          <div class="rb-top">
-            <span class="rb-label" style="${correct?'color:var(--green);font-weight:700':''}">${String.fromCharCode(65+i)}) ${o} ${correct?'✓':''}</span>
-            <span class="rb-val">${counts[i]||0} · ${pct}%</span>
-          </div>
-          <div class="rb-track"><div class="rb-fill ${correct?'correct':''}" style="width:${pct}%"></div></div>
-        </div>`;
-      }).join('')}
-      ${q.explanation?`<div class="explanation"><div class="exp-label">Explanation</div>${q.explanation}</div>`:''}
-    </div>`;
-  document.getElementById('s-wall').style.display = 'none';
-  showStudentSection('results');
-}
-
-function renderWall(state, allResp, elId){
-  const el = document.getElementById(elId);
-  if(!el) return;
-  if(!state.activeQ || state.showResults){ el.style.display='none'; return; }
-  const students = getStudents();
-  if(!students.length){ el.style.display='none'; return; }
-  const responses = (allResp[state.activeQ]||[]);
-  const answered = new Set(responses.map(r=>(r.name||'').toLowerCase().trim()));
-  const pending = students.filter(s=>{
-    const full=(s.first+' '+s.last).toLowerCase().trim();
-    return !answered.has(full) && ![...answered].some(n=>n.includes(s.first.toLowerCase()));
-  });
-  el.style.display = 'block';
-  if(!pending.length){
-    el.innerHTML = '<div class="wall"><div class="wall-done">🎉 Everyone responded!</div></div>';
-  } else {
-    el.innerHTML = `<div class="wall">
-      <div class="wall-title">⚠ ${pending.length} still haven't answered</div>
-      <div class="wall-chips">${pending.map(s=>`<div class="wall-chip">${s.first} ${s.last}</div>`).join('')}</div>
-    </div>`;
-  }
-}
-
-// ── INSTRUCTOR ──
-function renderInstructor(){
-  // Roster count
-  const students = getStudents();
-  document.getElementById('i-students').textContent = students.length;
-  // Quiz tabs
-  const tabs = document.getElementById('i-btabs');
-  tabs.innerHTML = Object.entries(BREAKS).map(([n,b])=>
-    `<button class="btab ${selQuiz==n?'sel':''}" onclick="selBreak(${n})">${b.label}</button>`
-  ).join('');
-  renderQList();
-}
-
-function selBreak(n){
-  selQuiz = n; selQ = null;
-  document.getElementById('i-launch').disabled = true;
-  renderInstructor();
-}
-
-function renderQList(){
-  const qs = BREAKS[selQuiz].questions;
-  document.getElementById('i-qlist').innerHTML = qs.map((q,i)=>
-    `<button class="qitem ${selQ===q.id?'sel':''}" onclick="selQuestion('${q.id}')">Q${i+1}: ${q.text.substring(0,45)}...</button>`
-  ).join('');
-}
-
-function selQuestion(id){
-  selQ = id;
-  document.getElementById('i-launch').disabled = false;
-  renderQList();
-}
-
-async function launchQ(){
-  if(!selQ) return;
-  try{
-    await apiFetch(API+'/quiz/launch',{
-      method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({questionId:selQ,duration:180})
-    });
-  }catch(e){ console.warn('Worker offline'); }
-  document.getElementById('i-launch').style.display='none';
-  document.getElementById('i-close').style.display='block';
-  document.getElementById('i-reveal').style.display='none';
-}
-
-async function closeQ(){
-  try{ await apiFetch(API+'/quiz/close',{method:'POST'}); }catch(e){}
-  document.getElementById('i-close').style.display='none';
-  document.getElementById('i-reveal').style.display='block';
-}
-
-async function revealQ(){
-  try{ await apiFetch(API+'/quiz/results',{method:'POST'}); }catch(e){}
-  document.getElementById('i-reveal').style.display='none';
-  document.getElementById('i-launch').style.display='block';
-  document.getElementById('i-launch').disabled = false;
-}
-
-async function startInstructorPoll(){
-  setInterval(async()=>{
-    try{
-      const students = getStudents();
-      document.getElementById('i-students').textContent = students.length;
-      const [sr,rr] = await Promise.all([
-        apiFetch(API+'/quiz/state'),
-        apiFetch(API+'/quiz/responses')
-      ]);
-      const state = await sr.json();
-      const allResp = await rr.json();
-      if(!state.activeQ){
-        document.getElementById('i-wall').innerHTML = '<div style="color:var(--muted);font-size:0.78rem;">No active question</div>';
-        document.getElementById('i-responded').textContent = 0;
-        document.getElementById('i-pending').textContent = 0;
-        return;
-      }
-      const responses = allResp[state.activeQ]||[];
-      const answered = new Set(responses.map(r=>(r.name||'').toLowerCase().trim()));
-      const pending = students.filter(s=>{
-        const full=(s.first+' '+s.last).toLowerCase().trim();
-        return !answered.has(full)&&![...answered].some(n=>n.includes(s.first.toLowerCase()));
-      });
-      document.getElementById('i-responded').textContent = responses.length;
-      document.getElementById('i-pending').textContent = pending.length;
-      // Wall
-      if(!pending.length){
-        document.getElementById('i-wall').innerHTML = '<div class="wall-done">🎉 Everyone responded!</div>';
-      } else {
-        document.getElementById('i-wall').innerHTML = `
-          <div class="wall-chips">${pending.map(s=>`<div class="wall-chip">${s.first} ${s.last}</div>`).join('')}</div>`;
-      }
-      // Results
-      const allQ = Object.values(BREAKS).flatMap(b=>b.questions);
-      const q = allQ.find(x=>x.id===state.activeQ);
-      if(q && responses.length){
-        const counts={};
-        q.options.forEach((_,i)=>counts[i]=0);
-        responses.forEach(r=>{ const idx=q.options.indexOf(r.answer); if(idx>=0)counts[idx]=(counts[idx]||0)+1; });
-        const total=responses.length||1;
-        document.getElementById('i-results').innerHTML = q.options.map((o,i)=>{
-          const pct=Math.round(((counts[i]||0)/total)*100);
-          return `<div class="result-bar">
-            <div class="rb-top">
-              <span class="rb-label ${i===q.correct?'style="color:var(--green)"':''}">${String.fromCharCode(65+i)}) ${o} ${i===q.correct?'✓':''}</span>
-              <span class="rb-val">${counts[i]||0} · ${pct}%</span>
-            </div>
-            <div class="rb-track"><div class="rb-fill ${i===q.correct?'correct':''}" style="width:${pct}%"></div></div>
-          </div>`;
-        }).join('');
-      }
-    }catch(e){}
-  }, 2500);
-}
-
-// ── INIT — always start in student view ──
-showStudent();
+});
 </script>
 </body>
 </html>

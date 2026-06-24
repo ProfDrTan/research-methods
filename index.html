@@ -558,6 +558,8 @@ function enterMemberView(){
   renderDashboard(getData());
 }
 
+var WORKER_API = 'https://rm-students.teikkheong.workers.dev';
+
 function submitRegistration(){
   var first=document.getElementById('f-first').value.trim();
   var last=document.getElementById('f-last').value.trim();
@@ -570,12 +572,29 @@ function submitRegistration(){
   var challenge=document.getElementById('f-challenge').value.trim();
   if(!first||!last||!country||!prog||!stage){alert('Please fill in all required fields.');return;}
   var btn=document.getElementById('submit-btn');
-  btn.disabled=true; btn.textContent='Registered! ✓';
+  btn.disabled=true; btn.textContent='Registering...';
+
+  var student = {first:first,last:last,uni:uni,country:country,prog:prog,stage:stage,domain:domain,tool:tool,challenge:challenge,ts:Date.now()};
+
+  // Save to localStorage immediately — works even if Worker is offline
   var data=getData();
-  data.push({first:first,last:last,uni:uni,country:country,prog:prog,stage:stage,domain:domain,tool:tool,challenge:challenge,ts:Date.now()});
+  data.push(student);
   saveData(data);
   localStorage.setItem('student_name_v1',first+' '+last);
   localStorage.setItem('student_registered','yes');
+
+  // Also POST to Worker so instructor sees this student on ALL devices
+  var controller = new AbortController();
+  var timer = setTimeout(function(){ controller.abort(); }, 5000);
+  fetch(WORKER_API+'/register', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify(student),
+    signal: controller.signal
+  }).then(function(r){ clearTimeout(timer); })
+  .catch(function(e){ clearTimeout(timer); console.warn('Worker offline — saved locally only'); });
+
+  btn.textContent='Registered! ✓';
   document.getElementById('reg-form').style.display='none';
   document.getElementById('form-success').style.display='block';
 }

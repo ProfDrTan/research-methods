@@ -191,7 +191,7 @@ nav{background:rgba(2,8,23,0.95);border-bottom:1px solid var(--border);padding:0
 const API = 'https://rm-students.teikkheong.workers.dev';
 const PIN = '6664';
 const KEY = 'rm_v2';
-const SESSION_START = Date.now();
+// SESSION_START removed - no longer needed
 
 let selQuiz = 1, selQ = null, pollTimer = null;
 let studentDone = false, lastStateQ = null, lastShowResults = false;
@@ -348,14 +348,9 @@ async function checkStudentState(){
     ]);
     const state = await sr.json();
     const allResp = await rr.json();
-    const launched = state.launchedAt && state.launchedAt > (SESSION_START - 5000);
-
     // Update wall of shame
     renderWall(state, allResp, 's-wall');
 
-    if(!launched){
-      showStudentSection('wait'); return;
-    }
     if(state.showResults && state.activeQ){
       if(lastShowResults !== true || lastStateQ !== state.activeQ){
         lastShowResults = true; lastStateQ = state.activeQ;
@@ -472,8 +467,7 @@ function renderStudentResults(qId, allResp){
 function renderWall(state, allResp, elId){
   const el = document.getElementById(elId);
   if(!el) return;
-  const launched = state.launchedAt && state.launchedAt > (SESSION_START - 5000);
-  if(!state.activeQ || !launched || state.showResults){ el.style.display='none'; return; }
+  if(!state.activeQ || state.showResults){ el.style.display='none'; return; }
   const students = getStudents();
   if(!students.length){ el.style.display='none'; return; }
   const responses = (allResp[state.activeQ]||[]);

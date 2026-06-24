@@ -48,6 +48,14 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
 .viva{background:rgba(239,68,68,0.05);border-left:3px solid var(--red);padding:0.65rem 0.85rem;margin-top:0.75rem;border-radius:0 6px 6px 0;}
 .viva-label{font-family:var(--mono);font-size:0.58rem;color:var(--red);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.3rem;}
 .viva-text{font-size:0.83rem;color:var(--muted);line-height:1.6;}
+.read-btn{display:flex;align-items:center;gap:0.5rem;margin:0.6rem 1rem 0;padding:0.45rem 0.85rem;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);border-radius:6px;cursor:pointer;font-family:var(--mono);font-size:0.68rem;color:var(--amber);width:fit-content;}
+.read-btn:hover{background:rgba(245,158,11,0.18);}
+.read-btn.reading{background:rgba(239,68,68,0.1);border-color:rgba(239,68,68,0.3);color:var(--red);}
+.tts-bar{position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--border);padding:0.65rem 1rem;display:none;align-items:center;gap:0.75rem;z-index:200;}
+.tts-bar.active{display:flex;}
+.tts-title{font-family:var(--mono);font-size:0.68rem;color:var(--text);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.tts-stop{padding:0.35rem 0.85rem;background:var(--red);color:#fff;border:none;border-radius:5px;font-family:var(--mono);font-size:0.68rem;cursor:pointer;}
+.tts-pause{padding:0.35rem 0.85rem;background:var(--amber);color:var(--bg);border:none;border-radius:5px;font-family:var(--mono);font-size:0.68rem;cursor:pointer;}
 </style>
 </head>
 <body>
@@ -80,7 +88,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
 <div class="q-card">
   <div class="q-top"><span class="q-num">Q1</span><span class="q-text">What is the mean in statistics?</span></div>
   <div class="answer-badge">✓ C) The arithmetic average of the scores</div>
-  <div class="script-body">
+  <button class="read-btn" onclick="readScript(this,'q1')">🔊 Read Aloud</button>
+  <div class="script-body" id="script-q1">
     <div class="script-label">Your Discussion Script</div>
     <div class="script-text">
       <p>The mean is the <strong>arithmetic average</strong> — you add up every single score and divide by the number of observations. It is the most powerful measure of central tendency precisely because it uses all the data — nothing is thrown away.</p>
@@ -95,7 +104,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
 <div class="q-card">
   <div class="q-top"><span class="q-num">Q2</span><span class="q-text">Which measure is best for nominal data?</span></div>
   <div class="answer-badge">✓ D) Mode</div>
-  <div class="script-body"><div class="script-label">Your Discussion Script</div><div class="script-text">
+  <button class="read-btn" onclick="readScript(this,'q2')">🔊 Read Aloud</button>
+  <div class="script-body" id="script-q2"><div class="script-label">Your Discussion Script</div><div class="script-text">
     <p>Nominal data is just labels — categories with no mathematical meaning. Gender is male or female. Country is Malaysia or India. Industry is hospitality or manufacturing. <strong>You cannot average labels.</strong> If Male = 1 and Female = 2, the mean of 1.5 is complete nonsense.</p>
     <p>What you CAN do with nominal data is count frequencies and identify the most common category — that is the <strong>Mode</strong>. In a class of 35 PhD students and 20 DBA students — the mode is PhD. That is your only valid measure of central tendency here.</p>
     <p>Remember this hierarchy: <em>Mode is valid for ALL scale levels</em>. Median is valid for ordinal and above. Mean is only valid for interval and ratio. You can always go down the scale — you can never go up.</p>
@@ -106,7 +116,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
 <div class="q-card">
   <div class="q-top"><span class="q-num">Q3</span><span class="q-text">Which is NOT a measure of central tendency?</span></div>
   <div class="answer-badge">✓ D) Standard Deviation</div>
-  <div class="script-body"><div class="script-label">Your Discussion Script</div><div class="script-text">
+  <button class="read-btn" onclick="readScript(this,'q3')">🔊 Read Aloud</button>
+  <div class="script-body" id="script-q3"><div class="script-label">Your Discussion Script</div><div class="script-text">
     <p>This is a classic viva trap. There are <strong>exactly three measures of central tendency</strong> — mean, median, and mode. Full stop. They all answer the same question: where is the centre or typical value of this distribution?</p>
     <p>Standard deviation answers a completely different question: <strong>how spread out is the data around that centre?</strong> That is dispersion — not central tendency. Confusing these two families of statistics is one of the most common errors examiners catch in methodology chapters.</p>
     <p>If your examiner asks "what measures of central tendency did you report?" — say mean and median. <em>Never say standard deviation.</em> If they ask about dispersion — then SD, range, and IQR come in.</p>
@@ -116,7 +127,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
 <div class="q-card">
   <div class="q-top"><span class="q-num">Q4</span><span class="q-text">Which graph suits categorical data best?</span></div>
   <div class="answer-badge">✓ C) Bar chart</div>
-  <div class="script-body"><div class="script-label">Your Discussion Script</div><div class="script-text">
+  <button class="read-btn" onclick="readScript(this,'q4')">🔊 Read Aloud</button>
+  <div class="script-body" id="script-q4"><div class="script-label">Your Discussion Script</div><div class="script-text">
     <p>Your choice of graph is a methodological statement — reviewers and examiners notice immediately when you use the wrong one. The rule is simple: <strong>categorical data gets a bar chart, continuous data gets a histogram.</strong></p>
     <p>The visual difference: bar charts have <em>gaps between bars</em> because categories are separate and distinct. Histograms have <em>no gaps</em> because the data is continuous and flows from one value to the next. Scatterplots show relationships between two continuous variables. Boxplots compare distributions across groups and reveal outliers.</p>
     <p>In your results chapter: sample demographics — country, gender, industry, programme type — all bar charts. Distribution of satisfaction scores or salary — histogram. Relationship between marketing spend and revenue — scatterplot first, then correlation.</p>
@@ -127,7 +139,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
 <div class="q-card">
   <div class="q-top"><span class="q-num">Q5</span><span class="q-text">What does standard deviation measure?</span></div>
   <div class="answer-badge">✓ B) Spread of scores</div>
-  <div class="script-body"><div class="script-label">Your Discussion Script</div><div class="script-text">
+  <button class="read-btn" onclick="readScript(this,'q5')">🔊 Read Aloud</button>
+  <div class="script-body" id="script-q5"><div class="script-label">Your Discussion Script</div><div class="script-text">
     <p>Standard deviation tells you <strong>how consistent your data is</strong> — how tightly scores cluster around the mean. A small SD means almost everyone gave similar responses. A large SD means opinions or values were widely spread.</p>
     <p>Two hotels can have the exact same mean satisfaction score of 5.2 out of 7. Hotel A has SD = 0.3 — almost all guests agree, the service is consistently good. Hotel B has SD = 1.9 — some guests love it, some hate it, service is wildly inconsistent. <em>Same mean, completely different operational reality.</em></p>
     <p>In SEM research: a higher SD on your Likert items is actually desirable — it means respondents are discriminating rather than all clicking the same answer. If everyone answers 7 out of 7, you have a ceiling effect and your scale has no power to detect relationships.</p>
@@ -137,7 +150,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
 <div class="q-card">
   <div class="q-top"><span class="q-num">Q6</span><span class="q-text">What type of data has a true zero?</span></div>
   <div class="answer-badge">✓ D) Ratio</div>
-  <div class="script-body"><div class="script-label">Your Discussion Script</div><div class="script-text">
+  <button class="read-btn" onclick="readScript(this,'q6')">🔊 Read Aloud</button>
+  <div class="script-body" id="script-q6"><div class="script-label">Your Discussion Script</div><div class="script-text">
     <p>The true zero point is what separates ratio from interval data. <strong>True zero means zero represents the complete absence of the thing being measured.</strong> Zero salary means no income. Zero defects means perfect quality. Zero years of experience means none at all.</p>
     <p>This matters because true zero enables ratio statements. You can legitimately say Factory A has <em>twice</em> the defect rate of Factory B — because zero defects is a real, meaningful baseline. You CANNOT say 40 degrees Celsius is twice as hot as 20 degrees — because zero Celsius does not mean the absence of heat. That is why temperature in Celsius is interval, not ratio.</p>
     <p>In your dissertation: revenue, headcount, years in operation, response time — all ratio. Likert scale scores — interval. Star ratings — ordinal. Country of origin — nominal. Classify every variable before you choose your statistical tests.</p>
@@ -148,7 +162,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
 <div class="q-card">
   <div class="q-top"><span class="q-num">Q7</span><span class="q-text">Which statistic is appropriate for ordinal data?</span></div>
   <div class="answer-badge">✓ C) Median</div>
-  <div class="script-body"><div class="script-label">Your Discussion Script</div><div class="script-text">
+  <button class="read-btn" onclick="readScript(this,'q7')">🔊 Read Aloud</button>
+  <div class="script-body" id="script-q7"><div class="script-label">Your Discussion Script</div><div class="script-text">
     <p>Ordinal data has rank order but <strong>unequal intervals between ranks</strong>. The gap between a 3-star and 4-star hotel is not the same as the gap between a 4-star and 5-star. One star at the top represents a dramatic leap in service standards, facilities, and price. At the bottom it is a much smaller difference.</p>
     <p>Because the intervals are unequal, averaging ranks is technically invalid. The median respects the order without making any assumptions about the size of the gaps — it simply identifies the middle rank. This is why the median is the appropriate measure for ordinal data.</p>
     <p>The practical reality: most management researchers treat 5-point and 7-point Likert scales as interval and calculate means. This is acceptable — but you <em>must acknowledge the debate in your methodology chapter</em> and cite Norman (2010) who showed parametric statistics are robust to this assumption with 5 or more points.</p>
@@ -158,7 +173,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
 <div class="q-card">
   <div class="q-top"><span class="q-num">Q8</span><span class="q-text">What is a histogram best used for?</span></div>
   <div class="answer-badge">✓ A) Distribution of continuous data</div>
-  <div class="script-body"><div class="script-label">Your Discussion Script</div><div class="script-text">
+  <button class="read-btn" onclick="readScript(this,'q8')">🔊 Read Aloud</button>
+  <div class="script-body" id="script-q8"><div class="script-label">Your Discussion Script</div><div class="script-text">
     <p>A histogram is your <strong>first diagnostic tool when you receive your data</strong>. Before running any statistical test — before regression, before SEM, before t-tests — run a histogram on every key variable. Why? Because the shape of your distribution determines which tests are valid.</p>
     <p>Normal distribution: your parametric tests are valid. Right skew: income, revenue, response times — consider log transformation or switch to non-parametric alternatives. Left skew: satisfaction at a luxury hotel — most guests are delighted, a few very unhappy ones pull the tail left. Bimodal with two peaks: you likely have two distinct subgroups in your data that should be analysed separately.</p>
     <p>In SPSS: Analyze → Descriptive Statistics → Frequencies → Charts → Histograms. Do this before anything else. It takes two minutes and it can save your entire analysis from going in the wrong direction.</p>
@@ -168,7 +184,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
 <div class="q-card">
   <div class="q-top"><span class="q-num">Q9</span><span class="q-text">Which graph is best for nominal data?</span></div>
   <div class="answer-badge">✓ D) Bar chart</div>
-  <div class="script-body"><div class="script-label">Your Discussion Script</div><div class="script-text">
+  <button class="read-btn" onclick="readScript(this,'q9')">🔊 Read Aloud</button>
+  <div class="script-body" id="script-q9"><div class="script-label">Your Discussion Script</div><div class="script-text">
     <p>Bar charts and histograms look almost identical but they represent fundamentally different things. <strong>The gap between bars is the key visual signal.</strong> Bar chart has gaps — because categories are separate and discrete. Histogram has no gaps — because the data is continuous and values flow into each other.</p>
     <p>For nominal data specifically — country, gender, programme type, industry sector — the bar chart is the only appropriate choice. Each bar represents one distinct category. The height shows the frequency or percentage of that category in your sample.</p>
     <p>A common mistake to avoid: <em>never use a pie chart for more than four or five categories</em>. The human eye cannot accurately judge angles. When you have ten countries in your sample — use a bar chart sorted by frequency. Reviewers will thank you.</p>
@@ -178,7 +195,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
 <div class="q-card">
   <div class="q-top"><span class="q-num">Q10</span><span class="q-text">Which statistic shows the most frequent value?</span></div>
   <div class="answer-badge">✓ A) Mode</div>
-  <div class="script-body"><div class="script-label">Your Discussion Script</div><div class="script-text">
+  <button class="read-btn" onclick="readScript(this,'q10')">🔊 Read Aloud</button>
+  <div class="script-body" id="script-q10"><div class="script-label">Your Discussion Script</div><div class="script-text">
     <p>The mode is the value that appears most often in your dataset. It has two important uses that students often overlook. First, it is the <strong>only valid measure for nominal data</strong> — the most common country, the most common industry, the most common research tool. Second, detecting a <strong>bimodal distribution</strong> — two modes — is a critical analytical finding.</p>
     <p>If your exam score data shows two peaks — one cluster around 45% and another around 78% — you have two distinct student populations in your classroom. High performers and struggling students. A single mean of 61% completely hides this reality and leads to wrong pedagogical decisions.</p>
     <p>In management research: if customer spending shows a bimodal pattern — budget shoppers and premium buyers — treating them as one population in your regression will give you misleading results. Always visualise before you calculate.</p>
@@ -199,7 +217,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
 <div class="q-card">
   <div class="q-top"><span class="q-num">Q11</span><span class="q-text">Which is a measure of dispersion?</span></div>
   <div class="answer-badge">✓ B) Standard Deviation</div>
-  <div class="script-body"><div class="script-label">Your Discussion Script</div><div class="script-text">
+  <button class="read-btn" onclick="readScript(this,'q11')">🔊 Read Aloud</button>
+  <div class="script-body" id="script-q11"><div class="script-label">Your Discussion Script</div><div class="script-text">
     <p>Dispersion and central tendency are two completely separate families of statistics and you need both to fully describe any dataset. <strong>Central tendency tells you where the centre is. Dispersion tells you how spread out the data is around that centre.</strong></p>
     <p>Mean, median, and mode — central tendency. Standard deviation, range, variance, IQR — dispersion. Reporting a mean without a standard deviation is like telling someone "the journey takes about 3 hours" without mentioning whether that could be anywhere from 1 hour to 6 hours depending on traffic.</p>
     <p>A mean satisfaction score of 5.2 with SD = 0.3 tells you something completely different from a mean of 5.2 with SD = 2.1. The first represents consensus. The second represents polarisation. In management terms — completely different service improvement strategies are needed.</p>
@@ -209,7 +228,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
 <div class="q-card">
   <div class="q-top"><span class="q-num">Q12</span><span class="q-text">Which distribution has a tail to the right?</span></div>
   <div class="answer-badge">✓ A) Positively skewed</div>
-  <div class="script-body"><div class="script-label">Your Discussion Script</div><div class="script-text">
+  <button class="read-btn" onclick="readScript(this,'q12')">🔊 Read Aloud</button>
+  <div class="script-body" id="script-q12"><div class="script-label">Your Discussion Script</div><div class="script-text">
     <p>Skewness tells you about the shape and tail direction of your distribution. <strong>Positive skew means the tail stretches to the right</strong> — the bulk of your data sits on the left with a few very high values creating that long right tail. Income distributions are the classic example — most people earn modest amounts, a few high earners create the tail.</p>
     <p>Negative skew is the mirror image — tail to the left. Most values are high, a few very low values create the left tail. Customer satisfaction at a premium hotel is often negatively skewed — most guests are delighted, a small number of very unhappy guests pull the tail downward.</p>
     <p>Why does this matter? <em>Significant skewness violates the normality assumption of parametric tests</em> like t-tests, ANOVA, and regression. If your absolute skewness exceeds 2, you should consider non-parametric alternatives or data transformation. Always report skewness values in your data screening section.</p>
@@ -220,7 +240,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
 <div class="q-card">
   <div class="q-top"><span class="q-num">Q13</span><span class="q-text">What does kurtosis describe?</span></div>
   <div class="answer-badge">✓ B) Peakedness or flatness</div>
-  <div class="script-body"><div class="script-label">Your Discussion Script</div><div class="script-text">
+  <button class="read-btn" onclick="readScript(this,'q13')">🔊 Read Aloud</button>
+  <div class="script-body" id="script-q13"><div class="script-label">Your Discussion Script</div><div class="script-text">
     <p>Kurtosis is the fourth moment of a distribution — the one most researchers forget to report. While skewness tells you about lean or tail direction, <strong>kurtosis tells you about the shape of the peak</strong> relative to a normal curve.</p>
     <p>Leptokurtic — positive kurtosis — means a tall, narrow, peaked distribution with heavy tails. Values cluster tightly in the centre but outliers can be extreme. Platykurtic — negative kurtosis — means a flat, wide distribution with thin tails. Values spread broadly without a clear peak.</p>
     <p>In practice: excess kurtosis above 7 or below negative 7 is a red flag for non-normality. In SPSS check Analyze → Descriptive Statistics → Descriptives and tick both Skewness and Kurtosis. <em>Report both values in your methodology chapter under data screening</em>. Examiners expect to see this — it shows you actually checked your data before running your tests.</p>
@@ -230,7 +251,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
 <div class="q-card">
   <div class="q-top"><span class="q-num">Q14</span><span class="q-text">How much data falls within ±2 SDs of the mean?</span></div>
   <div class="answer-badge">✓ C) 95%</div>
-  <div class="script-body"><div class="script-label">Your Discussion Script</div><div class="script-text">
+  <button class="read-btn" onclick="readScript(this,'q14')">🔊 Read Aloud</button>
+  <div class="script-body" id="script-q14"><div class="script-label">Your Discussion Script</div><div class="script-text">
     <p>The 68-95-99.9 empirical rule is one of the most important numbers in all of statistics. <strong>Memorise it permanently</strong> — it underpins confidence intervals, z-scores, hypothesis testing, and virtually every inferential procedure you will ever use.</p>
     <p>Plus or minus 1 SD covers approximately 68% of your data — about two thirds. Plus or minus 2 SD covers 95% — which is why 95% is the standard confidence level in research. Plus or minus 3 SD covers 99.9% — almost everything.</p>
     <p>Practical meaning: if exam scores are normally distributed with mean 65 and SD 10 — you know immediately that 95% of students score between 45 and 85, and anything outside that range is statistically unusual. In SEM: when SmartPLS bootstrapping gives you a 95% confidence interval that does not include zero — your path is significant. <em>That confidence interval is built directly on this rule.</em></p>
@@ -240,7 +262,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
 <div class="q-card">
   <div class="q-top"><span class="q-num">Q15</span><span class="q-text">What value indicates the strongest correlation?</span></div>
   <div class="answer-badge">✓ B) -0.90</div>
-  <div class="script-body"><div class="script-label">Your Discussion Script</div><div class="script-text">
+  <button class="read-btn" onclick="readScript(this,'q15')">🔊 Read Aloud</button>
+  <div class="script-body" id="script-q15"><div class="script-label">Your Discussion Script</div><div class="script-text">
     <p>Correlation strength is <strong>always about the absolute value — completely ignore the sign when comparing strength</strong>. Negative 0.90 is stronger than positive 0.65 because 0.90 is closer to 1.0. The sign tells you direction only — positive means both variables move together, negative means they move in opposite directions.</p>
     <p>Social science benchmarks: absolute r below 0.3 is weak, 0.3 to 0.5 is moderate, above 0.5 is strong, above 0.7 is very strong. A correlation of negative 0.90 between study hours and exam anxiety is one of the strongest relationships you can find in education research — it is nearly a perfect inverse relationship.</p>
     <p><em>In your results chapter: always report both direction and strength</em>. Never just write "there is a significant correlation." Write: "There was a strong negative correlation between study hours and exam anxiety (r = -0.90, p &lt; .001), indicating that students who studied more reported significantly lower anxiety levels."</p>
@@ -250,7 +273,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
 <div class="q-card">
   <div class="q-top"><span class="q-num">Q16</span><span class="q-text">Positive correlation means:</span></div>
   <div class="answer-badge">✓ C) Both increase together</div>
-  <div class="script-body"><div class="script-label">Your Discussion Script</div><div class="script-text">
+  <button class="read-btn" onclick="readScript(this,'q16')">🔊 Read Aloud</button>
+  <div class="script-body" id="script-q16"><div class="script-label">Your Discussion Script</div><div class="script-text">
     <p>In a positive correlation, both variables move in the same direction — as one increases, the other increases too. Training hours and productivity. Marketing spend and revenue. Study hours and exam scores. These all go up together.</p>
     <p>In a negative correlation, variables move in opposite directions. Higher stress, lower job satisfaction. Higher price, lower demand. More absences, lower performance. One goes up as the other goes down.</p>
     <p>Critical warning that every researcher must know: <strong>correlation does not imply causation</strong>. Ice cream sales correlate positively with drowning rates. Both increase in summer — but ice cream does not cause drowning. The season is the hidden cause of both. In your dissertation: when you report a significant correlation, you must discuss the <em>plausible mechanism</em> that explains why these variables move together, and acknowledge that causation requires experimental design or longitudinal data.</p>
@@ -260,7 +284,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
 <div class="q-card">
   <div class="q-top"><span class="q-num">Q17</span><span class="q-text">What does regression analysis do?</span></div>
   <div class="answer-badge">✓ D) Predict an outcome</div>
-  <div class="script-body"><div class="script-label">Your Discussion Script</div><div class="script-text">
+  <button class="read-btn" onclick="readScript(this,'q17')">🔊 Read Aloud</button>
+  <div class="script-body" id="script-q17"><div class="script-label">Your Discussion Script</div><div class="script-text">
     <p>Regression moves beyond correlation to <strong>prediction and explanation</strong>. It tells you the direction and magnitude of the relationship between predictors and an outcome, and crucially, it allows you to isolate the individual effect of each predictor while holding all others constant.</p>
     <p>The equation is Y = a + b₁X₁ + b₂X₂ + ε. Y is what you want to predict. Each b coefficient tells you: for every one unit increase in X, Y changes by b units — holding all other predictors constant. That phrase "holding all others constant" is what makes regression so powerful. You can separate the individual contribution of training hours, machine age, and shift timing on defect rate — simultaneously.</p>
     <p>R-squared tells you what percentage of variance in Y is explained by your predictors. R² = 0.45 means your model explains 45% of the variation in the outcome. <em>Always report adjusted R-squared for multiple regression</em> — it penalises you for adding predictors that do not genuinely improve the model.</p>
@@ -271,7 +296,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
 <div class="q-card">
   <div class="q-top"><span class="q-num">Q18</span><span class="q-text">What is the dependent variable?</span></div>
   <div class="answer-badge">✓ B) Outcome to predict</div>
-  <div class="script-body"><div class="script-label">Your Discussion Script</div><div class="script-text">
+  <button class="read-btn" onclick="readScript(this,'q18')">🔊 Read Aloud</button>
+  <div class="script-body" id="script-q18"><div class="script-label">Your Discussion Script</div><div class="script-text">
     <p>The dependent variable is what you want to explain, predict, or understand. It <strong>depends on</strong> the independent variable — it is the outcome, the effect, the result. In SEM terminology, DVs are called endogenous variables — they receive arrows from other constructs.</p>
     <p>The independent variable is the predictor or cause — it is what you think is driving the outcome. In SEM it is called an exogenous variable — it only sends arrows out, never receives them.</p>
     <p>One critical nuance: <em>a variable can be both</em>. Customer Satisfaction is the DV with respect to Service Quality — but it is the IV with respect to Loyalty. This is called a mediating variable. Satisfaction sits in the middle, receiving influence from service quality and transmitting that influence forward to loyalty. This chain-like structure is precisely what SEM was designed to model, and what regression cannot do in a single analysis.</p>
@@ -281,7 +307,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
 <div class="q-card">
   <div class="q-top"><span class="q-num">Q19</span><span class="q-text">Which measure is MOST robust to extreme outliers?</span></div>
   <div class="answer-badge">✓ B) Median</div>
-  <div class="script-body"><div class="script-label">Your Discussion Script</div><div class="script-text">
+  <button class="read-btn" onclick="readScript(this,'q19')">🔊 Read Aloud</button>
+  <div class="script-body" id="script-q19"><div class="script-label">Your Discussion Script</div><div class="script-text">
     <p>The median is robust to outliers because it only cares about <strong>rank order, not actual values</strong>. It simply identifies the middle observation — the value where half the data falls above and half falls below. Adding a billionaire to a room of 100 average earners changes the mean income dramatically but the median barely moves.</p>
     <p>Classic example: nine hotel housekeepers earn RM2,000 per month and one general manager earns RM50,000. Mean salary = RM6,800 — represents nobody. Median = RM2,000 — accurately represents 90% of employees. The median is more honest when data is skewed.</p>
     <p>In your dissertation: <em>when reporting demographic or financial variables, always check for outliers first</em>. If your revenue data is skewed — and business revenue almost always is — report both mean and median and explain the difference. This demonstrates methodological sophistication that examiners notice and appreciate.</p>
@@ -291,7 +318,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
 <div class="q-card">
   <div class="q-top"><span class="q-num">Q20</span><span class="q-text">Data within ±1 SD of the mean in a normal distribution?</span></div>
   <div class="answer-badge">✓ B) 68%</div>
-  <div class="script-body"><div class="script-label">Your Discussion Script</div><div class="script-text">
+  <button class="read-btn" onclick="readScript(this,'q20')">🔊 Read Aloud</button>
+  <div class="script-body" id="script-q20"><div class="script-label">Your Discussion Script</div><div class="script-text">
     <p>68% within plus or minus 1 SD is the first number of the empirical rule — and it has immediate practical meaning. <strong>About two thirds of all observations in a normal distribution fall within one standard deviation of the mean.</strong></p>
     <p>If employee engagement is normally distributed with mean 4.5 and SD 0.8 — you know immediately that 68% of employees score between 3.7 and 5.3. The other 32% — about one third — fall outside this range, either very highly engaged or noticeably disengaged. Those are the employees worth investigating further.</p>
     <p>Connect this to your statistical tests: the 95% confidence interval in your SEM bootstrapping results is built on plus or minus 2 SD. If the confidence interval for a path coefficient does not include zero — that path is statistically significant at the 5% level. <em>The empirical rule is not abstract theory — it is the engine running every confidence interval you report.</em></p>
@@ -311,7 +339,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
 <div class="q-card">
   <div class="q-top"><span class="q-num">Q21</span><span class="q-text">Which test compares means between groups?</span></div>
   <div class="answer-badge">✓ C) T-test</div>
-  <div class="script-body"><div class="script-label">Your Discussion Script</div><div class="script-text">
+  <button class="read-btn" onclick="readScript(this,'q21')">🔊 Read Aloud</button>
+  <div class="script-body" id="script-q21"><div class="script-label">Your Discussion Script</div><div class="script-text">
     <p>The t-test family is the most widely used inferential tool in management research. Three versions — and choosing the wrong one is a mistake your examiner will immediately flag. <strong>Independent Samples T-test</strong>: two different groups, one measurement. Do male and female hotel guests rate service quality differently? Are ISO-certified factories more productive than uncertified ones?</p>
     <p><strong>Paired Samples T-test</strong>: the same group measured twice. Did employee satisfaction improve after a training intervention? Did hotel revenue increase post-renovation? The keyword is SAME — same people, measured at two different points in time. This design is more statistically powerful because each person serves as their own control.</p>
     <p><em>Chi-square is for categorical data only</em> — never use it to compare means. ANOVA is for three or more groups. The t-test is specifically for two groups with a continuous dependent variable.</p>
@@ -321,7 +350,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
 <div class="q-card">
   <div class="q-top"><span class="q-num">Q22</span><span class="q-text">Which test is used for two nominal variables?</span></div>
   <div class="answer-badge">✓ A) Chi-square</div>
-  <div class="script-body"><div class="script-label">Your Discussion Script</div><div class="script-text">
+  <button class="read-btn" onclick="readScript(this,'q22')">🔊 Read Aloud</button>
+  <div class="script-body" id="script-q22"><div class="script-label">Your Discussion Script</div><div class="script-text">
     <p>Chi-square is the test for <strong>two categorical variables</strong> — when both your IV and DV are nominal or ordinal. It answers: are these two categories independent of each other, or is there a statistically significant association?</p>
     <p>In the ABC Company dataset: is gender (male/female) associated with employment category (clerical/custodial/manager)? Chi-square sets up a contingency table — rows are gender, columns are employment category — and tests whether the observed distribution differs significantly from what you would expect if the two variables were completely unrelated.</p>
     <p>Effect size for Chi-square is <em>Cramér's V</em> — always report it alongside your Chi-square statistic. A significant Chi-square tells you an association exists. Cramér's V tells you how strong it is. A result can be statistically significant but practically trivial — which is why you always need both.</p>
@@ -332,7 +362,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
 <div class="q-card">
   <div class="q-top"><span class="q-num">Q23</span><span class="q-text">p = 0.003 — what does this mean?</span></div>
   <div class="answer-badge">✓ C) 0.3% probability of this result if null hypothesis is true</div>
-  <div class="script-body"><div class="script-label">Your Discussion Script</div><div class="script-text">
+  <button class="read-btn" onclick="readScript(this,'q23')">🔊 Read Aloud</button>
+  <div class="script-body" id="script-q23"><div class="script-label">Your Discussion Script</div><div class="script-text">
     <p>The p-value is <strong>the single most misunderstood statistic in all of research</strong>. I want you to remember this definition precisely because your viva examiner will test it. The p-value is the probability of observing your result — or something more extreme — IF the null hypothesis were true.</p>
     <p>p = 0.003 means: if there were truly no effect in the population, you would only see a result this extreme 3 times in 1,000 samples. That is unlikely. So you conclude that something real is probably going on.</p>
     <p>What it is NOT: it is not the probability your hypothesis is correct. It is not the probability you made the right decision. It is not a measure of practical importance. <em>A result can be p &lt; 0.001 and still be practically meaningless</em> if the effect size is tiny. Always report Cohen's d, η², or β alongside your p-values. Statistical significance without effect size is an incomplete result.</p>
@@ -343,7 +374,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
 <div class="q-card">
   <div class="q-top"><span class="q-num">Q24</span><span class="q-text">Gender vs employment category — which test?</span></div>
   <div class="answer-badge">✓ B) Chi-Square</div>
-  <div class="script-body"><div class="script-label">Your Discussion Script</div><div class="script-text">
+  <button class="read-btn" onclick="readScript(this,'q24')">🔊 Read Aloud</button>
+  <div class="script-body" id="script-q24"><div class="script-label">Your Discussion Script</div><div class="script-text">
     <p>The ABC Company case is a practical application of test selection. Both variables here are <strong>nominal</strong> — gender has categories (male/female) and employment category has categories (clerical/custodial/manager). No numbers, no ordering, just labels. That immediately tells you Chi-square.</p>
     <p>The Chi-square test will tell you whether the distribution of job types is the same for men and women, or whether there is a significant pattern — for example, men being disproportionately represented in management and women in clerical roles. If that pattern emerges, you have evidence worth investigating further.</p>
     <p>What Chi-square cannot tell you is WHY. That requires qualitative follow-up — interviews with HR managers, review of recruitment policies, examination of promotion criteria. <em>This is the perfect illustration of why mixed methods research is so powerful</em>: quantitative data identifies the pattern, qualitative data explains the cause.</p>
@@ -353,7 +385,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
 <div class="q-card">
   <div class="q-top"><span class="q-num">Q25</span><span class="q-text">r = -0.72 between study hours and anxiety</span></div>
   <div class="answer-badge">✓ C) Strong negative — more study = less anxiety</div>
-  <div class="script-body"><div class="script-label">Your Discussion Script</div><div class="script-text">
+  <button class="read-btn" onclick="readScript(this,'q25')">🔊 Read Aloud</button>
+  <div class="script-body" id="script-q25"><div class="script-label">Your Discussion Script</div><div class="script-text">
     <p>Interpreting a correlation coefficient requires three elements — direction, strength, and practical meaning. Direction: negative means inverse relationship — more study hours, less anxiety. They move in opposite directions. Strength: 0.72 in absolute value is strong — in social science, absolute r above 0.5 is considered strong, above 0.7 very strong.</p>
     <p>Practical meaning: this finding tells educators that interventions helping students develop better study habits may simultaneously reduce their exam anxiety. That is an actionable research implication worth discussing in your dissertation and presenting to policy makers.</p>
     <p><em>In your results chapter: never just report the coefficient</em>. Write: "There was a strong negative correlation between study hours per week and exam anxiety scores (r = -0.72, p &lt; .001), indicating that students who devoted more time to studying reported significantly lower anxiety levels before examinations." That is a complete, publishable result statement.</p>
@@ -363,7 +396,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
 <div class="q-card">
   <div class="q-top"><span class="q-num">Q26</span><span class="q-text">Beginning vs current salary — same employees. Which test?</span></div>
   <div class="answer-badge">✓ C) Paired Samples T-test</div>
-  <div class="script-body"><div class="script-label">Your Discussion Script</div><div class="script-text">
+  <button class="read-btn" onclick="readScript(this,'q26')">🔊 Read Aloud</button>
+  <div class="script-body" id="script-q26"><div class="script-label">Your Discussion Script</div><div class="script-text">
     <p>The word SAME is your trigger. <strong>Same employees, two measurements at different points in time — Paired Samples T-test.</strong> Each employee provides two data points: their beginning salary and their current salary. The test calculates the difference for each person and tests whether the average difference is significantly different from zero.</p>
     <p>This design is more statistically powerful than the independent t-test because individual differences — some people are naturally high earners, some are low — are controlled out. You are measuring the change within each person, which removes that background noise.</p>
     <p>Common mistake: using an independent t-test when the design is actually paired. The results will be wrong — typically less significant than they should be — because you are not using all the information available in the matched structure. <em>Check your study design before selecting your test</em>: are we comparing two different groups, or the same group at two time points?</p>
@@ -373,7 +407,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
 <div class="q-card">
   <div class="q-top"><span class="q-num">Q27</span><span class="q-text">Which variable is predicted in regression?</span></div>
   <div class="answer-badge">✓ B) Dependent variable</div>
-  <div class="script-body"><div class="script-label">Your Discussion Script</div><div class="script-text">
+  <button class="read-btn" onclick="readScript(this,'q27')">🔊 Read Aloud</button>
+  <div class="script-body" id="script-q27"><div class="script-label">Your Discussion Script</div><div class="script-text">
     <p>In regression, Y — the dependent variable — is always what you are trying to predict or explain. Every independent variable (X₁, X₂, X₃...) is a predictor. The regression equation tells you exactly how much Y changes for every unit change in each predictor, while holding all other predictors constant.</p>
     <p>This "holding constant" property is the most powerful aspect of regression. You can isolate the effect of training hours on defect rate, controlling for machine age and shift time. Without regression, you cannot separate these effects — they get tangled together in your data.</p>
     <p><em>In SEM terminology</em>: the dependent variable in your structural model is the endogenous variable — the one with arrows pointing into it. The independent variable is the exogenous variable — the one with arrows only pointing out. Your conceptual framework diagram is a visual representation of your regression equations.</p>
@@ -383,7 +418,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
 <div class="q-card">
   <div class="q-top"><span class="q-num">Q28</span><span class="q-text">Satisfaction across THREE countries — which test?</span></div>
   <div class="answer-badge">✓ C) ANOVA</div>
-  <div class="script-body"><div class="script-label">Your Discussion Script</div><div class="script-text">
+  <button class="read-btn" onclick="readScript(this,'q28')">🔊 Read Aloud</button>
+  <div class="script-body" id="script-q28"><div class="script-label">Your Discussion Script</div><div class="script-text">
     <p>ANOVA — Analysis of Variance — is the extension of the t-test to <strong>three or more independent groups</strong>. It answers: do satisfaction scores differ significantly across Malaysia, Singapore, and Indonesia? Why not three separate t-tests? Because running multiple t-tests inflates your Type I error rate — the chance of finding a significant result purely by luck increases with each additional test.</p>
     <p>ANOVA controls this with a single omnibus test. The F-statistic is the ratio of between-group variance to within-group variance. A large F means the groups differ more than you would expect by random chance alone. But ANOVA only tells you <em>that</em> a difference exists somewhere — it cannot tell you <em>which</em> groups differ from which.</p>
     <p>For that, you need post-hoc tests. <strong>Tukey HSD</strong> for equal sample sizes. <strong>Games-Howell</strong> when variances are unequal. These pairwise comparisons identify exactly which countries differ from each other while controlling for multiple comparisons. Always run post-hoc tests when ANOVA is significant.</p>
@@ -394,7 +430,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
 <div class="q-card">
   <div class="q-top"><span class="q-num">Q29</span><span class="q-text">Which measure is most affected by extreme outliers?</span></div>
   <div class="answer-badge">✓ C) Mean</div>
-  <div class="script-body"><div class="script-label">Your Discussion Script</div><div class="script-text">
+  <button class="read-btn" onclick="readScript(this,'q29')">🔊 Read Aloud</button>
+  <div class="script-body" id="script-q29"><div class="script-label">Your Discussion Script</div><div class="script-text">
     <p>The mean is calculated using every single value in your dataset — so every value, including the most extreme outliers, directly influences the result. <strong>One outlier can move the mean dramatically.</strong> The median ignores outlier magnitude entirely — it only cares about rank order.</p>
     <p>Business and management data is almost always skewed. Revenue distributions, salary data, customer spend, social media engagement — all have a small number of extremely high values that pull the mean upward. This is why the Singapore government reports <em>median</em> household income rather than mean — it more honestly represents the typical family.</p>
     <p>For your dissertation: before using means in your descriptive analysis, check your data for outliers using boxplots and z-scores. Any observation with a z-score above 3.29 is a statistical outlier. Decide whether to keep it, winsorise it, or remove it — and <em>document your decision and rationale in your methodology chapter</em>.</p>
@@ -404,7 +441,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
 <div class="q-card">
   <div class="q-top"><span class="q-num">Q30</span><span class="q-text">Non-normal data, 150 responses — which approach?</span></div>
   <div class="answer-badge">✓ C) PLS-SEM with SmartPLS</div>
-  <div class="script-body"><div class="script-label">Your Discussion Script</div><div class="script-text">
+  <button class="read-btn" onclick="readScript(this,'q30')">🔊 Read Aloud</button>
+  <div class="script-body" id="script-q30"><div class="script-label">Your Discussion Script</div><div class="script-text">
     <p>This scenario describes a large proportion of PhD and DBA dissertations in this room. 150 responses and non-normal data. <strong>PLS-SEM is the clear choice</strong> — it makes no distributional assumptions and performs well with samples between 100 and 300.</p>
     <p>CB-SEM with AMOS requires multivariate normality — a condition management survey data almost never meets. It also requires substantially larger samples, typically 200 or more. Multiple regression alone cannot handle latent variables or test your full theoretical model simultaneously.</p>
     <p>The sample size rule for PLS-SEM: minimum 10 times the largest number of arrows pointing to any single construct in your model. If your most complex construct has 4 arrows pointing to it — your minimum sample is 40. But always target 100 or more for robust, publishable results. <em>Cite Hair et al. 2019 when justifying PLS-SEM</em> — it is the definitive methodological reference for this choice.</p>
@@ -425,7 +463,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
 <div class="q-card">
   <div class="q-top"><span class="q-num">Q31</span><span class="q-text">Primary advantage of SEM over regression?</span></div>
   <div class="answer-badge">✓ C) Simultaneous measurement and structural models</div>
-  <div class="script-body"><div class="script-label">Your Discussion Script</div><div class="script-text">
+  <button class="read-btn" onclick="readScript(this,'q31')">🔊 Read Aloud</button>
+  <div class="script-body" id="script-q31"><div class="script-label">Your Discussion Script</div><div class="script-text">
     <p>Regression has three fundamental limitations that SEM was specifically designed to overcome. First: regression can only use directly observed variables — but trust, satisfaction, and commitment are <strong>not directly observable</strong>. Second: regression assumes all predictors are measured without error — they never are. Third: regression handles one dependent variable at a time.</p>
     <p>SEM overcomes all three simultaneously. It models latent constructs inferred from multiple indicators. It explicitly estimates and corrects for measurement error. And it tests multiple DVs in one integrated model. In a hotel study: SEM lets you test whether Service Quality influences both Satisfaction AND Loyalty simultaneously, through a fully specified measurement model with 22 SERVQUAL indicators.</p>
     <p>To replicate this in regression you would need at least four separate analyses — and you would lose the ability to correct for measurement error in any of them. <em>That is why SEM has become the dominant methodology in top management journals.</em></p>
@@ -435,7 +474,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
 <div class="q-card">
   <div class="q-top"><span class="q-num">Q32</span><span class="q-text">What is a latent variable?</span></div>
   <div class="answer-badge">✓ B) A construct measured by multiple indicators</div>
-  <div class="script-body"><div class="script-label">Your Discussion Script</div><div class="script-text">
+  <button class="read-btn" onclick="readScript(this,'q32')">🔊 Read Aloud</button>
+  <div class="script-body" id="script-q32"><div class="script-label">Your Discussion Script</div><div class="script-text">
     <p>Latent variables are <strong>the reason SEM exists</strong>. Think about the most important constructs in management research: trust, commitment, innovation capability, digital readiness, leadership quality, organisational culture. Can you put a ruler next to any of these and measure them directly? No. They are theoretical abstractions that we infer from observable indicators.</p>
     <p>Customer Trust cannot be directly observed — but you can ask respondents: "I believe this company keeps its promises" (indicator 1), "I feel confident in this company's integrity" (indicator 2), "I trust this company to do what is right" (indicator 3). These three observable items REFLECT the underlying latent construct of Trust.</p>
     <p>SEM simultaneously estimates two things: how well each indicator measures its construct (the outer loadings), and how constructs relate to each other (the path coefficients). <em>This dual estimation — measurement and theory testing at the same time — is not possible with regression</em>. It is the defining methodological advantage of SEM.</p>
@@ -445,7 +485,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
 <div class="q-card">
   <div class="q-top"><span class="q-num">Q33</span><span class="q-text">What is an endogenous variable in SEM?</span></div>
   <div class="answer-badge">✓ C) DV affected by other constructs</div>
-  <div class="script-body"><div class="script-label">Your Discussion Script</div><div class="script-text">
+  <button class="read-btn" onclick="readScript(this,'q33')">🔊 Read Aloud</button>
+  <div class="script-body" id="script-q33"><div class="script-label">Your Discussion Script</div><div class="script-text">
     <p>Simple translation: <strong>exogenous = independent variable, endogenous = dependent variable</strong>. In your SmartPLS path diagram, exogenous variables only have arrows pointing OUT — they influence other constructs but nothing in your model influences them. Endogenous variables have at least one arrow pointing IN — they are caused by at least one other construct.</p>
     <p>A variable can be both simultaneously. Customer Satisfaction is endogenous with respect to Service Quality (receives an arrow from SQ). But it is exogenous with respect to Loyalty (sends an arrow to Loyalty). This dual role makes Satisfaction a mediating variable — it transmits the effect of Service Quality through to Loyalty.</p>
     <p><em>Practical test: look at every construct in your path diagram. Count arrows in and arrows out.</em> Zero arrows in = exogenous. One or more arrows in = endogenous. Your research hypotheses correspond directly to the arrows — each arrow in your diagram IS one hypothesis that must be tested and reported.</p>
@@ -455,7 +496,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
 <div class="q-card">
   <div class="q-top"><span class="q-num">Q34</span><span class="q-text">When to choose PLS-SEM over CB-SEM?</span></div>
   <div class="answer-badge">✓ C) Small sample, prediction focus</div>
-  <div class="script-body"><div class="script-label">Your Discussion Script</div><div class="script-text">
+  <button class="read-btn" onclick="readScript(this,'q34')">🔊 Read Aloud</button>
+  <div class="script-body" id="script-q34"><div class="script-label">Your Discussion Script</div><div class="script-text">
     <p>The PLS-SEM versus CB-SEM decision is about research purpose and data characteristics — not about which sounds more sophisticated. <strong>Choose PLS-SEM when</strong>: your sample is below 250, your data is non-normal (management survey data almost always is), your research is exploratory or predictive, your model is complex with many constructs, and you need free software. SmartPLS is free for academic use.</p>
     <p><strong>Choose CB-SEM when</strong>: your sample exceeds 300, your data approaches multivariate normality, you are confirming a well-established theory, journal reviewers specifically require absolute fit indices like CFI and RMSEA, and you have access to AMOS or LISREL.</p>
     <p>For the majority of DBA candidates in management research: PLS-SEM is the appropriate and defensible choice. Do not be intimidated by supervisors who say AMOS is more rigorous. PLS-SEM is published regularly in MIS Quarterly, Journal of Marketing, Tourism Management, and Journal of Business Research. <em>Cite Hair et al. 2019 — it is the definitive reference.</em></p>
@@ -465,7 +507,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
 <div class="q-card">
   <div class="q-top"><span class="q-num">Q35</span><span class="q-text">What defines a FORMATIVE measurement model?</span></div>
   <div class="answer-badge">✓ C) Indicators CAUSE the construct</div>
-  <div class="script-body"><div class="script-label">Your Discussion Script</div><div class="script-text">
+  <button class="read-btn" onclick="readScript(this,'q35')">🔊 Read Aloud</button>
+  <div class="script-body" id="script-q35"><div class="script-label">Your Discussion Script</div><div class="script-text">
     <p>The reflective versus formative distinction is one of the most tested concepts in SEM vivas — and one of the most commonly misspecified in dissertations. <strong>The causality direction test</strong>: ask yourself what causes what?</p>
     <p>Reflective: the CONSTRUCT causes the indicators. Customer Loyalty causes customers to say "I will return," "I will recommend," and "I will not switch." Remove one item — the construct still exists and the remaining items still capture it. Items are interchangeable and should correlate highly with each other.</p>
     <p>Formative: the indicators CAUSE or CONSTITUTE the construct. Socioeconomic Status IS education PLUS income PLUS occupation. Remove income — you have fundamentally changed what SES means. Items are NOT interchangeable. They need NOT correlate. Most management research constructs — satisfaction, trust, commitment — are <em>reflective</em>. Business performance and quality of life indexes are often <em>formative</em>. Misspecifying this is a serious error that examiners are trained to catch.</p>
@@ -475,7 +518,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
 <div class="q-card">
   <div class="q-top"><span class="q-num">Q36</span><span class="q-text">Which SEM component shows relationships BETWEEN constructs?</span></div>
   <div class="answer-badge">✓ C) Structural model</div>
-  <div class="script-body"><div class="script-label">Your Discussion Script</div><div class="script-text">
+  <button class="read-btn" onclick="readScript(this,'q36')">🔊 Read Aloud</button>
+  <div class="script-body" id="script-q36"><div class="script-label">Your Discussion Script</div><div class="script-text">
     <p>SEM has two models that must both be validated — and the order matters critically. <strong>The measurement model (outer model in SmartPLS)</strong> shows how latent constructs are measured by their observed indicators. It is where you assess outer loadings, composite reliability, AVE, and discriminant validity. This must be validated FIRST.</p>
     <p><strong>The structural model (inner model in SmartPLS)</strong> shows the relationships between constructs — the path coefficients, their significance from bootstrapping, and R-squared values. This is where your hypotheses live. This is assessed SECOND — only after the measurement model passes all quality criteria.</p>
     <p>The reason for this order is fundamental: <em>if your measurement model is flawed, your structural results are meaningless</em>. You cannot trust path coefficients estimated from constructs that are poorly measured. Think of it this way: first calibrate your measuring instruments (measurement model), then use them to test your theory (structural model). Report them in this order in your dissertation.</p>
@@ -485,7 +529,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
 <div class="q-card">
   <div class="q-top"><span class="q-num">Q37</span><span class="q-text">Minimum CR for exploratory research?</span></div>
   <div class="answer-badge">✓ C) 0.6</div>
-  <div class="script-body"><div class="script-label">Your Discussion Script</div><div class="script-text">
+  <button class="read-btn" onclick="readScript(this,'q37')">🔊 Read Aloud</button>
+  <div class="script-body" id="script-q37"><div class="script-label">Your Discussion Script</div><div class="script-text">
     <p>Composite Reliability measures internal consistency — do all indicators of a construct hang together and measure the same underlying concept? CR is preferred over Cronbach's Alpha in PLS-SEM because it accounts for the fact that different indicators may have different loadings, rather than assuming they all contribute equally to the construct.</p>
     <p>Thresholds: CR above 0.6 for early-stage exploratory research (Bagozzi and Yi, 1988). CR above 0.7 for standard confirmatory research — this is the threshold most journals require. CR above 0.9 is potentially a problem — your indicators may be so similar they are essentially asking the same question in different words. This is called indicator redundancy and wastes survey space.</p>
     <p><em>The sweet spot is CR between 0.70 and 0.90</em>. In SmartPLS: find CR in the Quality Criteria panel after running the PLS Algorithm. Report it in a table alongside AVE and Cronbach's Alpha in your measurement model results. Always report all three together so reviewers can see the full picture.</p>
@@ -495,7 +540,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
 <div class="q-card">
   <div class="q-top"><span class="q-num">Q38</span><span class="q-text">Minimum AVE for convergent validity?</span></div>
   <div class="answer-badge">✓ B) 0.5</div>
-  <div class="script-body"><div class="script-label">Your Discussion Script</div><div class="script-text">
+  <button class="read-btn" onclick="readScript(this,'q38')">🔊 Read Aloud</button>
+  <div class="script-body" id="script-q38"><div class="script-label">Your Discussion Script</div><div class="script-text">
     <p>AVE — Average Variance Extracted — measures convergent validity: do the indicators of a construct actually converge on that construct, or are they measuring noise? <strong>AVE above 0.50 means the construct explains more than half the variance in its indicators — more signal than error.</strong></p>
     <p>AVE = 0.43 means your indicators only explain 43% of their own variance. The other 57% is random noise, wording effects, and measurement error. A construct with AVE below 0.50 cannot be reliably used in your structural model — the path coefficients estimated from it are untrustworthy.</p>
     <p>What to do when AVE is below 0.50: examine individual outer loadings. Remove any item with loading below 0.40. Check if removal improves AVE above 0.50. If AVE remains below threshold after removing weak items — you may need to reconsider your scale items entirely or revisit the conceptual definition of the construct. <em>This is one of the most common reasons PhD students need to revise their measurement models between submission and viva.</em></p>
@@ -505,7 +551,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
 <div class="q-card">
   <div class="q-top"><span class="q-num">Q39</span><span class="q-text">Fornell-Larcker: what must exceed inter-construct correlations?</span></div>
   <div class="answer-badge">✓ D) Square root of AVE</div>
-  <div class="script-body"><div class="script-label">Your Discussion Script</div><div class="script-text">
+  <button class="read-btn" onclick="readScript(this,'q39')">🔊 Read Aloud</button>
+  <div class="script-body" id="script-q39"><div class="script-label">Your Discussion Script</div><div class="script-text">
     <p>Discriminant validity proves that each construct in your model is measuring something distinct — it is NOT just a copy of another construct. The Fornell-Larcker criterion (1981) states: <strong>the square root of AVE for each construct must exceed its correlation with every other construct in the model.</strong></p>
     <p>Example: Trust has AVE = 0.62, so square root of AVE = 0.79. The correlation between Trust and Satisfaction is 0.71. Check: is 0.79 greater than 0.71? Yes — discriminant validity holds for Trust. Now check Satisfaction's square root of AVE against its correlation with Trust. And repeat for every pair.</p>
     <p>Common failure: Trust and Commitment often correlate so highly in DBA research that discriminant validity fails — respondents cannot psychologically distinguish between trusting a company and being committed to it. The solution: review your items, potentially drop the weaker construct, or report it as a limitation and argue theoretically why the overlap makes conceptual sense. <em>Never hide a discriminant validity failure — examiners check this table first.</em></p>
@@ -516,7 +563,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
 <div class="q-card">
   <div class="q-top"><span class="q-num">Q40</span><span class="q-text">Which SmartPLS procedure reveals path significance?</span></div>
   <div class="answer-badge">✓ C) Bootstrapping</div>
-  <div class="script-body"><div class="script-label">Your Discussion Script</div><div class="script-text">
+  <button class="read-btn" onclick="readScript(this,'q40')">🔊 Read Aloud</button>
+  <div class="script-body" id="script-q40"><div class="script-label">Your Discussion Script</div><div class="script-text">
     <p>The PLS Algorithm gives you path coefficients — the beta values — but NOT their statistical significance. <strong>Bootstrapping is the procedure that generates t-statistics, p-values, and confidence intervals for every path in your model.</strong> Without bootstrapping, you cannot test any of your hypotheses.</p>
     <p>How it works: SmartPLS randomly draws 5,000 sub-samples from your dataset with replacement. It runs the PLS algorithm on each sub-sample and records the path coefficient. After 5,000 iterations, it has a distribution of estimates. The mean and standard deviation of this distribution give you the t-statistic and confidence interval.</p>
     <p>T above 1.96 = significant at p &lt; 0.05. T above 2.576 = significant at p &lt; 0.01. T above 3.310 = significant at p &lt; 0.001. <em>In SmartPLS: right-click on your model, select Bootstrapping, set 5,000 subsamples, two-tailed, complete bootstrapping. Report beta, t-value, p-value, and 95% confidence interval for EVERY path.</em> All four are required in a complete results table.</p>
@@ -536,7 +584,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
 <div class="q-card">
   <div class="q-top"><span class="q-num">Q41</span><span class="q-text">Best SEM for exploratory research with limited theory?</span></div>
   <div class="answer-badge">✓ C) PLS-SEM</div>
-  <div class="script-body"><div class="script-label">Your Discussion Script</div><div class="script-text">
+  <button class="read-btn" onclick="readScript(this,'q41')">🔊 Read Aloud</button>
+  <div class="script-body" id="script-q41"><div class="script-label">Your Discussion Script</div><div class="script-text">
     <p>PLS-SEM versus CB-SEM is a decision about fit between method and purpose — not prestige. <strong>PLS-SEM is built for exploration and prediction.</strong> When you are entering new territory — a new industry context, a cross-cultural adaptation, an emerging phenomenon — PLS-SEM gives you the flexibility you need. It makes minimal theoretical assumptions and lets your data tell the story.</p>
     <p>CB-SEM methods like AMOS and LISREL are built for confirmation. You already know the theory, you have a large normally distributed sample, and you are testing whether established theoretical relationships replicate in your data. That is a fundamentally different research purpose.</p>
     <p>Most DBA candidates in this room are doing applied management research in ASEAN contexts with samples between 100 and 300. That profile — exploratory, applied, moderate sample, likely non-normal data — points directly to PLS-SEM. <em>Defend this choice confidently.</em> It is published in the Financial Times Top 50 journals.</p>
@@ -546,7 +595,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
 <div class="q-card">
   <div class="q-top"><span class="q-num">Q42</span><span class="q-text">Which is NOT a characteristic of SEM?</span></div>
   <div class="answer-badge">✓ C) Relies only on observed variables</div>
-  <div class="script-body"><div class="script-label">Your Discussion Script</div><div class="script-text">
+  <button class="read-btn" onclick="readScript(this,'q42')">🔊 Read Aloud</button>
+  <div class="script-body" id="script-q42"><div class="script-label">Your Discussion Script</div><div class="script-text">
     <p>Relying only on observed variables is precisely <strong>regression's limitation</strong> — it is the fundamental constraint that SEM was designed to overcome. SEM's defining characteristics are the exact opposites: it models latent (unobservable) constructs, it accounts for measurement error, it tests measurement and structural models simultaneously, and it handles multiple dependent variables at once.</p>
     <p>Understanding what a method CANNOT do is as important as knowing what it can. SEM limitations that are legitimate: CB-SEM cannot handle very small samples or significantly non-normal data. PLS-SEM cannot provide absolute fit indices. Both require more complex interpretation than simple regression.</p>
     <p><em>In your viva: when asked about SEM limitations</em>, do not say it cannot model latent variables — that is its strength. Say instead: "PLS-SEM does not provide global model fit indices like CB-SEM. I addressed this limitation by reporting the SRMR and the standardised RMS theta as approximate fit criteria, following Henseler et al. (2016)."</p>
@@ -556,7 +606,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
 <div class="q-card">
   <div class="q-top"><span class="q-num">Q43</span><span class="q-text">Which factor analysis is theory-driven?</span></div>
   <div class="answer-badge">✓ B) CFA — Confirmatory Factor Analysis</div>
-  <div class="script-body"><div class="script-label">Your Discussion Script</div><div class="script-text">
+  <button class="read-btn" onclick="readScript(this,'q43')">🔊 Read Aloud</button>
+  <div class="script-body" id="script-q43"><div class="script-label">Your Discussion Script</div><div class="script-text">
     <p>EFA and CFA are both factor analysis techniques but they serve completely opposite purposes. <strong>EFA (Exploratory): you have items and want to DISCOVER which ones cluster together.</strong> You let the data determine the factor structure. Use when developing a new scale or when you have no theoretical guidance on how items should group.</p>
     <p><strong>CFA (Confirmatory): you ALREADY KNOW from theory which items measure which construct.</strong> You are TESTING whether your pre-specified structure fits the data. Use when validating an established scale or testing a theoretically derived measurement model. This is what most DBA dissertations require.</p>
     <p>In practice: if you are using SERVQUAL, TAM, or TQM scales — you know which items measure which construct from the original authors. That is a CFA situation. PLS-SEM essentially performs CFA as part of its measurement model assessment. <em>Only use EFA if you are developing new items or substantially adapting existing scales for a new cultural context.</em></p>
@@ -566,7 +617,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
 <div class="q-card">
   <div class="q-top"><span class="q-num">Q44</span><span class="q-text">In SEM, which variable only has arrows pointing OUT?</span></div>
   <div class="answer-badge">✓ C) Exogenous variable</div>
-  <div class="script-body"><div class="script-label">Your Discussion Script</div><div class="script-text">
+  <button class="read-btn" onclick="readScript(this,'q44')">🔊 Read Aloud</button>
+  <div class="script-body" id="script-q44"><div class="script-label">Your Discussion Script</div><div class="script-text">
     <p>The simplest way to remember this: <strong>look at the arrows in your path diagram.</strong> Exogenous variables have arrows only pointing outward — no arrows come in. They are your starting independent variables. Nothing in your model explains them — they are the causes, the inputs, the antecedents.</p>
     <p>Endogenous variables have at least one arrow coming in. They are your dependent variables — influenced by at least one other construct in the model. They may also send arrows to other constructs — making them simultaneously DVs and IVs. That is the mediating variable role.</p>
     <p>Practical exercise right now: look at your conceptual framework. For every construct, count: how many arrows come IN, how many go OUT? Zero arrows in = exogenous = your IV. One or more arrows in = endogenous = your DV or mediator. <em>Every arrow in your diagram must correspond to exactly one stated hypothesis in your study.</em> No arrow without a hypothesis. No hypothesis without an arrow.</p>
@@ -576,7 +628,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
 <div class="q-card">
   <div class="q-top"><span class="q-num">Q45</span><span class="q-text">What does the OUTER MODEL represent?</span></div>
   <div class="answer-badge">✓ C) Measurement via observed indicators</div>
-  <div class="script-body"><div class="script-label">Your Discussion Script</div><div class="script-text">
+  <button class="read-btn" onclick="readScript(this,'q45')">🔊 Read Aloud</button>
+  <div class="script-body" id="script-q45"><div class="script-label">Your Discussion Script</div><div class="script-text">
     <p>SmartPLS uses the terms outer model and inner model. These map directly to measurement model and structural model respectively. <strong>Outer model = measurement model</strong>: the relationships between latent constructs and their observed indicators. The outer loadings tell you how strongly each survey item reflects its underlying construct.</p>
     <p><strong>Inner model = structural model</strong>: the relationships between latent constructs themselves. The path coefficients (beta values from bootstrapping) tell you the strength and direction of these relationships.</p>
     <p>Assessment sequence is always outer model first, then inner model. Validate your measurement instruments before using them to test your theory. In your dissertation: <em>Table 1 should present outer model results</em> — outer loadings, CR, AVE, and discriminant validity for every construct. <em>Table 2 should present inner model results</em> — path coefficients, t-values, p-values, confidence intervals, and R-squared for every endogenous construct. Reviewers expect this exact structure.</p>
@@ -586,7 +639,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
 <div class="q-card">
   <div class="q-top"><span class="q-num">Q46</span><span class="q-text">What is a second-order construct?</span></div>
   <div class="answer-badge">✓ C) Formed by multiple first-order constructs</div>
-  <div class="script-body"><div class="script-label">Your Discussion Script</div><div class="script-text">
+  <button class="read-btn" onclick="readScript(this,'q46')">🔊 Read Aloud</button>
+  <div class="script-body" id="script-q46"><div class="script-label">Your Discussion Script</div><div class="script-text">
     <p>A second-order construct exists when a concept is too complex and multidimensional to be captured by a single set of indicators. <strong>Instead, it is measured by multiple first-order constructs</strong>, each of which is measured by its own indicators. It is a construct of constructs.</p>
     <p>Classic example: SERVQUAL's Service Quality is a second-order construct. The five first-order constructs are Tangibles, Reliability, Responsiveness, Assurance, and Empathy. Each has 4-5 indicators. Service Quality sits above all five as the unifying second-order concept that these five dimensions together constitute.</p>
     <p>In SmartPLS: model second-order constructs using the repeated indicators approach or the two-stage approach. Why use them? They reduce model complexity, produce more parsimonious theoretical frameworks, and are often closer to how the theoretical literature actually conceptualises a construct. <em>Be prepared in your viva to justify: why do these first-order dimensions belong together under one second-order concept?</em></p>
@@ -606,7 +660,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
 <div class="q-card">
   <div class="q-top"><span class="q-num">Q50</span><span class="q-text">What defines mixed methods research?</span></div>
   <div class="answer-badge">✓ B) Combining quantitative and qualitative data collection and analysis</div>
-  <div class="script-body"><div class="script-label">Your Discussion Script</div><div class="script-text">
+  <button class="read-btn" onclick="readScript(this,'q50')">🔊 Read Aloud</button>
+  <div class="script-body" id="script-q50"><div class="script-label">Your Discussion Script</div><div class="script-text">
     <p>Mixed methods is the fastest-growing research methodology in management, education, and health science. The fundamental rationale is elegant and compelling: <strong>every methodology has blind spots.</strong> Quantitative tells you what is happening and how much — but rarely why. Qualitative tells you why and how — but from a small sample that cannot be generalised.</p>
     <p>Mixed methods gives you both — the statistical breadth and generalisability of quantitative data, AND the contextual depth and explanatory power of qualitative data. When used properly, the two strands do not merely add up — they multiply each other's value through triangulation.</p>
     <p><em>For DBA candidates especially</em>: you are practitioner-researchers with access to real organisations. Mixed methods lets you use both your insider knowledge and qualitative sensitivity AND the rigour and generalisability of quantitative analysis. This is a genuine competitive advantage over pure academic researchers who lack your organisational access.</p>
@@ -616,7 +671,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
 <div class="q-card">
   <div class="q-top"><span class="q-num">Q51</span><span class="q-text">In EXPLANATORY SEQUENTIAL, what happens first?</span></div>
   <div class="answer-badge">✓ B) Quantitative first, then qualitative explains</div>
-  <div class="script-body"><div class="script-label">Your Discussion Script</div><div class="script-text">
+  <button class="read-btn" onclick="readScript(this,'q51')">🔊 Read Aloud</button>
+  <div class="script-body" id="script-q51"><div class="script-label">Your Discussion Script</div><div class="script-text">
     <p>Explanatory Sequential is the most common mixed methods design in management research — and it mirrors the natural research process. <strong>You run your survey and quantitative analysis first.</strong> Then you look at your results and ask: what do I not understand? What is surprising or paradoxical? Those are exactly the questions you take into your qualitative phase.</p>
     <p>The qualitative sample is purposively selected based on your quantitative findings. You interview the outliers — the cases that do not fit the expected pattern. The extreme scorers. The unexpected categories. This makes the qualitative phase more focused and analytically powerful than a standalone qualitative study.</p>
     <p>The integration point is clear and logical: qualitative findings EXPLAIN the quantitative results. Your dissertation chapters flow naturally: quantitative results chapter, qualitative results chapter, integrated discussion where both strands are synthesised into a complete theoretical narrative. <em>This is the design I recommend for most DBA candidates in this room.</em></p>
@@ -627,7 +683,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
 <div class="q-card">
   <div class="q-top"><span class="q-num">Q52</span><span class="q-text">In EXPLORATORY SEQUENTIAL, what is the qualitative phase for?</span></div>
   <div class="answer-badge">✓ C) To build the quantitative survey instrument</div>
-  <div class="script-body"><div class="script-label">Your Discussion Script</div><div class="script-text">
+  <button class="read-btn" onclick="readScript(this,'q52')">🔊 Read Aloud</button>
+  <div class="script-body" id="script-q52"><div class="script-label">Your Discussion Script</div><div class="script-text">
     <p>Exploratory Sequential is the design of choice when you are entering genuinely new territory — <strong>a new construct, a new cultural context, or a phenomenon so poorly understood that you cannot yet design a valid survey</strong>. The qualitative phase is not preliminary — it IS the foundation of the entire study.</p>
     <p>You conduct deep, careful interviews or focus groups. You analyse the themes rigorously using thematic analysis or grounded theory. The themes that emerge BECOME your survey items. The concepts that emerge BECOME your hypotheses. Then the quantitative phase tests whether these qualitatively derived insights hold across a larger sample.</p>
     <p>Real example: studying digital transformation in Malaysian family businesses. No validated scale exists for this specific context. You cannot jump straight to a survey — you do not yet know what to ask. Fourteen interviews with family business owners reveal three unique dimensions: generational tension, relationship-based trust in technology vendors, and face-saving in failure. <em>These become your survey constructs.</em> The study is original because YOU built the instrument from the ground up.</p>
@@ -637,7 +694,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
 <div class="q-card">
   <div class="q-top"><span class="q-num">Q53</span><span class="q-text">Which design collects quant and qual SIMULTANEOUSLY?</span></div>
   <div class="answer-badge">✓ C) Convergent Parallel</div>
-  <div class="script-body"><div class="script-label">Your Discussion Script</div><div class="script-text">
+  <button class="read-btn" onclick="readScript(this,'q53')">🔊 Read Aloud</button>
+  <div class="script-body" id="script-q53"><div class="script-label">Your Discussion Script</div><div class="script-text">
     <p>Convergent Parallel is the triangulation design — <strong>both strands run simultaneously and independently, then compared at the interpretation stage.</strong> The word independently is critical: the qualitative researcher should not know the quantitative results while collecting qualitative data, to avoid confirmation bias contaminating the qual findings.</p>
     <p>Convergence — when both strands point to the same conclusion — provides the strongest possible evidence for that finding. More robust than either strand alone. Divergence — when strands contradict each other — is equally valuable. It reveals complexity and nuance that neither method alone could have detected, and becomes a finding that advances theory beyond what the original research question anticipated.</p>
     <p>Convergent parallel is time-efficient because both strands run simultaneously. But it is resource-intensive — you are essentially managing two complete studies at once. <em>For DBA candidates with organisational access</em>: survey all employees quantitatively while simultaneously observing and interviewing a sub-group qualitatively. The organisation provides both the scale for quantitative work and the access for qualitative depth.</p>
@@ -647,7 +705,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
 <div class="q-card">
   <div class="q-top"><span class="q-num">Q54</span><span class="q-text">Primary purpose of mixed methods in doctoral research?</span></div>
   <div class="answer-badge">✓ C) Triangulation and complete understanding</div>
-  <div class="script-body"><div class="script-label">Your Discussion Script</div><div class="script-text">
+  <button class="read-btn" onclick="readScript(this,'q54')">🔊 Read Aloud</button>
+  <div class="script-body" id="script-q54"><div class="script-label">Your Discussion Script</div><div class="script-text">
     <p>Triangulation is the concept that makes mixed methods more than just doing two studies. <strong>True triangulation means findings from both strands inform each other and produce understanding that NEITHER could achieve alone.</strong> Think of locating a position with GPS: one satellite gives you a circle of possible locations. Three satellites give you a precise fix. Each additional evidence strand narrows the uncertainty.</p>
     <p>When quantitative and qualitative data converge on the same finding, that finding is dramatically more credible than either strand alone could establish. When they diverge, the divergence itself becomes the most interesting and theoretically valuable finding in your study — the puzzle that advances knowledge.</p>
     <p>I want to share a story. I supervised a DBA candidate in banking. His SEM showed digital adoption was driven by perceived usefulness — a standard TAM finding. Nothing new. But his interviews with elderly customers revealed they KNEW it was useful. They just did not TRUST it. Trust was the missing construct. He added it to his model, re-ran SEM — trust fully mediated the usefulness-adoption relationship. His thesis went from incremental to genuinely original. <em>That is the gift of mixed methods.</em></p>
@@ -657,7 +716,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
 <div class="q-card">
   <div class="q-top"><span class="q-num">Q55</span><span class="q-text">Survey 300 managers, then interview 15 to explain findings — which design?</span></div>
   <div class="answer-badge">✓ C) Explanatory Sequential</div>
-  <div class="script-body"><div class="script-label">Your Discussion Script</div><div class="script-text">
+  <button class="read-btn" onclick="readScript(this,'q55')">🔊 Read Aloud</button>
+  <div class="script-body" id="script-q55"><div class="script-label">Your Discussion Script</div><div class="script-text">
     <p>Recognising mixed methods designs from scenario descriptions is a critical viva skill. The clues here are unmistakeable: 300 managers surveyed FIRST (quantitative), unexpected findings emerge, 15 managers interviewed SECOND (qualitative), purpose is to EXPLAIN the unexpected findings. <strong>That sequence and that purpose define Explanatory Sequential.</strong></p>
     <p>Key words to recognise in scenarios: "to explain" or "to understand why" after quantitative results = Explanatory Sequential. "To inform the survey" or "to develop items" before quantitative = Exploratory Sequential. "At the same time" or "simultaneously" = Convergent Parallel.</p>
     <p>In your viva, describe your own design precisely: <em>"I used an Explanatory Sequential mixed methods design. In Phase 1, I collected quantitative data from 200 hotel managers using a validated survey instrument, analysed using PLS-SEM. Phase 2 involved 15 semi-structured interviews with managers selected purposively based on Phase 1 findings, specifically targeting cases where compensation did not predict retention as theoretically expected. Qualitative data was analysed using Braun and Clarke's (2006) six-phase thematic analysis framework."</em> That is a complete, examinable methodology statement.</p>
@@ -672,6 +732,66 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
 window.addEventListener('scroll',()=>{
   // Progress indicator could go here if needed
 });
+</script>
+<!-- TTS CONTROL BAR -->
+<div class="tts-bar" id="tts-bar">
+  <span class="tts-title" id="tts-title">Reading...</span>
+  <button class="tts-pause" id="tts-pause" onclick="togglePause()">⏸ Pause</button>
+  <button class="tts-stop" onclick="stopReading()">■ Stop</button>
+</div>
+
+<script>
+var currentBtn = null;
+var isPaused = false;
+
+function readScript(btn, qid) {
+  window.speechSynthesis.cancel();
+  if(currentBtn && currentBtn !== btn) {
+    currentBtn.innerHTML = '🔊 Read Aloud';
+    currentBtn.classList.remove('reading');
+  }
+  if(btn.classList.contains('reading')) {
+    stopReading(); return;
+  }
+  var scriptEl = document.getElementById('script-' + qid);
+  if(!scriptEl) return;
+  var text = scriptEl.innerText || scriptEl.textContent;
+  text = text.replace(/YOUR DISCUSSION SCRIPT/gi,'').replace(/VIVA ALERT/gi,'Viva Alert.').trim();
+  var utter = new SpeechSynthesisUtterance(text);
+  utter.rate = 0.92;
+  utter.pitch = 1.0;
+  utter.lang = 'en-GB';
+  var qTitle = btn.closest('.q-card').querySelector('.q-text');
+  document.getElementById('tts-title').textContent = qTitle ? qTitle.textContent : 'Reading...';
+  document.getElementById('tts-bar').classList.add('active');
+  btn.innerHTML = '⏹ Stop Reading';
+  btn.classList.add('reading');
+  currentBtn = btn;
+  isPaused = false;
+  utter.onend = function(){ stopReading(); };
+  utter.onerror = function(){ stopReading(); };
+  window.speechSynthesis.speak(utter);
+}
+
+function togglePause(){
+  if(isPaused){
+    window.speechSynthesis.resume();
+    document.getElementById('tts-pause').textContent = '⏸ Pause';
+    isPaused = false;
+  } else {
+    window.speechSynthesis.pause();
+    document.getElementById('tts-pause').textContent = '▶ Resume';
+    isPaused = true;
+  }
+}
+
+function stopReading(){
+  window.speechSynthesis.cancel();
+  document.getElementById('tts-bar').classList.remove('active');
+  if(currentBtn){ currentBtn.innerHTML = '🔊 Read Aloud'; currentBtn.classList.remove('reading'); }
+  currentBtn = null; isPaused = false;
+  document.getElementById('tts-pause').textContent = '⏸ Pause';
+}
 </script>
 </body>
 </html>

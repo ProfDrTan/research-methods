@@ -423,11 +423,22 @@ function enterInstructor(){
   startIRefresh();
 }
 function showStudent(){
-  const name = getStudentName();
+  let name = getStudentName();
+  // If no name stored, prompt once — simple, no registration wall
+  if(!name){
+    name = prompt('Enter your first and last name to join the quiz:','');
+    if(name && name.trim()){
+      localStorage.setItem(NAME_KEY, name.trim());
+      localStorage.setItem('student_registered','yes');
+    } else {
+      name = 'Anonymous';
+      localStorage.setItem(NAME_KEY, name);
+    }
+  }
   showScreen('sscreen');
   document.getElementById('btn-s').classList.add('active');
   document.getElementById('btn-i').classList.remove('active');
-  if(!name){
+  if(false){ // registration gate removed
     document.getElementById('s-name-screen').style.display = 'block';
     document.getElementById('s-wait').style.display = 'none';
   } else {

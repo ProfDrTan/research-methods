@@ -257,12 +257,16 @@ function buildQuiz(){
   document.getElementById('quiz-body').innerHTML = html;
 }
 
-function selectAnswer(qId, optIdx, optText){
+function selectAnswer(qId, optIdx){
+  // Look up option text from question bank
+  const allQ = getAllQuestions();
+  const q = allQ.find(x => x.id === qId);
+  const optText = q ? q.options[optIdx] : '';
   // Deselect all options for this question
-  const q = document.getElementById(`opts-${qId}`);
-  q.querySelectorAll('.opt').forEach(b => b.classList.remove('selected'));
+  const el = document.getElementById('opts-'+qId);
+  el.querySelectorAll('.opt').forEach(b => b.classList.remove('selected'));
   // Select chosen
-  document.getElementById(`opt-${qId}-${optIdx}`).classList.add('selected');
+  document.getElementById('opt-'+qId+'-'+optIdx).classList.add('selected');
   answers[qId] = {idx: optIdx, text: optText};
   updateProgress();
 }

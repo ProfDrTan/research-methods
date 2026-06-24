@@ -187,7 +187,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(2,8,23,0.92);backdrop-filt
     <div class="pin-icon">🔐</div>
     <div class="pin-title">Instructor Access</div>
     <div class="pin-sub">Enter your PIN to access the control panel.</div>
-    <input type="password" inputmode="numeric" maxlength="4" class="pin-input" id="pin-in" placeholder="••••" onkeydown="if(event.key==='Enter')checkPin()">
+    <input type="pnumber" inputmode="numeric" maxlength="4" class="pin-input" id="pin-in" placeholder="PIN" autocomplete="off" onkeydown="if(event.key==='Enter')checkPin()">
     <button class="pin-btn" onclick="checkPin()">Unlock →</button>
     <div class="pin-err" id="pin-err">Incorrect PIN. Try again.</div>
   </div>

@@ -940,6 +940,11 @@ function showStudent(){
 }
 
 showStudent();
+
+// Always start in student mode on page load
+window.addEventListener('load', function(){
+  showStudent();
+});
 </script>
 </body>
 </html>

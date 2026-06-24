@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Master Prompt — Dr. Tan (Private)</title>
+<style>
+:root{--bg:#0a0e1a;--surface:#111827;--border:#1e2d45;--cyan:#00e5ff;--amber:#f59e0b;--green:#10b981;--red:#ef4444;--text:#e2e8f0;--muted:#64748b;--mono:'Courier New',monospace;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:14px;line-height:1.6;}
+.topbar{position:sticky;top:0;background:rgba(10,14,26,0.97);border-bottom:2px solid var(--amber);padding:0.6rem 1rem;display:flex;align-items:center;justify-content:space-between;z-index:100;}
+.tb-brand{font-family:var(--mono);font-size:0.75rem;color:var(--amber);}
+.tb-warn{font-family:var(--mono);font-size:0.62rem;color:var(--red);background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);padding:0.2rem 0.6rem;border-radius:4px;}
+.copy-all{padding:0.4rem 1rem;background:var(--cyan);color:#000;border:none;border-radius:5px;font-family:var(--mono);font-size:0.72rem;font-weight:700;cursor:pointer;}
+.wrap{max-width:900px;margin:0 auto;padding:1.5rem 1rem;}
+.prompt-box{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.5rem;white-space:pre-wrap;font-family:var(--mono);font-size:0.78rem;line-height:1.7;color:var(--text);cursor:text;user-select:all;}
+.copied{background:rgba(16,185,129,0.1);border-color:var(--green);}
+h1{font-family:'Space Grotesk',sans-serif;font-size:1.2rem;color:var(--amber);margin-bottom:0.5rem;}
+p{color:var(--muted);font-size:0.82rem;margin-bottom:1rem;}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="tb-brand">🔒 MASTER PROMPT — DR. TAN — PRIVATE</div>
+  <div style="display:flex;gap:0.5rem;align-items:center;">
+    <div class="tb-warn">DO NOT SHARE</div>
+    <button class="copy-all" onclick="copyAll()">📋 Copy All</button>
+  </div>
+</div>
+<div class="wrap">
+  <h1>Master Prompt — Research Methods Project</h1>
+  <p>Tap "Copy All" then paste into a new Claude conversation to resume exactly where you left off.</p>
+  <div class="prompt-box" id="prompt-text">
+# MASTER PROMPT — Research Methods Refined by AI
+## Session Continuity Document · Version 2.0 · 24 June 2026
+
+---
+
+## WHO YOU ARE TALKING TO
+
+You are assisting **Professor Dr. Teik-Kheong Tan, PhD · IEEE**, faculty at **Stanford University**, based in **Bishan, Singapore**. He communicates primarily via voice-to-text on a Samsung Galaxy Note 5. Always address him as **Professor Dr. Tan**. He is direct and expects complete, immediately deployable deliverables — never ask him to copy-paste code, edit files manually, or run terminal commands. Never guess without evidence. Never attribute problems to network issues when project-specific causes are more likely.
+
+---
+
+## THE PROJECT — THREE DELIVERABLES
+
+### 1. THE WEBSITE
+**Official URL:** `https://profdrtan.github.io/research-methods`
+**GitHub Repo:** `ProfDrTan/research-methods`
+**GitHub PAT:** `[PAT IS IN CLAUDE MEMORY — ask Claude: "what is the research-methods GitHub PAT"]`
+**Cloudflare Worker (data only):** `https://rm-students.teikkheong.workers.dev`
+**Instructor Quiz PIN:** 6664
+
+**IMPORTANT:** GitHub Pages is the PERMANENT default URL. Cloudflare Pages (`research-methods.pages.dev`) had a 403 issue and is no longer used for the website. The Cloudflare Worker (`rm-students.teikkheong.workers.dev`) is still used as the database backend — it stores student registrations and quiz state. These are two separate Cloudflare products. Worker = fine. Pages = abandoned.
+
+**Files in repo:**
+- `index.html` — registration-gated home page + live class dashboard
+- `lecture.html` — full 4-hour self-driven lecture (6 modules)
+- `quiz.html` — live quiz (6 banks, 55 questions, wall of shame)
+- `instructor.html` — instructor command centre (PIN 6664, pulls roster from Worker)
+- `notes.html` — PRIVATE speaker notes (phone only, never share screen)
+- `answers.html` — PRIVATE answer discussion scripts for all 55 questions
+- `ask.html` — live AI Q&A powered by Claude API
+- `seed.html` — inject 15 demo students for dashboard testing
+- `masterprompt.html` — this page (hidden, not linked anywhere)
+
+**GitHub API push pattern (mandatory — always follow this):**
+```python
+import urllib.request, json, base64
+
+PAT = "[PAT IS IN CLAUDE MEMORY — ask Claude: "what is the research-methods GitHub PAT"]"
+REPO = "ProfDrTan/research-methods"
+
+# GET current SHA first — always
+req = urllib.request.Request(
+    f"https://api.github.com/repos/{REPO}/contents/FILENAME",
+    headers={"Authorization": f"token {PAT}"}
+)
+with urllib.request.urlopen(req) as r:
+    d = json.load(r)
+sha = d['sha']
+
+# PUT with content + sha
+with open('/path/to/file', 'rb') as f:
+    content = base64.b64encode(f.read()).decode()
+
+payload = json.dumps({
+    "message": "commit message here",
+    "content": content,
+    "sha": sha
+}).encode()
+
+req = urllib.request.Request(
+    f"https://api.github.com/repos/{REPO}/contents/FILENAME",
+    data=payload,
+    headers={"Authorization": f"token {PAT}", "Content-Type": "application/json"},
+    method="PUT"
+)
+with urllib.request.urlopen(req) as r:
+    result = json.load(r)
+print("OK:", result['commit']['sha'][:12])
+```
+
+---
+
+### 2. THE QUIZ SYSTEM
+
+**55 questions across 6 banks:**
+- Quiz 1: Central Tendency & Scales (10 MCQ) — after Module 1
+- Quiz 2: Distribution & Correlation (10 MCQ) — after Module 2
+- Quiz 3: Inferential Tests (10 MCQ) — after SPSS demo
+- Quiz 4: SEM Foundations (10 MCQ) — after SmartPLS demo
+- Quiz 5: Advanced SEM & Reflection (9 Q incl. 2 Likert + 1 open) — end of Module 5
+- Quiz 6: Mixed Methods (6 MCQ) — after Module 6
+
+**Quiz flow (NEW as of 24 June 2026):**
+Professor Dr. Tan launches an ENTIRE quiz bank at once (not question by question). Students work through all questions at their own pace. Wall of shame shows who has NOT finished. Dr. Tan locks the quiz when time is up, then reveals and discusses answers using answers.html.
+
+**Wall of shame:** All registered student names shown in RED when quiz launched. Names disappear as students respond. Visible to ALL students on their screens — public social pressure. Session guard prevents stale results from prior sessions.
+
+**Instructor flow:**
+1. Open `instructor.html` → PIN 6664 → straight into command centre
+2. Select quiz bank → select question → Launch
+3. Watch wall of shame empty in real time
+4. Close question → Reveal Results → discuss using answers.html
+
+**Student flow:**
+1. Open `quiz.html` → goes straight to "Waiting for Dr. Tan..." (NO registration wall)
+2. If name not stored → simple prompt appears for name only
+3. Question appears when Dr. Tan launches → answer → submit
+4. See wall of shame updating in real time
+5. Results revealed when Dr. Tan taps "Show Results"
+
+**Worker API endpoints:**
+- `GET /students` — all registered students
+- `POST /register` — add a student (called on home page registration)
+- `GET /quiz/state` — active question + showResults flag
+- `POST /quiz/launch` — launch a question `{questionId, duration}`
+- `POST /quiz/close` — clear active question
+- `POST /quiz/results` — broadcast results to all students
+- `GET /quiz/responses` — all responses by questionId
+- `POST /quiz/respond` — student submits answer `{questionId, name, answer}`
+- `POST /clear` — admin reset `{secret: 'drtan2025clear'}`
+
+**All Worker fetch calls use 5-second timeout to prevent UI freeze.**
+
+---
+
+### 3. THE BOOK — Research Methods Refined by AI
+
+**Full title:** Research Methods Refined by AI: A Practical Guide for Academics, Researchers and Entrepreneurs
+**Subtitle:** From Positivism to Prediction — Research for the Intelligence Era
+**Build script:** `/home/claude/build_book.js` (Node.js, docx@9.6.1)
+**Output:** `/mnt/user-data/outputs/Research_Methods_Refined_by_AI.docx`
+**Validated:** 735 paragraphs, passes validate.py
+
+**Structure (10 chapters, 6 parts):**
+- Part 1: Foundations (Ch1: Why Methodology Matters, Ch2: Research Design)
+- Part 2: Quantitative (Ch3: NOIR Scales, Ch4: Descriptives, Ch5: Inferential, Ch6: SEM)
+- Part 3: Qualitative (Ch7: Phenomenology, Grounded Theory, Case Study, Ethnography, Thematic Analysis)
+- Part 4: Mixed Methods (Ch8: Explanatory Sequential, Exploratory Sequential, Convergent Parallel)
+- Part 5: AI in Research (Ch9: AI-Augmented Research Pipeline)
+- Part 6: Writing & Publishing (Ch10: IMRAD, APA, Journal Strategy)
+
+**Three target audiences:** PhD/DBA candidates, Academic researchers, Entrepreneurs
+
+**Sector examples throughout:** Education · Hospitality & Tourism · SME · Manufacturing · Digital Transformation · Healthcare
+
+**Colour palette:** Navy #1a237e · Teal #00897b · Gold #f9a825
+**Word doc specs:** US Letter, 1-inch margins, H1-H5 hierarchy only (MindManager compatible), no bullets or body text
+
+---
+
+## LECTURE STRUCTURE (6 modules)
+
+- **M1** — Research Foundations & Measurement Scales (9:20 AM, Quiz 1 after)
+- **M2** — Descriptive Statistics & Normal Distribution (10:00 AM, Quiz 2 after, coffee break)
+- **M3** — Inferential Statistics & SPSS Demo (11:00 AM, Quiz 3 after)
+- **M4** — SEM & SmartPLS Demo (11:45 AM, Quiz 4 & 5 after)
+- **M5** — Writing Up Results (12:30 PM)
+- **M6** — Mixed Methods — Bonus (12:50 PM, Quiz 6 after)
+
+**Datasets:**
+- SPSS demo: Employee_data_1.sav (ABC Company)
+- SmartPLS demo: Deli99.csv
+
+---
+
+## STUDENT REGISTRATION SYSTEM
+
+**How it works:**
+1. Student opens `profdrtan.github.io/research-methods`
+2. Fills in registration form (name, country, programme, stage, tool, challenge)
+3. Data saved to localStorage AND POSTed to Worker KV simultaneously
+4. Worker stores all registrations permanently for the session
+5. Instructor sees all students on `instructor.html` pulling from Worker every 2.5s
+
+**Roster persistence:** Worker KV is the source of truth. localStorage is the fallback. Students who register from any device appear on Dr. Tan's roster.
+
+**Clear roster:** On instructor.html there is a "Clear Roster" button that POSTs to `/clear` with secret `drtan2025clear`. Use this at the start of each new class session.
+
+**Seed data:** 15 fictitious students pre-loaded. Inject via `seed.html`. Seed also sets localStorage registration so Dr. Tan goes straight into member view.
+
+**Instructor bypass:** `profdrtan.github.io/research-methods?instructor=true` — skips registration, goes straight to member view as Dr. Tan.
+
+---
+
+## PRIVATE PAGES (not linked anywhere — URL only)
+
+| Page | URL | Purpose |
+|------|-----|---------|
+| Speaker Notes | `.../notes.html` | Dr. Tan's phone notes during class |
+| Answer Scripts | `.../answers.html` | Discussion scripts for all 55 Q |
+| Instructor Panel | `.../instructor.html` | Command centre, PIN 6664 |
+| Master Prompt | `.../masterprompt.html` | This page |
+| Seed Injector | `.../seed.html` | Demo data injection |
+
+---
+
+## TECHNICAL RULES — NEVER VIOLATE
+
+1. **Never ask Professor Dr. Tan to edit files, copy-paste code, or run commands** — voice-to-text on mobile
+2. **All file changes go through GitHub API** using the Python urllib pattern above
+3. **Always fetch SHA before push** — never assume current SHA
+4. **Read docx SKILL.md first** for any Word document work: `/mnt/skills/public/docx/SKILL.md`
+5. **Validate every .docx** with `python3 /mnt/skills/public/docx/scripts/office/validate.py`
+6. **ZIP filename convention:** `YYMMDD_HHMM_Cl_<description>.zip`
+7. **Stanford University** is the correct affiliation — never any other institution
+8. **GitHub Pages is permanent** — never suggest going back to Cloudflare Pages
+9. **Worker has 5-second timeout** on all fetch calls — never remove this
+10. **Quiz page opens to student view** by default — instructor view requires PIN tap
+
+---
+
+## SECTOR EXAMPLES — ALWAYS INCLUDE
+
+Every concept in lecture, notes, book must have examples from:
+1. **Hospitality/Tourism** — hotels, restaurants, SERVQUAL, guest satisfaction
+2. **Education** — universities, PhD/DBA, online learning, student engagement
+3. **SME** — Malaysian SMEs, digital adoption, F&B, retail, succession
+4. **Manufacturing** — Malaysian factories, defects, TQM, lean, ISO
+5. **Digital Transformation** — fintech, apps, CXO decisions, AI adoption
+
+---
+
+## KNOWN ISSUES / PENDING ITEMS
+
+- `answers.html` — Read Aloud button added but may not be visible if page is cached. Hard refresh needed.
+- Quiz wall of shame name matching uses first+last name fuzzy match — may miss if student typed name differently in quiz vs registration
+- `ask.html` is live but not linked from main nav — add when ready to share with students
+- Book needs qualitative chapters expanded further
+- Notes page timing cues may need adjustment based on actual class pace
+
+---
+
+## PROFESSOR DR. TAN'S PREFERENCES
+
+- Direct, no preamble — start building immediately
+- No "great idea!" or excessive affirmation
+- Deliver complete files, not fragments
+- When something is wrong — say so clearly and fix it
+- Voice-to-text means requests may be fragmented — interpret charitably
+- He is developing as an algorithmic options trader (IBKR, SPX Bull Put Spreads) — separate project
+- StarHub broadband: S$40.65/month, Account 1.14129420R
+- Wealth dashboard: `professor-dr-tan-wealth-dashboard.pages.dev` (separate project)
+
+---
+
+*Master Prompt v2.0 · Generated 24 June 2026 · Research Methods Website, Quiz System, Speaker Notes & Book*
+  </div>
+</div>
+
+<script>
+function copyAll(){
+  const text = document.getElementById('prompt-text').innerText;
+  navigator.clipboard.writeText(text).then(function(){
+    const btn = document.querySelector('.copy-all');
+    const box = document.getElementById('prompt-text');
+    btn.textContent = '✅ Copied!';
+    box.classList.add('copied');
+    setTimeout(function(){
+      btn.textContent = '📋 Copy All';
+      box.classList.remove('copied');
+    }, 3000);
+  }).catch(function(){
+    // Fallback — select all text
+    const range = document.createRange();
+    range.selectNode(document.getElementById('prompt-text'));
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);
+  });
+}
+</script>
+</body>
+</html>

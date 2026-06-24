@@ -234,7 +234,6 @@ function pick(btn) {
   var isCorrect = (idx === correct);
   answers[qid] = {idx:idx, correct:isCorrect};
   btn.classList.add(isCorrect ? 'correct-ans' : 'wrong-ans');
-  if(!isCorrect) document.getElementById('opt_' + qid + '_' + correct).classList.add('correct-ans');
   var fb = document.getElementById('fb_' + qid);
   fb.style.display = 'block';
   if(isCorrect) {
@@ -242,7 +241,7 @@ function pick(btn) {
     fb.textContent = '\u2705 Correct!';
   } else {
     fb.className = 'feedback wrong';
-    fb.textContent = '\u274C Incorrect. The correct answer is highlighted above.';
+    fb.textContent = '\u274C Incorrect. Listen to Dr. Tan for the explanation.';
   }
   document.getElementById('card_' + qid).classList.add(isCorrect ? 'correct' : 'wrong');
   updateProg();

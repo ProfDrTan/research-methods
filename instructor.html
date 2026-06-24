@@ -159,8 +159,9 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);min-height:1
           <div class="roster-count" id="roster-count">0</div>
           <div class="roster-sub" id="roster-sub">students registered</div>
           <div class="roster-list" id="roster-list">
-            <div style="font-family:var(--mono);font-size:0.72rem;color:var(--muted);">Loading...</div>
+            <div style="font-family:var(--mono);font-size:0.72rem;color:var(--muted);">Loading from server...</div>
           </div>
+          <button onclick="clearRoster()" style="margin-top:0.75rem;width:100%;padding:0.4rem;background:transparent;border:1px solid rgba(239,68,68,0.25);color:rgba(239,68,68,0.5);border-radius:6px;font-family:var(--mono);font-size:0.62rem;cursor:pointer;" onmouseover="this.style.borderColor='#ef4444';this.style.color='#ef4444'" onmouseout="this.style.borderColor='rgba(239,68,68,0.25)';this.style.color='rgba(239,68,68,0.5)'">⟳ Clear Roster</button>
         </div>
       </div>
 
@@ -340,10 +341,30 @@ function init(){
   startPoll();
 }
 
-// ── ROSTER ──
-function renderRoster(){
-  let students = [];
-  try { students = JSON.parse(localStorage.getItem(KEY)||'[]'); } catch{}
+// ── ROSTER — pulls from Worker KV so ALL registered students appear ──
+let cachedStudents = [];
+
+async function renderRoster(){
+  try {
+    const controller = new AbortController();
+    setTimeout(()=>controller.abort(), 4000);
+    const r = await fetch(API+'/students', {signal:controller.signal});
+    const workerStudents = await r.json();
+    if(Array.isArray(workerStudents) && workerStudents.length > 0){
+      cachedStudents = workerStudents;
+      // Also sync to localStorage so quiz wall of shame works
+      localStorage.setItem('rm_v2', JSON.stringify(cachedStudents));
+    } else {
+      // Fall back to localStorage if Worker returns empty
+      try { cachedStudents = JSON.parse(localStorage.getItem('rm_v2')||'[]'); } catch{}
+    }
+  } catch(e){
+    // Worker offline — use localStorage
+    try { cachedStudents = JSON.parse(localStorage.getItem('rm_v2')||'[]'); } catch{}
+    document.getElementById('status-text').textContent = 'Offline mode';
+  }
+
+  const students = cachedStudents;
   document.getElementById('roster-count').textContent = students.length;
   document.getElementById('stat-students').textContent = students.length;
   document.getElementById('roster-sub').textContent = `student${students.length!==1?'s':''} registered`;
@@ -359,6 +380,25 @@ function renderRoster(){
       <span class="ri-tag">${s.country||'?'}</span>
       <span style="font-family:var(--mono);font-size:0.58rem;color:var(--muted);">${s.prog||''}</span>
     </div>`).join('');
+}
+
+// Add clear roster button handler
+async function clearRoster(){
+  if(!confirm('Clear ALL student registrations from the server? This cannot be undone.')) return;
+  try {
+    const controller = new AbortController();
+    setTimeout(()=>controller.abort(), 5000);
+    await fetch(API+'/clear', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({secret:'drtan2025clear'}),
+      signal: controller.signal
+    });
+    localStorage.removeItem('rm_v2');
+    cachedStudents = [];
+    await renderRoster();
+    alert('Roster cleared.');
+  } catch(e){ alert('Error clearing roster: '+e.message); }
 }
 
 // ── QUIZ TABS ──

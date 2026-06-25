@@ -3,289 +3,211 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Instructor Command Centre — Dr. Tan</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Space+Mono:wght@400;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<title>Instructor Dashboard — Dr. Tan</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#020817;--bg2:#0b1120;--bg3:#111827;--surface:#161f30;--border:#1e2d45;--cyan:#00e5ff;--violet:#7c3aed;--violet2:#a78bfa;--green:#10b981;--amber:#f59e0b;--red:#ef4444;--text:#e2e8f0;--muted:#64748b;--mono:'Space Mono',monospace;--sans:'Space Grotesk',sans-serif;--body:'Inter',sans-serif;}
 *{box-sizing:border-box;margin:0;padding:0;}
-body{background:var(--bg);color:var(--text);font-family:var(--body);min-height:100vh;}
+:root{--bg:#020817;--surface:#111827;--border:#1e2d45;--cyan:#00e5ff;--violet:#7c3aed;--green:#10b981;--amber:#f59e0b;--red:#ef4444;--text:#e2e8f0;--muted:#64748b;--mono:'Space Mono',monospace;--sans:'Space Grotesk',sans-serif;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;}
 
-/* PIN SCREEN */
-#pin-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;flex-direction:column;gap:1.5rem;}
+/* PIN */
+#pin-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;}
 .pin-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:2.5rem;text-align:center;width:320px;}
-.pin-title{font-family:var(--sans);font-weight:700;font-size:1.3rem;margin-bottom:0.4rem;}
-.pin-sub{font-size:0.82rem;color:var(--muted);margin-bottom:1.5rem;}
-.pin-input{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:0.85rem;color:var(--text);font-family:var(--mono);font-size:1.4rem;text-align:center;letter-spacing:0.3em;outline:none;margin-bottom:1rem;}
+.pin-card h2{font-family:var(--sans);font-weight:700;font-size:1.2rem;margin-bottom:0.3rem;}
+.pin-card p{color:var(--muted);font-size:0.82rem;margin-bottom:1.5rem;}
+.pin-input{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:0.85rem;color:var(--text);font-family:var(--mono);font-size:1.4rem;text-align:center;outline:none;margin-bottom:0.75rem;}
 .pin-input:focus{border-color:var(--cyan);}
-.pin-btn{width:100%;padding:0.85rem;background:linear-gradient(135deg,var(--cyan),#0097b2);color:var(--bg);border:none;border-radius:8px;font-family:var(--sans);font-weight:700;font-size:0.95rem;cursor:pointer;}
-.pin-error{color:var(--red);font-size:0.8rem;margin-top:0.5rem;font-family:var(--mono);}
+.pin-btn{width:100%;padding:0.85rem;background:linear-gradient(135deg,var(--cyan),#0097b2);color:#000;border:none;border-radius:8px;font-family:var(--sans);font-weight:700;font-size:0.95rem;cursor:pointer;}
+.pin-err{color:var(--red);font-size:0.8rem;margin-top:0.5rem;font-family:var(--mono);}
 
-/* COMMAND CENTRE */
-#cmd{display:none;}
-
-/* TOP BAR */
-.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0.75rem 1.5rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
-.tb-brand{font-family:var(--mono);font-size:0.8rem;color:var(--cyan);}
-.tb-status{font-family:var(--mono);font-size:0.68rem;color:var(--green);display:flex;align-items:center;gap:0.4rem;}
-.live-dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);animation:pulse 2s infinite;}
+/* DASHBOARD */
+#dashboard{display:none;}
+nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:52px;position:sticky;top:0;z-index:100;}
+.brand{font-family:var(--mono);font-size:0.8rem;color:var(--amber);}
+.nav-links{display:flex;gap:0.5rem;}
+.nl{padding:0.3rem 0.75rem;border:1px solid var(--border);border-radius:6px;color:var(--muted);text-decoration:none;font-size:0.78rem;}
+.nl:hover{color:var(--cyan);border-color:var(--cyan);}
+.live-dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);animation:pulse 2s infinite;display:inline-block;margin-right:0.4rem;}
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
-.tb-links{display:flex;gap:0.4rem;}
-.tb-link{font-family:var(--mono);font-size:0.65rem;padding:0.25rem 0.6rem;border:1px solid var(--border);border-radius:4px;color:var(--muted);text-decoration:none;}
-.tb-link:hover{color:var(--cyan);border-color:var(--cyan);}
 
-/* MAIN GRID */
-.main{display:grid;grid-template-columns:320px 1fr;gap:1rem;padding:1rem;min-height:calc(100vh - 56px);}
+.wrap{max-width:1100px;margin:0 auto;padding:1.25rem 1rem;}
 
-/* LEFT COLUMN */
-.left{display:flex;flex-direction:column;gap:1rem;}
+/* QUICK LINKS */
+.quick-links{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:0.75rem;margin-bottom:1.5rem;}
+.ql{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1rem;text-decoration:none;text-align:center;transition:all 0.2s;}
+.ql:hover{border-color:var(--cyan);transform:translateY(-2px);}
+.ql-icon{font-size:1.5rem;margin-bottom:0.4rem;}
+.ql-label{font-family:var(--sans);font-weight:600;font-size:0.82rem;color:var(--text);}
+.ql-sub{font-size:0.7rem;color:var(--muted);margin-top:0.2rem;}
+
+/* GRID */
+.grid{display:grid;grid-template-columns:320px 1fr;gap:1rem;}
+@media(max-width:800px){.grid{grid-template-columns:1fr;}}
 
 /* CARDS */
-.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
-.card-header{padding:0.75rem 1rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:1rem;}
+.card-head{padding:0.75rem 1rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
 .card-title{font-family:var(--mono);font-size:0.65rem;letter-spacing:0.1em;color:var(--muted);text-transform:uppercase;}
 .card-body{padding:1rem;}
 
 /* ROSTER */
-.roster-count{font-family:var(--mono);font-size:2rem;font-weight:700;color:var(--cyan);line-height:1;}
-.roster-sub{font-size:0.75rem;color:var(--muted);margin-bottom:0.75rem;}
-.roster-list{display:flex;flex-direction:column;gap:0.4rem;max-height:220px;overflow-y:auto;}
-.roster-item{display:flex;align-items:center;gap:0.5rem;padding:0.35rem 0.6rem;background:var(--bg3);border-radius:6px;font-size:0.8rem;}
+.roster-count{font-family:var(--mono);font-size:2.5rem;font-weight:700;color:var(--cyan);}
+.roster-sub{font-size:0.78rem;color:var(--muted);margin-bottom:0.75rem;}
+.roster-list{display:flex;flex-direction:column;gap:0.35rem;max-height:260px;overflow-y:auto;}
+.ri{display:flex;align-items:center;gap:0.5rem;padding:0.35rem 0.6rem;background:var(--bg);border-radius:6px;font-size:0.82rem;}
 .ri-num{font-family:var(--mono);font-size:0.6rem;color:var(--muted);width:16px;}
 .ri-name{flex:1;font-weight:600;}
 .ri-tag{font-family:var(--mono);font-size:0.58rem;padding:0.1rem 0.35rem;background:rgba(0,229,255,0.07);border:1px solid rgba(0,229,255,0.15);border-radius:3px;color:var(--cyan);}
+.clear-btn{width:100%;margin-top:0.75rem;padding:0.45rem;background:transparent;border:1px solid rgba(239,68,68,0.2);color:rgba(239,68,68,0.5);border-radius:6px;font-size:0.72rem;cursor:pointer;font-family:var(--mono);}
+.clear-btn:hover{border-color:var(--red);color:var(--red);}
 
-/* QUIZ LAUNCHER */
-.quiz-tabs{display:flex;flex-direction:column;gap:0.4rem;}
-.quiz-tab{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:0.65rem 0.85rem;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:space-between;}
-.quiz-tab:hover{border-color:var(--violet2);}
-.quiz-tab.active-quiz{border-color:var(--amber);background:rgba(245,158,11,0.08);}
-.qt-label{font-family:var(--sans);font-weight:600;font-size:0.82rem;}
-.qt-count{font-family:var(--mono);font-size:0.62rem;color:var(--muted);}
-.launch-btn{width:100%;margin-top:0.75rem;padding:0.7rem;background:linear-gradient(135deg,var(--amber),#d97706);color:var(--bg);border:none;border-radius:8px;font-family:var(--sans);font-weight:700;font-size:0.85rem;cursor:pointer;transition:all 0.2s;}
-.launch-btn:hover{opacity:0.9;}
-.launch-btn:disabled{opacity:0.4;cursor:not-allowed;}
-.close-btn{width:100%;margin-top:0.4rem;padding:0.6rem;background:transparent;color:var(--red);border:1px solid rgba(239,68,68,0.3);border-radius:8px;font-family:var(--sans);font-weight:600;font-size:0.82rem;cursor:pointer;}
-.close-btn:hover{background:rgba(239,68,68,0.08);}
-.reveal-btn{width:100%;margin-top:0.4rem;padding:0.6rem;background:linear-gradient(135deg,var(--green),#059669);color:#fff;border:none;border-radius:8px;font-family:var(--sans);font-weight:700;font-size:0.82rem;cursor:pointer;}
-
-/* RIGHT COLUMN */
-.right{display:flex;flex-direction:column;gap:1rem;}
-
-/* ACTIVE QUIZ STATUS */
-.active-banner{padding:1rem 1.25rem;border-radius:12px;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.25);display:flex;align-items:center;justify-content:space-between;}
-.ab-label{font-family:var(--mono);font-size:0.65rem;color:var(--amber);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.2rem;}
-.ab-title{font-family:var(--sans);font-weight:700;font-size:1rem;}
-.ab-meta{font-family:var(--mono);font-size:0.68rem;color:var(--muted);}
-.no-active{padding:1.5rem;text-align:center;color:var(--muted);font-family:var(--mono);font-size:0.75rem;background:var(--surface);border:1px solid var(--border);border-radius:12px;}
-
-/* WALL OF SHAME */
-.wall-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;}
-.wall-header{padding:0.75rem 1rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
-.wall-title{font-family:var(--mono);font-size:0.65rem;letter-spacing:0.1em;color:var(--red);text-transform:uppercase;}
-.wall-count{font-family:var(--mono);font-size:0.68rem;color:var(--muted);}
-.wall-body{padding:1rem;}
-.wall-chips{display:flex;flex-wrap:wrap;gap:0.5rem;}
-.wall-chip{padding:0.4rem 0.85rem;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:7px;font-family:var(--sans);font-weight:600;font-size:0.85rem;color:var(--red);}
-.wall-chip .country{font-family:var(--mono);font-size:0.58rem;color:rgba(239,68,68,0.6);margin-left:0.3rem;}
-.all-done{text-align:center;padding:1.5rem;}
-.all-done-icon{font-size:2rem;margin-bottom:0.5rem;}
-.all-done-text{font-family:var(--sans);font-weight:700;color:var(--green);font-size:0.95rem;}
-
-/* RESULTS */
-.results-grid{display:grid;gap:0.5rem;}
-.result-bar{background:var(--bg3);border-radius:8px;overflow:hidden;}
-.rb-header{display:flex;justify-content:space-between;align-items:center;padding:0.5rem 0.75rem;}
-.rb-label{font-size:0.82rem;font-weight:500;}
-.rb-val{font-family:var(--mono);font-size:0.68rem;color:var(--muted);}
-.rb-correct{color:var(--green);}
-.rb-track{height:8px;background:var(--border);}
-.rb-fill{height:100%;background:linear-gradient(90deg,var(--cyan),var(--violet));transition:width 0.5s ease;}
-.rb-fill.correct{background:linear-gradient(90deg,var(--green),#059669);}
-
-/* QUESTION PREVIEW */
-.q-preview{background:var(--bg3);border-radius:10px;padding:1rem;}
-.q-text{font-family:var(--sans);font-weight:600;font-size:0.9rem;margin-bottom:0.75rem;line-height:1.5;}
-.q-options{display:flex;flex-direction:column;gap:0.4rem;}
-.q-opt{padding:0.45rem 0.75rem;border-radius:6px;font-size:0.82rem;border:1px solid var(--border);}
-.q-opt.correct{background:rgba(16,185,129,0.1);border-color:rgba(16,185,129,0.3);color:var(--green);}
-
-/* STATS ROW */
-.stats-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.75rem;}
-.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:0.85rem;text-align:center;}
-.stat-num{font-family:var(--mono);font-size:1.6rem;font-weight:700;color:var(--cyan);}
-.stat-label{font-size:0.72rem;color:var(--muted);margin-top:0.2rem;}
-
-@media(max-width:900px){.main{grid-template-columns:1fr;}}
-
-.toggle-panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:1rem;}
-.toggle-header{padding:0.75rem 1rem;border-bottom:1px solid var(--border);font-family:var(--mono);font-size:0.65rem;letter-spacing:0.1em;color:var(--muted);text-transform:uppercase;}
-.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:0.65rem 1rem;border-bottom:1px solid var(--border);}
+/* TOGGLES */
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:0.6rem 0;border-bottom:1px solid var(--border);}
 .toggle-row:last-child{border-bottom:none;}
-.toggle-label{font-family:var(--sans);font-size:0.85rem;font-weight:500;}
-.toggle-switch{position:relative;width:44px;height:24px;flex-shrink:0;}
-.toggle-switch input{opacity:0;width:0;height:0;}
-.toggle-slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#1e2d45;border-radius:24px;transition:0.3s;}
-.toggle-slider:before{position:absolute;content:"";height:18px;width:18px;left:3px;bottom:3px;background:var(--muted);border-radius:50%;transition:0.3s;}
-.toggle-switch input:checked + .toggle-slider{background:var(--green);}
-.toggle-switch input:checked + .toggle-slider:before{background:#fff;transform:translateX(20px);}
-.toggle-quiz-num{font-family:var(--mono);font-size:0.62rem;color:var(--violet);margin-right:0.5rem;}
+.toggle-label{font-size:0.85rem;font-weight:500;}
+.toggle-num{font-family:var(--mono);font-size:0.62rem;color:var(--violet);margin-right:0.4rem;}
+.switch{position:relative;width:44px;height:24px;flex-shrink:0;}
+.switch input{opacity:0;width:0;height:0;}
+.slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#1e2d45;border-radius:24px;transition:0.3s;}
+.slider:before{position:absolute;content:"";height:18px;width:18px;left:3px;bottom:3px;background:var(--muted);border-radius:50%;transition:0.3s;}
+.switch input:checked + .slider{background:var(--green);}
+.switch input:checked + .slider:before{background:#fff;transform:translateX(20px);}
+.toggle-status{font-family:var(--mono);font-size:0.65rem;color:var(--green);margin-top:0.5rem;min-height:1rem;}
 
-  .hidden-q-badge {
-    display: inline-block;
-    background: #ff6b00;
-    color: #fff;
-    font-size: 0.7rem;
-    font-weight: bold;
-    padding: 1px 5px;
-    border-radius: 3px;
-    margin-right: 5px;
-    vertical-align: middle;
-  }
+/* SCORES */
+.score-table{width:100%;border-collapse:collapse;font-size:0.85rem;}
+.score-table th{padding:0.5rem 0.75rem;text-align:left;font-size:0.65rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);font-family:var(--mono);}
+.score-table td{padding:0.6rem 0.75rem;border-bottom:1px solid rgba(30,45,69,0.5);}
+.score-table tr:last-child td{border-bottom:none;}
+.score-table tr:hover td{background:rgba(255,255,255,0.02);}
+.s-name{font-weight:700;}
+.s-sec{color:var(--violet);font-size:0.75rem;font-family:var(--mono);}
+.s-score{font-family:var(--mono);color:var(--cyan);}
+.s-pct{font-family:var(--mono);font-weight:700;}
+.s-bar{height:4px;background:var(--border);border-radius:2px;margin-top:3px;}
+.s-bar-fill{height:100%;border-radius:2px;}
+.no-scores{text-align:center;padding:2rem;color:var(--muted);font-size:0.85rem;}
+.score-filter{display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.75rem;}
+.sf{padding:0.25rem 0.65rem;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--muted);font-size:0.75rem;cursor:pointer;}
+.sf.active{border-color:var(--cyan);color:var(--cyan);background:rgba(0,229,255,0.06);}
 </style>
 </head>
 <body>
 
-<!-- PIN SCREEN -->
+<!-- PIN -->
 <div id="pin-screen">
   <div class="pin-card">
     <div style="font-size:2rem;margin-bottom:0.75rem;">🎓</div>
-    <div class="pin-title">Instructor Access</div>
-    <div class="pin-sub">Dr. Tan's Command Centre — Research Methods</div>
-    <input class="pin-input" type="password" id="pin-input" placeholder="••••" maxlength="4"
+    <h2>Instructor Access</h2>
+    <p>Dr. Tan's Command Centre</p>
+    <input class="pin-input" type="tel" id="pin-in" maxlength="4" placeholder="PIN"
+      autocomplete="off" oninput="this.value=this.value.replace(/[^0-9]/g,'')"
       onkeydown="if(event.key==='Enter')checkPin()">
     <button class="pin-btn" onclick="checkPin()">Enter →</button>
-    <div class="pin-error" id="pin-error"></div>
+    <div class="pin-err" id="pin-err"></div>
   </div>
 </div>
 
-<!-- COMMAND CENTRE -->
-<div id="cmd">
-  <div class="topbar">
-    <div class="tb-brand">🎓 DR. TAN // INSTRUCTOR COMMAND CENTRE</div>
-    <div class="tb-status"><div class="live-dot"></div><span id="status-text">Live</span></div>
-    <div class="tb-links">
-      <a href="index.html" class="tb-link">Dashboard</a>
-      <a href="lecture.html" class="tb-link">Lecture</a>
-      <a href="notes.html" class="tb-link">Notes</a>
+<!-- DASHBOARD -->
+<div id="dashboard">
+  <nav>
+    <div class="brand">🎓 DR. TAN // INSTRUCTOR</div>
+    <div style="display:flex;align-items:center;gap:0.75rem;">
+      <span style="font-size:0.75rem;color:var(--muted);font-family:var(--mono);"><span class="live-dot"></span>Live</span>
+      <div class="nav-links">
+        <a href="index.html" class="nl">Dashboard</a>
+        <a href="lecture.html" class="nl">Lecture</a>
+        <a href="notes.html" class="nl">Notes</a>
+        <a href="answers.html" class="nl">Answers</a>
+        <a href="leaderboard.html" class="nl">Leaderboard</a>
+      </div>
     </div>
-  </div>
+  </nav>
 
-  <!-- QUIZ SECTION TOGGLES -->
-<div style="padding:0.75rem 1rem;background:var(--bg);border-bottom:1px solid var(--border);">
-  <div class="toggle-panel">
-    <div class="toggle-header" style="display:flex;justify-content:space-between;align-items:center;"><span>⚡ Quiz Sections — toggle ON to release to students</span><span id="toggle-status" style="font-size:0.68rem;"></span></div>
-    <div id="section-toggles"></div>
-  </div>
-</div>
+  <div class="wrap">
 
-<div style="padding:0 1rem 0.75rem;">
-  <div class="panel">
-    <div class="panel-title" style="display:flex;justify-content:space-between;align-items:center;">
-      <span>📊 Quiz Scores — All Students</span>
-      <select id="score-filter" onchange="renderScores()" style="background:var(--bg);border:1px solid var(--border);color:var(--muted);border-radius:4px;font-size:0.68rem;padding:0.15rem 0.3rem;">
-        <option value="all">All Sections</option>
-        <option value="0">Quiz 1 — Scales</option>
-        <option value="1">Quiz 2 — Distribution</option>
-        <option value="2">Quiz 3 — Inferential</option>
-        <option value="3">Quiz 4 — SEM</option>
-        <option value="4">Quiz 5 — Advanced SEM</option>
-        <option value="5">Quiz 6 — Mixed Methods</option>
-      </select>
+    <!-- QUICK LINKS -->
+    <div class="quick-links">
+      <a href="notes.html" class="ql">
+        <div class="ql-icon">📋</div>
+        <div class="ql-label">Speaker Notes</div>
+        <div class="ql-sub">Private — phone only</div>
+      </a>
+      <a href="answers.html" class="ql">
+        <div class="ql-icon">🔑</div>
+        <div class="ql-label">Answer Scripts</div>
+        <div class="ql-sub">All 97 questions</div>
+      </a>
+      <a href="leaderboard.html" class="ql">
+        <div class="ql-icon">🏆</div>
+        <div class="ql-label">Leaderboard</div>
+        <div class="ql-sub">Project to class</div>
+      </a>
+      <a href="lecture.html" class="ql">
+        <div class="ql-icon">📖</div>
+        <div class="ql-label">Lecture</div>
+        <div class="ql-sub">6 modules</div>
+      </a>
+      <a href="quiz.html" class="ql">
+        <div class="ql-icon">✏️</div>
+        <div class="ql-label">Student Quiz</div>
+        <div class="ql-sub">Preview as student</div>
+      </a>
     </div>
-    <div id="scores-panel" style="margin-top:0.5rem;"><div style="color:var(--muted);font-size:0.78rem;">Loading scores...</div></div>
-  </div>
-</div>
 
-<div class="main">
-    <!-- LEFT: ROSTER + QUIZ LAUNCHER -->
-    <div class="left">
+    <div class="grid">
 
-      <!-- CLASS ROSTER -->
-      <div class="card">
-        <div class="card-header">
-          <span class="card-title">Class Roster</span>
-          <div class="live-dot"></div>
-        </div>
-        <div class="card-body">
-          <div class="roster-count" id="roster-count">0</div>
-          <div class="roster-sub" id="roster-sub">students registered</div>
-          <div class="roster-list" id="roster-list">
-            <div style="font-family:var(--mono);font-size:0.72rem;color:var(--muted);">Loading from server...</div>
+      <!-- LEFT: ROSTER + TOGGLES -->
+      <div>
+
+        <!-- ROSTER -->
+        <div class="card">
+          <div class="card-head">
+            <span class="card-title">Class Roster</span>
+            <span class="live-dot"></span>
           </div>
-          <button onclick="clearRoster()" style="margin-top:0.75rem;width:100%;padding:0.4rem;background:transparent;border:1px solid rgba(239,68,68,0.25);color:rgba(239,68,68,0.5);border-radius:6px;font-family:var(--mono);font-size:0.62rem;cursor:pointer;" onmouseover="this.style.borderColor='#ef4444';this.style.color='#ef4444'" onmouseout="this.style.borderColor='rgba(239,68,68,0.25)';this.style.color='rgba(239,68,68,0.5)'">⟳ Clear Roster</button>
-        </div>
-      </div>
-
-      <!-- QUIZ LAUNCHER -->
-      <div class="card">
-        <div class="card-header">
-          <span class="card-title">Quiz Launcher</span>
-          <span id="active-q-label" style="font-family:var(--mono);font-size:0.62rem;color:var(--amber);">No active quiz</span>
-        </div>
-        <div class="card-body">
-          <div class="quiz-tabs" id="quiz-tabs"></div>
-          <div id="q-list" style="margin-top:0.75rem;display:flex;flex-direction:column;gap:0.35rem;"></div>
-          <button class="launch-btn" id="launch-btn" onclick="launchSelected()" disabled>▶ Launch Selected Question</button>
-          <button class="reveal-btn" id="reveal-btn" onclick="revealResults()" style="display:none;">📊 Reveal Results to All</button>
-          <button class="close-btn" id="close-btn" onclick="closeQuestion()" style="display:none;">■ Close Question</button>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- RIGHT: LIVE STATUS -->
-    <div class="right">
-
-      <!-- STATS -->
-      <div class="stats-row">
-        <div class="stat-card">
-          <div class="stat-num" id="stat-students">0</div>
-          <div class="stat-label">Students In</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-num" id="stat-responded" style="color:var(--green);">0</div>
-          <div class="stat-label">Responded</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-num" id="stat-pending" style="color:var(--red);">0</div>
-          <div class="stat-label">Pending</div>
-        </div>
-      </div>
-
-      <!-- ACTIVE QUESTION -->
-      <div id="active-section">
-        <div class="no-active" id="no-active">No question active — select a quiz and question on the left, then tap Launch.</div>
-        <div id="active-q-display" style="display:none;">
-          <div class="active-banner">
-            <div>
-              <div class="ab-label">Active Question</div>
-              <div class="ab-title" id="active-q-text">—</div>
-              <div class="ab-meta" id="active-q-meta">—</div>
+          <div class="card-body">
+            <div class="roster-count" id="r-count">0</div>
+            <div class="roster-sub" id="r-sub">students registered</div>
+            <div class="roster-list" id="r-list">
+              <div style="color:var(--muted);font-size:0.78rem;font-family:var(--mono);">Loading...</div>
             </div>
+            <button class="clear-btn" onclick="clearRoster()">⟳ Clear Roster</button>
           </div>
-          <div style="margin-top:0.75rem;" class="q-preview" id="active-q-preview"></div>
         </div>
+
+        <!-- QUIZ TOGGLES -->
+        <div class="card">
+          <div class="card-head">
+            <span class="card-title">⚡ Quiz Visibility</span>
+            <span id="tog-status" class="toggle-status"></span>
+          </div>
+          <div class="card-body">
+            <p style="font-size:0.78rem;color:var(--muted);margin-bottom:0.85rem;">Toggle ON to release a quiz section to students.</p>
+            <div id="toggles"></div>
+          </div>
+        </div>
+
       </div>
 
-      <!-- WALL OF SHAME -->
-      <div class="wall-card" id="wall-card" style="display:none;">
-        <div class="wall-header">
-          <span class="wall-title">⚠ Haven't Answered Yet</span>
-          <span class="wall-count" id="wall-count">0 pending</span>
-        </div>
-        <div class="wall-body" id="wall-body">
-          <div class="wall-chips" id="wall-chips"></div>
-        </div>
-      </div>
-
-      <!-- LIVE RESULTS -->
-      <div class="card" id="results-card" style="display:none;">
-        <div class="card-header">
-          <span class="card-title">Live Results</span>
-          <span id="results-count" style="font-family:var(--mono);font-size:0.68rem;color:var(--green);">0 responses</span>
-        </div>
-        <div class="card-body">
-          <div class="results-grid" id="results-grid"></div>
+      <!-- RIGHT: SCORES -->
+      <div>
+        <div class="card">
+          <div class="card-head">
+            <span class="card-title">📊 Quiz Scores — All Students</span>
+            <span id="scores-count" style="font-family:var(--mono);font-size:0.68rem;color:var(--muted);"></span>
+          </div>
+          <div class="card-body">
+            <div class="score-filter" id="score-filter">
+              <button class="sf active" onclick="filterScores('all',this)">All</button>
+              <button class="sf" onclick="filterScores(0,this)">Q1</button>
+              <button class="sf" onclick="filterScores(1,this)">Q2</button>
+              <button class="sf" onclick="filterScores(2,this)">Q3</button>
+              <button class="sf" onclick="filterScores(3,this)">Q4</button>
+              <button class="sf" onclick="filterScores(4,this)">Q5</button>
+            </div>
+            <div id="scores-table"><div class="no-scores">Loading scores...</div></div>
+          </div>
         </div>
       </div>
 
@@ -297,398 +219,151 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);min-height:1
 const PIN = '6664';
 const API = 'https://rm-students.teikkheong.workers.dev';
 const KEY = 'rm_v2';
+var hiddenSections = [5];
+var scoreFilter = 'all';
 
-let selectedQuiz = 1;
-let selectedQ = null;
-let pollTimer = null;
-let lastState = {};
+const SECTION_LABELS = [
+  'Scales & Tendency',
+  'Distribution & Correlation',
+  'Inferential Tests',
+  'SEM Foundations',
+  'Advanced SEM',
+  'Mixed Methods'
+];
 
 // ── PIN ──
 function checkPin(){
-  const v = document.getElementById('pin-input').value.trim();
-  if(!v){ document.getElementById('pin-error').textContent='Enter PIN'; return; }
+  var v = document.getElementById('pin-in').value.trim();
+  if(!v){ document.getElementById('pin-err').textContent='Enter PIN'; return; }
   if(v === PIN){
-    document.getElementById('pin-screen').style.display = 'none';
-    document.getElementById('cmd').style.display = 'block';
+    document.getElementById('pin-screen').style.display='none';
+    document.getElementById('dashboard').style.display='block';
     init();
   } else {
-    document.getElementById('pin-error').textContent = 'Incorrect PIN';
-    document.getElementById('pin-input').value = '';
+    document.getElementById('pin-err').textContent='Incorrect PIN';
+    document.getElementById('pin-in').value='';
   }
 }
-document.getElementById('pin-input').addEventListener('keydown', e => { if(e.key==='Enter') checkPin(); });
-
-// ── QUESTION BANK ──
-const BREAKS = {
-  1:{label:'Quiz 1 — Scales & Tendency',questions:[
-    {id:'q01',text:'What is the mean in statistics?',options:['Most frequent score','Middle score when ordered','Arithmetic average','Spread from highest to lowest'],correct:2},
-    {id:'q02',text:'Which measure is best for nominal data?',options:['Mean','Standard Deviation','Median','Mode'],correct:3},
-    {id:'q03',text:'Which is NOT a measure of central tendency?',options:['Mode','Median','Mean','Standard Deviation'],correct:3},
-    {id:'q04',text:'Which graph suits categorical data best?',options:['Boxplot','Histogram','Bar chart','Scatterplot'],correct:2},
-    {id:'q05',text:'What does standard deviation measure?',options:['Central location','Spread of scores','Most frequent value','Average rank'],correct:1},
-    {id:'q06',text:'What type of data has a true zero?',options:['Nominal','Ordinal','Interval','Ratio'],correct:3},
-    {id:'q07',text:'Which statistic is appropriate for ordinal data?',options:['Mode','Mean','Median','Variance'],correct:2},
-    {id:'q08',text:'What is a histogram best used for?',options:['Distribution of continuous data','Comparing groups','Frequencies in pie form','Displaying categories'],correct:0},
-    {id:'q09',text:'Which graph is best for nominal data?',options:['Histogram','Boxplot','Line graph','Bar chart'],correct:3},
-    {id:'q10',text:'Which statistic shows the most frequent value?',options:['Mode','Mean','Range','Median'],correct:0}
-  ]},
-  2:{label:'Quiz 2 — Distribution & Correlation',questions:[
-    {id:'q11',text:'Which is a measure of dispersion?',options:['Mean','Standard Deviation','Mode','Median'],correct:1},
-    {id:'q12',text:'Which distribution has a tail to the right?',options:['Positively skewed','Negatively skewed','Leptokurtic','Normal'],correct:0},
-    {id:'q13',text:'What does kurtosis describe?',options:['Symmetry','Peakedness or flatness','Skewness','Centrality'],correct:1},
-    {id:'q14',text:'How much data falls within ±2 SDs of the mean?',options:['68%','99.9%','95%','50%'],correct:2},
-    {id:'q15',text:'What value indicates the strongest correlation?',options:['0.65','-0.90','0.30','-0.25'],correct:1},
-    {id:'q16',text:'Positive correlation means:',options:['One goes up, other down','No relationship','Both increase together','Both decrease'],correct:2},
-    {id:'q17',text:'What does regression analysis do?',options:['Compare means','Test variance','Measure dispersion','Predict an outcome'],correct:3},
-    {id:'q18',text:'What is the dependent variable?',options:['Independent variable','Outcome to predict','Moderator','Confounder'],correct:1},
-    {id:'q19',text:'Which measure is MOST robust to extreme outliers?',options:['Mean','Median','Mode','Variance'],correct:1},
-    {id:'q20',text:'Data within ±1 SD of the mean in a normal distribution?',options:['50%','68%','95%','99.9%'],correct:1}
-  ]},
-  3:{label:'Quiz 3 — Inferential Tests',questions:[
-    {id:'q21',text:'Which test compares means between groups?',options:['Chi-square','Z-test','T-test','Skew test'],correct:2},
-    {id:'q22',text:'Which test is used for two nominal variables?',options:['Chi-square','T-test','Regression','Histogram'],correct:0},
-    {id:'q23',text:'p = 0.003 means:',options:['0.3% chance hypothesis is true','99.7% result is correct','0.3% probability if null hypothesis true','Effect is practically significant'],correct:2},
-    {id:'q24',text:'Gender vs employment category — which test?',options:['Independent T-test','Chi-Square','Pearson Correlation','Paired T-test'],correct:1},
-    {id:'q25',text:'r = -0.72 between study hours and anxiety indicates:',options:['Weak negative','Strong positive','Strong negative — more study = less anxiety','No relationship'],correct:2},
-    {id:'q26',text:'Beginning vs current salary — same employees. Which test?',options:['Independent T-test','Chi-Square','Paired Samples T-test','ANOVA'],correct:2},
-    {id:'q27',text:'Which variable is predicted in regression?',options:['Independent variable','Dependent variable','Moderator','Control variable'],correct:1},
-    {id:'q28',text:'Satisfaction across THREE countries — which test?',options:['Independent T-test','Chi-Square','ANOVA','Paired T-test'],correct:2},
-    {id:'q29',text:'Which measure is most affected by extreme outliers?',options:['Mode','Median','Mean','Quartile'],correct:2},
-    {id:'q30',text:'Non-normal data, 150 responses — which approach?',options:['CB-SEM with AMOS','Multiple Regression only','PLS-SEM with SmartPLS','Descriptive statistics only'],correct:2}
-  ]},
-  4:{label:'Quiz 4 — SEM Foundations',questions:[
-    {id:'q31',text:'Primary advantage of SEM over regression?',options:['Avoids measurement model','Simplifies data collection','Simultaneous measurement and structural models','Only uses observed variables'],correct:2},
-    {id:'q32',text:'What is a latent variable?',options:['Directly observable variable','Construct measured by multiple indicators','Manipulated independent variable','Residual error term'],correct:1},
-    {id:'q33',text:'What is an endogenous variable?',options:['Only influences others','Not in structural model','DV affected by other constructs','No relationship with others'],correct:2},
-    {id:'q34',text:'When to choose PLS-SEM over CB-SEM?',options:['Large sample, normal data','Theory-driven, high specification','Small sample, prediction focus','Reciprocal causation needed'],correct:2},
-    {id:'q35',text:'What defines a FORMATIVE measurement model?',options:['Indicators reflect the construct','Indicators are interchangeable','Indicators CAUSE the construct','Indicators must correlate highly'],correct:2},
-    {id:'q36',text:'Which SEM component shows relationships BETWEEN constructs?',options:['Outer model','Measurement model','Structural model','Confirmatory model'],correct:2},
-    {id:'q37',text:'[HIDDEN] Minimum CR threshold for exploratory research?',options:['0.3','0.4','0.6','0.9'],correct:2},
-    {id:'q38',text:'[HIDDEN] Minimum AVE for convergent validity?',options:['0.3','0.5','0.7','0.9'],correct:1},
-    {id:'q39',text:'[HIDDEN] Fornell-Larcker: what must exceed inter-construct correlations?',options:['Cronbach Alpha','Composite Reliability','AVE','Square root of AVE'],correct:3},
-    {id:'q40',text:'Which SmartPLS procedure reveals path significance?',options:['PLS Algorithm','Outer loadings','Bootstrapping','Initial weights'],correct:2},
-    {id:'s21',text:'[HIDDEN] In SmartPLS, one indicator for service quality has a loading of 0.32. What should the researcher do?',options:['Keep it — any loading is acceptable','Remove it — below 0.40 exploratory threshold','Remove it — below 0.70 threshold in all cases','Replace it with a new item without retesting'],correct:1},
-    {id:'s22',text:'[HIDDEN] A construct has composite reliability of 0.91. What does this suggest?',options:['Discriminant validity is confirmed','The construct has strong internal consistency','AVE must also be above 0.91','The model has multicollinearity'],correct:1},
-    {id:'s23',text:'[HIDDEN] A construct has AVE of 0.62. What does this indicate?',options:['Discriminant validity problem','Weak internal consistency','Convergent validity is confirmed — AVE exceeds 0.50','Model fit is poor'],correct:2}
-  ]},
-  5:{label:'Quiz 5 — Advanced SEM',questions:[
-    {id:'q41',text:'Best SEM for exploratory research with limited theory?',options:['CB-SEM','LISREL','PLS-SEM','AMOS'],correct:2},
-    {id:'q42',text:'Which is NOT a characteristic of SEM?',options:['Models latent variables','Tests mediation effects','Relies only on observed variables','Accounts for measurement error'],correct:2},
-    {id:'q43',text:'Which factor analysis is theory-driven?',options:['EFA','CFA','PCA','PLS'],correct:1},
-    {id:'q44',text:'In SEM, which variable only has arrows pointing OUT?',options:['Endogenous','Mediating','Exogenous','Criterion'],correct:2},
-    {id:'q45',text:'What does the OUTER MODEL represent?',options:['Relationships between constructs','Paths between DVs and IVs','Measurement via observed indicators','Path coefficient results'],correct:2},
-    {id:'q46',text:'What is a second-order construct?',options:['Only observed indicators','Not allowed in SEM','Formed by first-order constructs','Cannot be in SmartPLS'],correct:2}
-  ]},
-  6:{label:'Quiz 6 — Mixed Methods',questions:[
-    {id:'q50',text:'What defines mixed methods research?',options:['Two statistical tests','Combining quant and qual','Using SPSS and SmartPLS','Surveying two populations'],correct:1},
-    {id:'q51',text:'In EXPLANATORY SEQUENTIAL, what happens first?',options:['Qual guides the survey','Quant first, qual explains','Both simultaneously','Pilot study first'],correct:1},
-    {id:'q52',text:'In EXPLORATORY SEQUENTIAL, qual phase purpose?',options:['Validate quant findings','Replace statistics','Build the survey instrument','Rich description only'],correct:2},
-    {id:'q53',text:'Which design collects quant and qual SIMULTANEOUSLY?',options:['Explanatory Sequential','Exploratory Sequential','Convergent Parallel','Embedded design'],correct:2},
-    {id:'q54',text:'Primary purpose of mixed methods in doctoral research?',options:['Longer dissertation','Examiner requirements','Triangulation and complete understanding','Avoid choosing paradigms'],correct:2},
-    {id:'q55',text:'Survey 300 managers then interview 15 to explain findings — which design?',options:['Exploratory Sequential','Convergent Parallel','Explanatory Sequential','Embedded design'],correct:2}
-  ]}
-};
+document.addEventListener('keydown',function(e){ if(e.key==='Enter' && document.getElementById('pin-screen').style.display!=='none') checkPin(); });
 
 // ── INIT ──
 function init(){
-  fetchConfig(function(){renderToggles();});
+  fetchConfig();
   renderRoster();
-  renderQuizTabs();
   renderScores();
-  setInterval(renderScores, 5000);
-  startPoll();
+  setInterval(function(){ renderRoster(); renderScores(); }, 5000);
 }
 
-// ── ROSTER — pulls from Worker KV so ALL registered students appear ──
-let cachedStudents = [];
-
-async function renderRoster(){
-  try {
-    const controller = new AbortController();
-    setTimeout(()=>controller.abort(), 4000);
-    const r = await fetch(API+'/students', {signal:controller.signal});
-    const workerStudents = await r.json();
-    if(Array.isArray(workerStudents) && workerStudents.length > 0){
-      cachedStudents = workerStudents;
-      // Also sync to localStorage so quiz wall of shame works
-      localStorage.setItem('rm_v2', JSON.stringify(cachedStudents));
-    } else {
-      // Fall back to localStorage if Worker returns empty
-      try { cachedStudents = JSON.parse(localStorage.getItem('rm_v2')||'[]'); } catch{}
+// ── ROSTER ──
+function renderRoster(){
+  var students = [];
+  try{ students = JSON.parse(localStorage.getItem(KEY)||'[]'); }catch{}
+  
+  // Also try Worker
+  fetch(API+'/students?t='+Date.now()).then(function(r){return r.json();})
+  .then(function(ws){
+    if(ws && ws.length > 0){
+      students = ws;
+      localStorage.setItem(KEY, JSON.stringify(ws));
     }
-  } catch(e){
-    // Worker offline — use localStorage
-    try { cachedStudents = JSON.parse(localStorage.getItem('rm_v2')||'[]'); } catch{}
-    document.getElementById('status-text').textContent = 'Offline mode';
-  }
+    displayRoster(students);
+  }).catch(function(){ displayRoster(students); });
+}
 
-  const students = cachedStudents;
-  document.getElementById('roster-count').textContent = students.length;
-  document.getElementById('stat-students').textContent = students.length;
-  document.getElementById('roster-sub').textContent = `student${students.length!==1?'s':''} registered`;
-  const list = document.getElementById('roster-list');
+function displayRoster(students){
+  document.getElementById('r-count').textContent = students.length;
+  document.getElementById('r-sub').textContent = 'student'+(students.length!==1?'s':'')+' registered';
+  var list = document.getElementById('r-list');
   if(!students.length){
-    list.innerHTML = '<div style="font-family:var(--mono);font-size:0.72rem;color:var(--muted);">No students yet — share the class URL</div>';
+    list.innerHTML = '<div style="color:var(--muted);font-size:0.78rem;font-family:var(--mono);">No students yet</div>';
     return;
   }
-  list.innerHTML = students.map((s,i) => `
-    <div class="roster-item">
-      <span class="ri-num">${i+1}</span>
-      <span class="ri-name">${s.first} ${s.last}</span>
-      <span class="ri-tag">${s.country||'?'}</span>
-      <span style="font-family:var(--mono);font-size:0.58rem;color:var(--muted);">${s.prog||''}</span>
-    </div>`).join('');
+  list.innerHTML = students.map(function(s,i){
+    return '<div class="ri"><span class="ri-num">'+(i+1)+'</span><span class="ri-name">'+s.first+' '+s.last+'</span><span class="ri-tag">'+(s.country||'?')+'</span><span style="font-family:var(--mono);font-size:0.58rem;color:var(--muted);">'+(s.prog||'')+'</span></div>';
+  }).join('');
 }
 
-// ── SECTION TOGGLES ──
-var SECTION_LABELS = [
-  'Quiz 1 — Scales & Tendency',
-  'Quiz 2 — Distribution & Correlation',
-  'Quiz 3 — Inferential Tests',
-  'Quiz 4 — SEM Foundations',
-  'Quiz 5 — Advanced SEM',
-  'Quiz 6 — Mixed Methods'
-];
+function clearRoster(){
+  if(!confirm('Clear ALL student registrations?')) return;
+  fetch(API+'/clear',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({secret:'drtan2025clear'})})
+  .then(function(){ localStorage.removeItem(KEY); renderRoster(); alert('Roster cleared.'); })
+  .catch(function(){ localStorage.removeItem(KEY); renderRoster(); });
+}
 
-var hiddenSections = [];
-
-function fetchConfig(cb){
+// ── TOGGLES ──
+function fetchConfig(){
   fetch(API+'/config?t='+Date.now())
-    .then(function(r){return r.json();})
-    .then(function(c){hiddenSections=c.hidden||[];if(cb)cb();})
-    .catch(function(){if(cb)cb();});
-}
-
-function pushConfig(hidden){
-  var st=document.getElementById('toggle-status');
-  st.textContent='Saving...';st.style.color='var(--amber)';
-  fetch(API+'/config',{
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({hidden:hidden})
-  }).then(function(){
-    st.textContent='Saved ✓ — students see this instantly';
-    st.style.color='var(--green)';
-    setTimeout(function(){st.textContent='';},4000);
-  }).catch(function(e){
-    st.textContent='Error: '+e.message;
-    st.style.color='var(--red)';
-  });
+  .then(function(r){return r.json();})
+  .then(function(c){ hiddenSections = c.hidden||[5]; renderToggles(); })
+  .catch(function(){ hiddenSections=[5]; renderToggles(); });
 }
 
 function renderToggles(){
-  var html='';
-  SECTION_LABELS.forEach(function(label,idx){
-    var vis=hiddenSections.indexOf(idx)<0;
-    html+='<div class="toggle-row">';
-    html+='<span><span class="toggle-quiz-num">Q'+(idx+1)+'</span>';
-    html+='<span class="toggle-label">'+label.replace(/Quiz \d+ — /,'')+'</span></span>';
-    html+='<label class="toggle-switch">';
-    html+='<input type="checkbox" '+(vis?'checked':'')+'onchange="toggleSection('+idx+',this.checked)">';
-    html+='<span class="toggle-slider"></span></label></div>';
+  var html = '';
+  SECTION_LABELS.forEach(function(label, idx){
+    if(idx === 5) return; // Never show Mixed Methods toggle — it's always hidden
+    var vis = hiddenSections.indexOf(idx) < 0;
+    html += '<div class="toggle-row">';
+    html += '<span><span class="toggle-num">Q'+(idx+1)+'</span><span class="toggle-label">'+label+'</span></span>';
+    html += '<label class="switch"><input type="checkbox" '+(vis?'checked':'')+' onchange="toggleSection('+idx+',this.checked)"><span class="slider"></span></label>';
+    html += '</div>';
   });
-  document.getElementById('section-toggles').innerHTML=html;
+  document.getElementById('toggles').innerHTML = html;
 }
 
-function toggleSection(idx,visible){
-  if(visible){hiddenSections=hiddenSections.filter(function(i){return i!==idx;});}
-  else{if(hiddenSections.indexOf(idx)<0)hiddenSections.push(idx);}
-  pushConfig(hiddenSections);
+function toggleSection(idx, visible){
+  if(visible){ hiddenSections = hiddenSections.filter(function(i){return i!==idx;}); }
+  else{ if(hiddenSections.indexOf(idx)<0) hiddenSections.push(idx); }
+  hiddenSections = hiddenSections.filter(function(i){return i!==idx||!visible;});
+  // Recalculate
+  if(visible){ hiddenSections = hiddenSections.filter(function(i){return i!==idx;}); }
+  else{ if(hiddenSections.indexOf(idx)<0) hiddenSections.push(idx); }
+  // Always keep 5 hidden
+  if(hiddenSections.indexOf(5)<0) hiddenSections.push(5);
+  var st = document.getElementById('tog-status');
+  st.textContent = 'Saving...';
+  st.style.color = 'var(--amber)';
+  fetch(API+'/config',{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({hidden:hiddenSections})
+  }).then(function(){
+    st.textContent = 'Saved \u2713';
+    st.style.color = 'var(--green)';
+    setTimeout(function(){st.textContent='';},3000);
+  }).catch(function(e){ st.textContent='Error'; st.style.color='var(--red)'; });
 }
 
-// Add clear roster button handler
-async function clearRoster(){
-  if(!confirm('Clear ALL student registrations from the server? This cannot be undone.')) return;
-  try {
-    const controller = new AbortController();
-    setTimeout(()=>controller.abort(), 5000);
-    await fetch(API+'/clear', {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({secret:'drtan2025clear'}),
-      signal: controller.signal
-    });
-    localStorage.removeItem('rm_v2');
-    cachedStudents = [];
-    await renderRoster();
-    alert('Roster cleared.');
-  } catch(e){ alert('Error clearing roster: '+e.message); }
+// ── SCORES ──
+function filterScores(f, btn){
+  scoreFilter = f;
+  document.querySelectorAll('.sf').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  renderScores();
 }
 
-// ── QUIZ TABS ──
-function renderQuizTabs(){
-  const tabs = document.getElementById('quiz-tabs');
-  tabs.innerHTML = Object.entries(BREAKS).map(([num,q]) => `
-    <div class="quiz-tab ${selectedQuiz==num?'active-quiz':''}" onclick="selectQuiz(${num})">
-      <span class="qt-label">${q.label}</span>
-      <span class="qt-count">${q.questions.length}Q</span>
-    </div>`).join('');
-  renderQList();
-}
-
-function selectQuiz(num){
-  selectedQuiz = num;
-  selectedQ = null;
-  document.getElementById('launch-btn').disabled = true;
-  renderQuizTabs();
-}
-
-function renderQList(){
-  const qs = BREAKS[selectedQuiz].questions;
-  const list = document.getElementById('q-list');
-  list.innerHTML = qs.map((q,i) => `
-    <div onclick="selectQ('${q.id}')" style="padding:0.45rem 0.65rem;background:${selectedQ===q.id?'rgba(245,158,11,0.1)':'var(--bg3)'};border:1px solid ${selectedQ===q.id?'rgba(245,158,11,0.4)':'var(--border)'};border-radius:6px;cursor:pointer;font-size:0.8rem;transition:all 0.15s;">
-      <span style="font-family:var(--mono);font-size:0.6rem;color:var(--muted);margin-right:0.4rem;">Q${i+1}</span>
-      ${q.text.startsWith('[HIDDEN]') ? '<span style="background:#ff6b00;color:#fff;font-size:0.65rem;font-weight:bold;padding:1px 5px;border-radius:2px;margin-right:4px;">HIDDEN</span>' + q.text.replace('[HIDDEN] ','').substring(0,45)+'...' : (q.text.length>55?q.text.substring(0,53)+'...':q.text)}
-    </div>`).join('');
-}
-
-function selectQ(qid){
-  selectedQ = qid;
-  document.getElementById('launch-btn').disabled = false;
-  renderQList();
-  // Preview the question
-  const allQ = Object.values(BREAKS).flatMap(b=>b.questions);
-  const q = allQ.find(q=>q.id===qid);
-  if(q){
-    document.getElementById('active-q-preview').innerHTML = `
-      <div class="q-text">${q.text}</div>
-      <div class="q-options">
-        ${q.options.map((o,i)=>`<div class="q-opt ${i===q.correct?'correct':''}">${String.fromCharCode(65+i)}) ${o} ${i===q.correct?'✓':''}</div>`).join('')}
-      </div>`;
-    document.getElementById('no-active').style.display='none';
-    document.getElementById('active-q-display').style.display='block';
-    var qRawText = q.text;
-    if(qRawText.startsWith('[HIDDEN]')){
-      document.getElementById('active-q-text').innerHTML = '<span style="background:#ff6b00;color:#fff;font-size:0.7rem;font-weight:bold;padding:2px 7px;border-radius:3px;margin-right:6px;">HIDDEN FROM STUDENTS</span>' + qRawText.replace('[HIDDEN] ','');
-    } else {
-      document.getElementById('active-q-text').textContent = qRawText;
+function renderScores(){
+  var url = API+'/scores'+(scoreFilter!=='all'?'?section='+scoreFilter:'')+'&t='+Date.now();
+  fetch(url).then(function(r){return r.json();})
+  .then(function(scores){
+    scores.sort(function(a,b){return b.pct-a.pct||b.score-a.score;});
+    document.getElementById('scores-count').textContent = scores.length+' result'+(scores.length!==1?'s':'');
+    if(!scores.length){
+      document.getElementById('scores-table').innerHTML='<div class="no-scores">No scores yet for this section.</div>';
+      return;
     }
-    document.getElementById('active-q-meta').textContent = `Quiz ${selectedQuiz} · Question ${BREAKS[selectedQuiz].questions.findIndex(x=>x.id===qid)+1} of ${BREAKS[selectedQuiz].questions.length}`;
-  }
-}
-
-// ── LAUNCH / CLOSE / REVEAL ──
-async function launchSelected(){
-  if(!selectedQ) return;
-  try {
-    const controller = new AbortController();
-    setTimeout(()=>controller.abort(),5000);
-    await fetch(API+'/quiz/launch', {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({questionId:selectedQ, duration:180}),
-      signal: controller.signal
+    var html = '<table class="score-table"><thead><tr><th>#</th><th>Student</th><th>Section</th><th>Score</th><th>Result</th></tr></thead><tbody>';
+    scores.forEach(function(s,i){
+      var color = s.pct>=75?'#10b981':s.pct>=50?'#f59e0b':'#ef4444';
+      html+='<tr><td style="color:var(--muted);font-family:var(--mono);font-size:0.72rem;">'+(i+1)+'</td>';
+      html+='<td class="s-name">'+s.name+'</td>';
+      html+='<td class="s-sec">Q'+(s.section+1)+' '+SECTION_LABELS[s.section]+'</td>';
+      html+='<td class="s-score">'+s.score+'/'+s.total+'</td>';
+      html+='<td><span class="s-pct" style="color:'+color+';">'+s.pct+'%</span><div class="s-bar"><div class="s-bar-fill" style="width:'+s.pct+'%;background:'+color+';"></div></div></td>';
+      html+='</tr>';
     });
-  } catch(e){ console.warn('Worker offline — local mode'); }
-  document.getElementById('launch-btn').style.display='none';
-  document.getElementById('close-btn').style.display='block';
-  document.getElementById('reveal-btn').style.display='none';
-  document.getElementById('wall-card').style.display='block';
-  document.getElementById('results-card').style.display='block';
-  document.getElementById('active-q-label').textContent='● LIVE';
-  document.getElementById('active-q-label').style.color='var(--green)';
-}
-
-async function closeQuestion(){
-  try {
-    const controller = new AbortController();
-    setTimeout(()=>controller.abort(),5000);
-    await fetch(API+'/quiz/close',{method:'POST',signal:controller.signal});
-  } catch(e){}
-  document.getElementById('close-btn').style.display='none';
-  document.getElementById('reveal-btn').style.display='block';
-  document.getElementById('active-q-label').textContent='Closed';
-  document.getElementById('active-q-label').style.color='var(--muted)';
-}
-
-async function revealResults(){
-  try {
-    const controller = new AbortController();
-    setTimeout(()=>controller.abort(),5000);
-    await fetch(API+'/quiz/results',{method:'POST',signal:controller.signal});
-  } catch(e){}
-  document.getElementById('reveal-btn').style.display='none';
-  document.getElementById('launch-btn').style.display='block';
-  document.getElementById('launch-btn').disabled = false;
-  document.getElementById('wall-card').style.display='none';
-  document.getElementById('active-q-label').textContent='No active quiz';
-  document.getElementById('active-q-label').style.color='var(--amber)';
-}
-
-// ── POLL ──
-function startPoll(){
-  poll();
-  pollTimer = setInterval(poll, 2500);
-}
-
-async function poll(){
-  renderRoster();
-  let students = [];
-  try { students = JSON.parse(localStorage.getItem(KEY)||'[]'); } catch{}
-
-  let state = {}, allResp = {};
-  try {
-    const controller = new AbortController();
-    setTimeout(()=>controller.abort(),4000);
-    const [sr, rr] = await Promise.all([
-      fetch(API+'/quiz/state',{signal:controller.signal}),
-      fetch(API+'/quiz/responses',{signal:controller.signal})
-    ]);
-    state = await sr.json();
-    allResp = await rr.json();
-    document.getElementById('status-text').textContent = 'Live';
-  } catch(e){
-    document.getElementById('status-text').textContent = 'Offline mode';
-    return;
-  }
-
-  if(!state.activeQ) return;
-
-  const qId = state.activeQ;
-  const responses = allResp[qId] || [];
-  const respondedNames = new Set(responses.map(r=>(r.name||'').toLowerCase().trim()));
-
-  const pending = students.filter(s => {
-    const full = (s.first+' '+s.last).toLowerCase().trim();
-    return !respondedNames.has(full) && ![...respondedNames].some(n=>n.includes(s.first.toLowerCase())&&n.includes(s.last.toLowerCase()));
-  });
-
-  document.getElementById('stat-responded').textContent = responses.length;
-  document.getElementById('stat-pending').textContent = pending.length;
-
-  // Wall of shame
-  document.getElementById('wall-count').textContent = pending.length + ' pending';
-  if(pending.length === 0){
-    document.getElementById('wall-chips').innerHTML = `<div class="all-done"><div class="all-done-icon">🎉</div><div class="all-done-text">Everyone responded!</div></div>`;
-  } else {
-    document.getElementById('wall-chips').innerHTML = pending.map(s=>`
-      <div class="wall-chip">${s.first} ${s.last}<span class="country">${s.country||''}</span></div>`).join('');
-  }
-
-  // Results
-  const allQ = Object.values(BREAKS).flatMap(b=>b.questions);
-  const q = allQ.find(x=>x.id===qId);
-  if(q && responses.length){
-    const counts = {};
-    q.options.forEach((_,i)=>counts[i]=0);
-    responses.forEach(r=>{
-      const idx = q.options.findIndex(o=>o===r.answer||o.toLowerCase().includes((r.answer||'').toLowerCase()));
-      if(idx>=0) counts[idx]=(counts[idx]||0)+1;
-    });
-    const total = responses.length || 1;
-    document.getElementById('results-count').textContent = responses.length + ' responses';
-    document.getElementById('results-grid').innerHTML = q.options.map((opt,i)=>{
-      const pct = Math.round(((counts[i]||0)/total)*100);
-      const isCorrect = i===q.correct;
-      return `<div class="result-bar">
-        <div class="rb-header">
-          <span class="rb-label ${isCorrect?'rb-correct':''}">${String.fromCharCode(65+i)}) ${opt} ${isCorrect?'✓':''}</span>
-          <span class="rb-val">${counts[i]||0} · ${pct}%</span>
-        </div>
-        <div class="rb-track"><div class="rb-fill ${isCorrect?'correct':''}" style="width:${pct}%"></div></div>
-      </div>`;
-    }).join('');
-  }
+    html+='</tbody></table>';
+    document.getElementById('scores-table').innerHTML=html;
+  }).catch(function(){ document.getElementById('scores-table').innerHTML='<div class="no-scores">Could not load scores.</div>'; });
 }
 </script>
 </body>

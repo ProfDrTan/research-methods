@@ -87,13 +87,20 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
 .mod-divider{height:4px;background:linear-gradient(90deg,var(--violet),var(--cyan),transparent);margin:0;}
 
 /* QUICK NAV */
-.quick-nav{display:flex;flex-wrap:wrap;gap:0.4rem;padding:0.75rem 1.25rem;background:var(--surface);border-bottom:1px solid var(--border);}
-.qn-btn{font-family:var(--mono);font-size:0.62rem;padding:0.2rem 0.55rem;border:1px solid var(--border);border-radius:4px;color:var(--muted);text-decoration:none;transition:all 0.15s;}
+.quick-nav{position:sticky;top:52px;z-index:90;display:flex;flex-wrap:wrap;gap:0.4rem;padding:0.75rem 1.25rem;background:var(--surface);border-bottom:1px solid var(--border);}
+.qn-btn{font-family:var(--mono);font-size:0.7rem;padding:0.35rem 0.75rem;border:1px solid var(--border);border-radius:4px;color:var(--muted);text-decoration:none;transition:all 0.15s;}
 .qn-btn:hover{color:var(--amber);border-color:var(--amber);}
+
+/* JUMP TO TOP */
+#jump-top{position:fixed;bottom:1.2rem;right:1rem;width:42px;height:42px;border-radius:50%;background:var(--violet);color:#fff;font-size:1.1rem;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 12px rgba(0,0,0,0.4);z-index:500;opacity:0;transition:opacity 0.3s;}
+#jump-top.show{opacity:1;}
+
 </style>
 </head>
 <body>
 
+
+<button id="jump-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 <div class="topbar">
   <div class="tb-brand">🔒 SPEAKER NOTES — PRIVATE — DO NOT SHARE SCREEN</div>
   <div class="tb-warning">⚠ NOT FOR STUDENTS</div>
@@ -621,5 +628,33 @@ window.addEventListener('scroll',()=>{
   document.getElementById('prog').style.width=pct+'%';
 });
 </script>
+
+<script>
+window.addEventListener('scroll', function(){
+  var btn = document.getElementById('jump-top');
+  if(window.scrollY > 300){ btn.classList.add('show'); }
+  else { btn.classList.remove('show'); }
+});
+</script>
+
+
+<script>
+// Highlight active module in quick-nav
+var modules = ['m1','m2','m3','m4','m5','m6'];
+var observer = new IntersectionObserver(function(entries){
+  entries.forEach(function(entry){
+    var btn = document.querySelector('.qn-btn[href="#'+entry.target.id+'"]');
+    if(btn){
+      if(entry.isIntersecting){ btn.style.color='var(--amber)'; btn.style.borderColor='var(--amber)'; btn.style.background='rgba(245,158,11,0.1)'; }
+      else { btn.style.color=''; btn.style.borderColor=''; btn.style.background=''; }
+    }
+  });
+}, {threshold:0.1, rootMargin:'-52px 0px -70% 0px'});
+modules.forEach(function(id){
+  var el = document.getElementById(id);
+  if(el) observer.observe(el);
+});
+</script>
+
 </body>
 </html>

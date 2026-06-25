@@ -171,10 +171,11 @@ function goHome() {
 }
 
 var hiddenSections = [];
+var WORKER = 'https://rm-students.teikkheong.workers.dev';
 
 function fetchConfig(callback) {
-  var url = 'https://raw.githubusercontent.com/ProfDrTan/research-methods/main/config.json?t=' + Date.now();
-  fetch(url).then(function(r){ return r.json(); })
+  fetch(WORKER+'/config?t='+Date.now())
+    .then(function(r){ return r.json(); })
     .then(function(cfg){ hiddenSections = cfg.hidden || []; callback(); })
     .catch(function(){ hiddenSections = []; callback(); });
 }

@@ -10,18 +10,9 @@
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:var(--bg);color:var(--text);font-family:var(--body);min-height:100vh;}
 
-/* PIN SCREEN */
-#pin-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;flex-direction:column;gap:1.5rem;}
-.pin-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:2.5rem;text-align:center;width:320px;}
-.pin-title{font-family:var(--sans);font-weight:700;font-size:1.3rem;margin-bottom:0.4rem;}
-.pin-sub{font-size:0.82rem;color:var(--muted);margin-bottom:1.5rem;}
-.pin-input{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:0.85rem;color:var(--text);font-family:var(--mono);font-size:1.4rem;text-align:center;letter-spacing:0.3em;outline:none;margin-bottom:1rem;}
-.pin-input:focus{border-color:var(--cyan);}
-.pin-btn{width:100%;padding:0.85rem;background:linear-gradient(135deg,var(--cyan),#0097b2);color:var(--bg);border:none;border-radius:8px;font-family:var(--sans);font-weight:700;font-size:0.95rem;cursor:pointer;}
-.pin-error{color:var(--red);font-size:0.8rem;margin-top:0.5rem;font-family:var(--mono);}
 
 /* COMMAND CENTRE */
-#cmd{display:none;}
+#cmd{display:block;}
 
 /* TOP BAR */
 .topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0.75rem 1.5rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
@@ -196,20 +187,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);min-height:1
 </head>
 <body class="has-left-nav">
 
-<!-- PIN SCREEN -->
-<div id="pin-screen">
-  <div class="pin-card">
-    <div style="font-size:2rem;margin-bottom:0.75rem;">🎓</div>
-    <div class="pin-title">Instructor Access</div>
-    <div class="pin-sub">Dr. Tan's Command Centre — Research Methods</div>
-    <input class="pin-input" type="password" id="pin-input" placeholder="Enter PIN"
-      inputmode="numeric" autocomplete="off"
-      onkeydown="if(event.key==='Enter')checkPin()">
-    <button class="pin-btn" onclick="checkPin()">Enter →</button>
-    <div class="pin-error" id="pin-error"></div>
-  </div>
-</div>
-
 <!-- COMMAND CENTRE -->
 <div id="cmd">
   <div class="topbar">
@@ -331,31 +308,14 @@ let selectedQ = null;
 let pollTimer = null;
 let lastState = {};
 
-// ── PIN ──
-function unlock(){
-  document.getElementById('pin-screen').style.cssText = 'display:none!important';
-  document.getElementById('cmd').style.cssText = 'display:block!important';
-  sessionStorage.setItem('rm_auth','1');
-  init();
-}
-
-function checkPin(){
-  var v = document.getElementById('pin-input').value.trim();
-  if(!v){ document.getElementById('pin-error').textContent='Enter PIN'; return; }
-  if(v === PIN){ unlock(); }
-  else {
-    document.getElementById('pin-error').textContent='Wrong PIN';
-    document.getElementById('pin-input').value='';
-    document.getElementById('pin-input').focus();
+// ── ACCESS CONTROL ──
+// Access via: instructor.html?pin=6664
+(function(){
+  var params = new URLSearchParams(window.location.search);
+  if(params.get('pin') !== '6664'){
+    document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;background:#0a0e1a;color:#ef4444;font-family:monospace;font-size:1.2rem;">Access denied.</div>';
   }
-}
-
-// Skip PIN if already authenticated this session
-if(sessionStorage.getItem('rm_auth')==='1'){
-  unlock();
-} else {
-  document.getElementById('pin-input').focus();
-}
+})();
 // Enter key handled by onkeydown on input element
 
 // ── QUESTION BANK ──

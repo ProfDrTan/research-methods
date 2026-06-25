@@ -3,223 +3,117 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Instructor Command Centre — Dr. Tan</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Space+Mono:wght@400;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<title>Instructor — Dr. Tan</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#020817;--bg2:#0b1120;--bg3:#111827;--surface:#161f30;--border:#1e2d45;--cyan:#00e5ff;--violet:#7c3aed;--violet2:#a78bfa;--green:#10b981;--amber:#f59e0b;--red:#ef4444;--text:#e2e8f0;--muted:#64748b;--mono:'Space Mono',monospace;--sans:'Space Grotesk',sans-serif;--body:'Inter',sans-serif;}
+:root{
+  --bg:#0a0e1a;--bg2:#0b1120;--bg3:#111827;--surface:#161f30;
+  --border:#1e2d45;--cyan:#00e5ff;--violet:#a78bfa;--green:#10b981;
+  --amber:#f59e0b;--red:#ef4444;--text:#e2e8f0;--muted:#64748b;
+  --mono:'Space Mono',monospace;--sans:'Space Grotesk',sans-serif;--body:'Inter',sans-serif;
+}
 *{box-sizing:border-box;margin:0;padding:0;}
-body{background:var(--bg);color:var(--text);font-family:var(--body);min-height:100vh;}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.6;}
 
-
-/* COMMAND CENTRE */
-#cmd{display:block;}
-
-/* TOP BAR */
-.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0.75rem 1.5rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
-.tb-brand{font-family:var(--mono);font-size:0.8rem;color:var(--cyan);}
+/* TOPBAR */
+.topbar{position:sticky;top:0;z-index:100;background:rgba(10,14,26,0.97);border-bottom:1px solid var(--border);padding:0.75rem 1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;}
+.tb-brand{font-family:var(--mono);font-size:0.72rem;color:var(--amber);}
 .tb-status{font-family:var(--mono);font-size:0.68rem;color:var(--green);display:flex;align-items:center;gap:0.4rem;}
-.live-dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);animation:pulse 2s infinite;}
-@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
+.live-dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
 .tb-links{display:flex;gap:0.4rem;}
-.tb-link{font-family:var(--mono);font-size:0.65rem;padding:0.25rem 0.6rem;border:1px solid var(--border);border-radius:4px;color:var(--muted);text-decoration:none;}
+.tb-link{font-family:var(--mono);font-size:0.65rem;color:var(--muted);text-decoration:none;padding:0.3rem 0.65rem;border:1px solid var(--border);border-radius:5px;}
 .tb-link:hover{color:var(--cyan);border-color:var(--cyan);}
 
-/* MAIN GRID */
-.main{display:grid;grid-template-columns:320px 1fr;gap:1rem;padding:1rem;min-height:calc(100vh - 56px);}
+/* LEFT NAV */
+#left-nav{position:fixed;left:0;top:0;bottom:0;width:52px;background:#0a0d14;border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:center;padding-top:4rem;gap:0.25rem;z-index:200;}
+#left-nav a{display:flex;flex-direction:column;align-items:center;justify-content:center;width:40px;height:40px;border-radius:8px;text-decoration:none;font-size:1.1rem;color:var(--muted);cursor:pointer;transition:background 0.15s,color 0.15s;}
+#left-nav a:hover{background:var(--bg3);color:var(--amber);}
+#left-nav .nav-label{font-size:0.38rem;font-family:var(--mono);text-transform:uppercase;margin-top:1px;}
+#left-nav .nav-div{width:28px;height:1px;background:var(--border);margin:0.3rem 0;}
 
-/* LEFT COLUMN */
-.left{display:flex;flex-direction:column;gap:1rem;}
+/* LAYOUT */
+#cmd{padding-left:52px;}
+.main{display:grid;grid-template-columns:300px 1fr;gap:1rem;padding:1rem;}
 
 /* CARDS */
 .card{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
 .card-header{padding:0.75rem 1rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
-.card-title{font-family:var(--mono);font-size:0.65rem;letter-spacing:0.1em;color:var(--muted);text-transform:uppercase;}
+.card-title{font-family:var(--sans);font-weight:600;font-size:0.85rem;}
 .card-body{padding:1rem;}
 
 /* ROSTER */
-.roster-count{font-family:var(--mono);font-size:2rem;font-weight:700;color:var(--cyan);line-height:1;}
+.roster-count{font-family:var(--mono);font-size:2rem;font-weight:700;color:var(--cyan);}
 .roster-sub{font-size:0.75rem;color:var(--muted);margin-bottom:0.75rem;}
-.roster-list{display:flex;flex-direction:column;gap:0.4rem;max-height:220px;overflow-y:auto;}
-.roster-item{display:flex;align-items:center;gap:0.5rem;padding:0.35rem 0.6rem;background:var(--bg3);border-radius:6px;font-size:0.8rem;}
-.ri-num{font-family:var(--mono);font-size:0.6rem;color:var(--muted);width:16px;}
-.ri-name{flex:1;font-weight:600;}
-.ri-tag{font-family:var(--mono);font-size:0.58rem;padding:0.1rem 0.35rem;background:rgba(0,229,255,0.07);border:1px solid rgba(0,229,255,0.15);border-radius:3px;color:var(--cyan);}
+.roster-list{display:flex;flex-direction:column;gap:0.4rem;max-height:300px;overflow-y:auto;}
+.roster-item{display:flex;align-items:center;gap:0.5rem;padding:0.35rem 0.6rem;background:var(--bg3);border-radius:6px;font-size:0.78rem;}
+.ri-num{font-family:var(--mono);font-size:0.6rem;color:var(--muted);min-width:18px;}
+.ri-name{flex:1;font-weight:500;}
+.ri-tag{font-family:var(--mono);font-size:0.6rem;color:var(--cyan);background:rgba(0,229,255,0.08);padding:0.1rem 0.35rem;border-radius:3px;}
 
-/* QUIZ LAUNCHER */
-.quiz-tabs{display:flex;flex-direction:column;gap:0.4rem;}
-.quiz-tab{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:0.65rem 0.85rem;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:space-between;}
-.quiz-tab:hover{border-color:var(--violet2);}
-.quiz-tab.active-quiz{border-color:var(--amber);background:rgba(245,158,11,0.08);}
-.qt-label{font-family:var(--sans);font-weight:600;font-size:0.82rem;}
-.qt-count{font-family:var(--mono);font-size:0.62rem;color:var(--muted);}
-.launch-btn{width:100%;margin-top:0.75rem;padding:0.7rem;background:linear-gradient(135deg,var(--amber),#d97706);color:var(--bg);border:none;border-radius:8px;font-family:var(--sans);font-weight:700;font-size:0.85rem;cursor:pointer;transition:all 0.2s;}
-.launch-btn:hover{opacity:0.9;}
-.launch-btn:disabled{opacity:0.4;cursor:not-allowed;}
-.close-btn{width:100%;margin-top:0.4rem;padding:0.6rem;background:transparent;color:var(--red);border:1px solid rgba(239,68,68,0.3);border-radius:8px;font-family:var(--sans);font-weight:600;font-size:0.82rem;cursor:pointer;}
-.close-btn:hover{background:rgba(239,68,68,0.08);}
-.reveal-btn{width:100%;margin-top:0.4rem;padding:0.6rem;background:linear-gradient(135deg,var(--green),#059669);color:#fff;border:none;border-radius:8px;font-family:var(--sans);font-weight:700;font-size:0.82rem;cursor:pointer;}
+/* STATS */
+.stats-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.75rem;margin-bottom:1rem;}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1rem;text-align:center;}
+.stat-num{font-family:var(--mono);font-size:1.8rem;font-weight:700;}
+.stat-label{font-size:0.7rem;color:var(--muted);margin-top:0.2rem;}
 
-/* RIGHT COLUMN */
-.right{display:flex;flex-direction:column;gap:1rem;}
+/* ACTIVE QUESTION */
+.no-active{padding:2rem;text-align:center;color:var(--muted);font-size:0.82rem;font-family:var(--mono);}
+.active-banner{padding:1rem 1.25rem;border-radius:12px;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.25);}
+.ab-label{font-family:var(--mono);font-size:0.6rem;color:var(--amber);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.3rem;}
+.ab-title{font-family:var(--sans);font-weight:700;font-size:1rem;line-height:1.4;}
+.ab-meta{font-family:var(--mono);font-size:0.62rem;color:var(--muted);margin-top:0.3rem;}
 
-/* ACTIVE QUIZ STATUS */
-.active-banner{padding:1rem 1.25rem;border-radius:12px;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.25);display:flex;align-items:center;justify-content:space-between;}
-.ab-label{font-family:var(--mono);font-size:0.65rem;color:var(--amber);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.2rem;}
-.ab-title{font-family:var(--sans);font-weight:700;font-size:1rem;}
-.ab-meta{font-family:var(--mono);font-size:0.68rem;color:var(--muted);}
-.no-active{padding:1.5rem;text-align:center;color:var(--muted);font-family:var(--mono);font-size:0.75rem;background:var(--surface);border:1px solid var(--border);border-radius:12px;}
-
-/* WALL OF SHAME */
-.wall-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;}
+/* WALL */
+.wall-card{background:var(--surface);border:1px solid rgba(239,68,68,0.3);border-radius:12px;overflow:hidden;margin-top:1rem;}
 .wall-header{padding:0.75rem 1rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
-.wall-title{font-family:var(--mono);font-size:0.65rem;letter-spacing:0.1em;color:var(--red);text-transform:uppercase;}
-.wall-count{font-family:var(--mono);font-size:0.68rem;color:var(--muted);}
-.wall-body{padding:1rem;}
+.wall-title{font-family:var(--sans);font-weight:600;font-size:0.85rem;color:var(--red);}
+.wall-count{font-family:var(--mono);font-size:0.65rem;color:var(--muted);}
+.wall-body{padding:0.75rem 1rem;}
 .wall-chips{display:flex;flex-wrap:wrap;gap:0.5rem;}
-.wall-chip{padding:0.4rem 0.85rem;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:7px;font-family:var(--sans);font-weight:600;font-size:0.85rem;color:var(--red);}
-.wall-chip .country{font-family:var(--mono);font-size:0.58rem;color:rgba(239,68,68,0.6);margin-left:0.3rem;}
-.all-done{text-align:center;padding:1.5rem;}
-.all-done-icon{font-size:2rem;margin-bottom:0.5rem;}
-.all-done-text{font-family:var(--sans);font-weight:700;color:var(--green);font-size:0.95rem;}
+.wall-chip{font-family:var(--mono);font-size:0.68rem;padding:0.25rem 0.6rem;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:20px;color:var(--red);}
+.all-done{text-align:center;padding:1rem;color:var(--green);}
 
 /* RESULTS */
 .results-grid{display:grid;gap:0.5rem;}
 .result-bar{background:var(--bg3);border-radius:8px;overflow:hidden;}
 .rb-header{display:flex;justify-content:space-between;align-items:center;padding:0.5rem 0.75rem;}
-.rb-label{font-size:0.82rem;font-weight:500;}
-.rb-val{font-family:var(--mono);font-size:0.68rem;color:var(--muted);}
-.rb-correct{color:var(--green);}
-.rb-track{height:8px;background:var(--border);}
-.rb-fill{height:100%;background:linear-gradient(90deg,var(--cyan),var(--violet));transition:width 0.5s ease;}
-.rb-fill.correct{background:linear-gradient(90deg,var(--green),#059669);}
-
-/* QUESTION PREVIEW */
-.q-preview{background:var(--bg3);border-radius:10px;padding:1rem;}
-.q-text{font-family:var(--sans);font-weight:600;font-size:0.9rem;margin-bottom:0.75rem;line-height:1.5;}
-.q-options{display:flex;flex-direction:column;gap:0.4rem;}
-.q-opt{padding:0.45rem 0.75rem;border-radius:6px;font-size:0.82rem;border:1px solid var(--border);}
-.q-opt.correct{background:rgba(16,185,129,0.1);border-color:rgba(16,185,129,0.3);color:var(--green);}
-
-/* STATS ROW */
-.stats-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.75rem;}
-.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:0.85rem;text-align:center;}
-.stat-num{font-family:var(--mono);font-size:1.6rem;font-weight:700;color:var(--cyan);}
-.stat-label{font-size:0.72rem;color:var(--muted);margin-top:0.2rem;}
-
-@media(max-width:900px){.main{grid-template-columns:1fr;}}
-
-.toggle-panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:1rem;}
-.toggle-header{padding:0.75rem 1rem;border-bottom:1px solid var(--border);font-family:var(--mono);font-size:0.65rem;letter-spacing:0.1em;color:var(--muted);text-transform:uppercase;}
-.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:0.65rem 1rem;border-bottom:1px solid var(--border);}
-.toggle-row:last-child{border-bottom:none;}
-.toggle-label{font-family:var(--sans);font-size:0.85rem;font-weight:500;}
-.toggle-switch{position:relative;width:44px;height:24px;flex-shrink:0;}
-.toggle-switch input{opacity:0;width:0;height:0;}
-.toggle-slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#1e2d45;border-radius:24px;transition:0.3s;}
-.toggle-slider:before{position:absolute;content:"";height:18px;width:18px;left:3px;bottom:3px;background:var(--muted);border-radius:50%;transition:0.3s;}
-.toggle-switch input:checked + .toggle-slider{background:var(--green);}
-.toggle-switch input:checked + .toggle-slider:before{background:#fff;transform:translateX(20px);}
-.toggle-quiz-num{font-family:var(--mono);font-size:0.62rem;color:var(--violet);margin-right:0.5rem;}
-
-  .hidden-q-badge {
-    display: inline-block;
-    background: #ff6b00;
-    color: #fff;
-    font-size: 0.7rem;
-    font-weight: bold;
-    padding: 1px 5px;
-    border-radius: 3px;
-    margin-right: 5px;
-    vertical-align: middle;
-  }
-
-  /* ── LEFT NAV SIDEBAR ── */
-  #left-nav {
-    position: fixed;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 52px;
-    background: #0a0d14;
-    border-right: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding-top: 4rem;
-    gap: 0.25rem;
-    z-index: 200;
-  }
-  #left-nav a {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 8px;
-    text-decoration: none;
-    font-size: 1.1rem;
-    color: var(--muted);
-    transition: background 0.15s, color 0.15s;
-    cursor: pointer;
-  }
-  #left-nav a:hover {
-    background: var(--bg3);
-    color: var(--amber);
-  }
-  #left-nav a .nav-label {
-    font-size: 0.38rem;
-    font-family: var(--mono);
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-    margin-top: 1px;
-    line-height: 1;
-  }
-  #left-nav .nav-divider {
-    width: 28px;
-    height: 1px;
-    background: var(--border);
-    margin: 0.3rem 0;
-  }
-  #cmd { padding-left: 52px; }
-
+.rb-label{font-size:0.8rem;}
+.rb-correct{color:var(--green);font-weight:600;}
+.rb-val{font-family:var(--mono);font-size:0.7rem;color:var(--muted);}
+.rb-track{height:6px;background:var(--bg2);}
+.rb-fill{height:100%;background:var(--muted);transition:width 0.4s;}
+.rb-fill.correct{background:var(--green);}
 </style>
 </head>
-<body class="has-left-nav">
+<body>
 
-<!-- COMMAND CENTRE -->
 <div id="cmd">
   <div class="topbar">
-    <div class="tb-brand">🎓 DR. TAN // INSTRUCTOR COMMAND CENTRE</div>
+    <div class="tb-brand">🎓 DR. TAN // INSTRUCTOR</div>
     <div class="tb-status"><div class="live-dot"></div><span id="status-text">Live</span></div>
     <div class="tb-links">
-      <a href="index.html" class="tb-link">Dashboard</a>
-      <a href="lecture.html" class="tb-link">Lecture</a>
-      <a href="notes.html" class="tb-link">Notes</a>
+      <a href="notes.html" class="tb-link">📝 Notes</a>
+      <a href="answers.html" class="tb-link">💡 Answers</a>
+      <a href="lecture.html" class="tb-link" target="_blank">📖 Lecture</a>
     </div>
   </div>
 
-
-  <!-- FIXED LEFT NAV -->
   <div id="left-nav">
-    <a onclick="document.getElementById('nav-roster').scrollIntoView({behavior:'smooth'})" title="Class Roster">👥<span class="nav-label">Roster</span></a>
-    <div class="nav-divider"></div>
-    <a onclick="document.getElementById('nav-stats').scrollIntoView({behavior:'smooth'})" title="Live Stats">📈<span class="nav-label">Stats</span></a>
-    <a onclick="document.getElementById('nav-active-section').scrollIntoView({behavior:'smooth'})" title="Active Question">❓<span class="nav-label">Active</span></a>
-    <a onclick="document.getElementById('wall-card').scrollIntoView({behavior:'smooth'})" title="Wall of Shame">⚠<span class="nav-label">Wall</span></a>
-    <a onclick="document.getElementById('results-card').scrollIntoView({behavior:'smooth'})" title="Live Results">✅<span class="nav-label">Results</span></a>
-    <div class="nav-divider"></div>
-    <a href="notes.html" title="Speaker Notes">📝<span class="nav-label">Notes</span></a>
-    <a href="answers.html" title="Answer Scripts">💡<span class="nav-label">Answers</span></a>
+    <a onclick="document.getElementById('nav-roster').scrollIntoView({behavior:'smooth'})" title="Roster">👥<span class="nav-label">Roster</span></a>
+    <div class="nav-div"></div>
+    <a onclick="document.getElementById('nav-stats').scrollIntoView({behavior:'smooth'})" title="Stats">📈<span class="nav-label">Stats</span></a>
+    <a onclick="document.getElementById('nav-active').scrollIntoView({behavior:'smooth'})" title="Active">❓<span class="nav-label">Active</span></a>
+    <a onclick="document.getElementById('wall-card').scrollIntoView({behavior:'smooth'})" title="Wall">⚠<span class="nav-label">Wall</span></a>
+    <a onclick="document.getElementById('results-card').scrollIntoView({behavior:'smooth'})" title="Results">✅<span class="nav-label">Results</span></a>
+    <div class="nav-div"></div>
+    <a href="notes.html" title="Notes">📝<span class="nav-label">Notes</span></a>
+    <a href="answers.html" title="Answers">💡<span class="nav-label">Answers</span></a>
   </div>
 
-
-
-<div class="main">
-    <!-- LEFT: ROSTER + QUIZ LAUNCHER -->
+  <div class="main">
+    <!-- LEFT: ROSTER -->
     <div class="left">
-
-      <!-- CLASS ROSTER -->
       <div class="card" id="nav-roster">
         <div class="card-header">
           <span class="card-title">Class Roster</span>
@@ -229,473 +123,187 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);min-height:1
           <div class="roster-count" id="roster-count">0</div>
           <div class="roster-sub" id="roster-sub">students registered</div>
           <div class="roster-list" id="roster-list">
-            <div style="font-family:var(--mono);font-size:0.72rem;color:var(--muted);">Loading from server...</div>
+            <div style="font-family:var(--mono);font-size:0.72rem;color:var(--muted);">Loading...</div>
           </div>
-          <button onclick="clearRoster()" style="margin-top:0.75rem;width:100%;padding:0.4rem;background:transparent;border:1px solid rgba(239,68,68,0.25);color:rgba(239,68,68,0.5);border-radius:6px;font-family:var(--mono);font-size:0.62rem;cursor:pointer;" onmouseover="this.style.borderColor='#ef4444';this.style.color='#ef4444'" onmouseout="this.style.borderColor='rgba(239,68,68,0.25)';this.style.color='rgba(239,68,68,0.5)'">⟳ Clear Roster</button>
+          <button onclick="clearRoster()" style="margin-top:0.75rem;width:100%;padding:0.4rem;background:transparent;border:1px solid var(--red);color:var(--red);border-radius:6px;cursor:pointer;font-family:var(--mono);font-size:0.65rem;">Clear Roster</button>
         </div>
       </div>
-
-
     </div>
 
     <!-- RIGHT: LIVE STATUS -->
     <div class="right">
-
-      <!-- STATS -->
       <div class="stats-row" id="nav-stats">
-        <div class="stat-card">
-          <div class="stat-num" id="stat-students">0</div>
-          <div class="stat-label">Students In</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-num" id="stat-responded" style="color:var(--green);">0</div>
-          <div class="stat-label">Responded</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-num" id="stat-pending" style="color:var(--red);">0</div>
-          <div class="stat-label">Pending</div>
-        </div>
+        <div class="stat-card"><div class="stat-num" id="stat-students">0</div><div class="stat-label">Students In</div></div>
+        <div class="stat-card"><div class="stat-num" id="stat-responded" style="color:var(--green);">0</div><div class="stat-label">Responded</div></div>
+        <div class="stat-card"><div class="stat-num" id="stat-pending" style="color:var(--red);">0</div><div class="stat-label">Pending</div></div>
       </div>
 
-      <!-- ACTIVE QUESTION -->
-      <div id="nav-active-section"><div id="active-section">
-        <div class="no-active" id="no-active">No question active — select a quiz and question on the left, then tap Launch.</div>
-        <div id="active-q-display" style="display:none;">
-          <div class="active-banner">
-            <div>
-              <div class="ab-label">Active Question</div>
+      <div class="card" id="nav-active">
+        <div class="card-header"><span class="card-title">Active Question</span></div>
+        <div class="card-body">
+          <div class="no-active" id="no-active">No question active</div>
+          <div id="active-q-display" style="display:none;">
+            <div class="active-banner">
+              <div class="ab-label">Live Now</div>
               <div class="ab-title" id="active-q-text">—</div>
               <div class="ab-meta" id="active-q-meta">—</div>
             </div>
           </div>
-          <div style="margin-top:0.75rem;" class="q-preview" id="active-q-preview"></div>
-        </div>
-      </div></div><!-- /nav-active-section -->
-
-      <!-- WALL OF SHAME -->
-      <div class="wall-card" id="wall-card" style="display:none;">
-        <div class="wall-header">
-          <span class="wall-title">⚠ Haven't Answered Yet</span>
-          <span class="wall-count" id="wall-count">0 pending</span>
-        </div>
-        <div class="wall-body" id="wall-body">
-          <div class="wall-chips" id="wall-chips"></div>
         </div>
       </div>
 
-      <!-- LIVE RESULTS -->
-      <div class="card" id="results-card" style="display:none;">
+      <div class="wall-card" id="wall-card" style="display:none;">
+        <div class="wall-header">
+          <span class="wall-title">⚠ Haven't Answered</span>
+          <span class="wall-count" id="wall-count">0 pending</span>
+        </div>
+        <div class="wall-body"><div class="wall-chips" id="wall-chips"></div></div>
+      </div>
+
+      <div class="card" id="results-card" style="display:none;margin-top:1rem;">
         <div class="card-header">
           <span class="card-title">Live Results</span>
           <span id="results-count" style="font-family:var(--mono);font-size:0.68rem;color:var(--green);">0 responses</span>
         </div>
-        <div class="card-body">
-          <div class="results-grid" id="results-grid"></div>
-        </div>
+        <div class="card-body"><div class="results-grid" id="results-grid"></div></div>
       </div>
-
     </div>
   </div>
 </div>
 
 <script>
-const PIN = '6664';
 const API = 'https://rm-students.teikkheong.workers.dev';
 const KEY = 'rm_v2';
 
-let selectedQuiz = 1;
-let selectedQ = null;
-let pollTimer = null;
-let lastState = {};
-
-// ── ACCESS CONTROL ──
-// Access via: instructor.html?pin=6664
+// ── ACCESS CONTROL — bookmark: instructor.html?pin=6664 ──
 (function(){
-  var params = new URLSearchParams(window.location.search);
-  if(params.get('pin') !== '6664'){
+  var p = new URLSearchParams(window.location.search);
+  if(p.get('pin') !== '6664'){
     document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;background:#0a0e1a;color:#ef4444;font-family:monospace;font-size:1.2rem;">Access denied.</div>';
+    return;
   }
+  init();
 })();
-// Enter key handled by onkeydown on input element
-
-// ── QUESTION BANK ──
-const BREAKS = {
-  1:{label:'Quiz 1 — Scales & Tendency',questions:[
-    {id:'q01',text:'What is the mean in statistics?',options:['Most frequent score','Middle score when ordered','Arithmetic average','Spread from highest to lowest'],correct:2},
-    {id:'q02',text:'Which measure is best for nominal data?',options:['Mean','Standard Deviation','Median','Mode'],correct:3},
-    {id:'q03',text:'Which is NOT a measure of central tendency?',options:['Mode','Median','Mean','Standard Deviation'],correct:3},
-    {id:'q04',text:'Which graph suits categorical data best?',options:['Boxplot','Histogram','Bar chart','Scatterplot'],correct:2},
-    {id:'q05',text:'What does standard deviation measure?',options:['Central location','Spread of scores','Most frequent value','Average rank'],correct:1},
-    {id:'q06',text:'What type of data has a true zero?',options:['Nominal','Ordinal','Interval','Ratio'],correct:3},
-    {id:'q07',text:'Which statistic is appropriate for ordinal data?',options:['Mode','Mean','Median','Variance'],correct:2},
-    {id:'q08',text:'What is a histogram best used for?',options:['Distribution of continuous data','Comparing groups','Frequencies in pie form','Displaying categories'],correct:0},
-    {id:'q09',text:'Which graph is best for nominal data?',options:['Histogram','Boxplot','Line graph','Bar chart'],correct:3},
-    {id:'q10',text:'Which statistic shows the most frequent value?',options:['Mode','Mean','Range','Median'],correct:0}
-  ]},
-  2:{label:'Quiz 2 — Distribution & Correlation',questions:[
-    {id:'q11',text:'Which is a measure of dispersion?',options:['Mean','Standard Deviation','Mode','Median'],correct:1},
-    {id:'q12',text:'Which distribution has a tail to the right?',options:['Positively skewed','Negatively skewed','Leptokurtic','Normal'],correct:0},
-    {id:'q13',text:'What does kurtosis describe?',options:['Symmetry','Peakedness or flatness','Skewness','Centrality'],correct:1},
-    {id:'q14',text:'How much data falls within ±2 SDs of the mean?',options:['68%','99.9%','95%','50%'],correct:2},
-    {id:'q15',text:'What value indicates the strongest correlation?',options:['0.65','-0.90','0.30','-0.25'],correct:1},
-    {id:'q16',text:'Positive correlation means:',options:['One goes up, other down','No relationship','Both increase together','Both decrease'],correct:2},
-    {id:'q17',text:'What does regression analysis do?',options:['Compare means','Test variance','Measure dispersion','Predict an outcome'],correct:3},
-    {id:'q18',text:'What is the dependent variable?',options:['Independent variable','Outcome to predict','Moderator','Confounder'],correct:1},
-    {id:'q19',text:'Which measure is MOST robust to extreme outliers?',options:['Mean','Median','Mode','Variance'],correct:1},
-    {id:'q20',text:'Data within ±1 SD of the mean in a normal distribution?',options:['50%','68%','95%','99.9%'],correct:1}
-  ]},
-  3:{label:'Quiz 3 — Inferential Tests',questions:[
-    {id:'q21',text:'Which test compares means between groups?',options:['Chi-square','Z-test','T-test','Skew test'],correct:2},
-    {id:'q22',text:'Which test is used for two nominal variables?',options:['Chi-square','T-test','Regression','Histogram'],correct:0},
-    {id:'q23',text:'p = 0.003 means:',options:['0.3% chance hypothesis is true','99.7% result is correct','0.3% probability if null hypothesis true','Effect is practically significant'],correct:2},
-    {id:'q24',text:'Gender vs employment category — which test?',options:['Independent T-test','Chi-Square','Pearson Correlation','Paired T-test'],correct:1},
-    {id:'q25',text:'r = -0.72 between study hours and anxiety indicates:',options:['Weak negative','Strong positive','Strong negative — more study = less anxiety','No relationship'],correct:2},
-    {id:'q26',text:'Beginning vs current salary — same employees. Which test?',options:['Independent T-test','Chi-Square','Paired Samples T-test','ANOVA'],correct:2},
-    {id:'q27',text:'Which variable is predicted in regression?',options:['Independent variable','Dependent variable','Moderator','Control variable'],correct:1},
-    {id:'q28',text:'Satisfaction across THREE countries — which test?',options:['Independent T-test','Chi-Square','ANOVA','Paired T-test'],correct:2},
-    {id:'q29',text:'Which measure is most affected by extreme outliers?',options:['Mode','Median','Mean','Quartile'],correct:2},
-    {id:'q30',text:'Non-normal data, 150 responses — which approach?',options:['CB-SEM with AMOS','Multiple Regression only','PLS-SEM with SmartPLS','Descriptive statistics only'],correct:2}
-  ]},
-  4:{label:'Quiz 4 — SEM Foundations',questions:[
-    {id:'q31',text:'Primary advantage of SEM over regression?',options:['Avoids measurement model','Simplifies data collection','Simultaneous measurement and structural models','Only uses observed variables'],correct:2},
-    {id:'q32',text:'What is a latent variable?',options:['Directly observable variable','Construct measured by multiple indicators','Manipulated independent variable','Residual error term'],correct:1},
-    {id:'q33',text:'What is an endogenous variable?',options:['Only influences others','Not in structural model','DV affected by other constructs','No relationship with others'],correct:2},
-    {id:'q34',text:'When to choose PLS-SEM over CB-SEM?',options:['Large sample, normal data','Theory-driven, high specification','Small sample, prediction focus','Reciprocal causation needed'],correct:2},
-    {id:'q35',text:'What defines a FORMATIVE measurement model?',options:['Indicators reflect the construct','Indicators are interchangeable','Indicators CAUSE the construct','Indicators must correlate highly'],correct:2},
-    {id:'q36',text:'Which SEM component shows relationships BETWEEN constructs?',options:['Outer model','Measurement model','Structural model','Confirmatory model'],correct:2},
-    {id:'q37',text:'[HIDDEN] Minimum CR threshold for exploratory research?',options:['0.3','0.4','0.6','0.9'],correct:2},
-    {id:'q38',text:'[HIDDEN] Minimum AVE for convergent validity?',options:['0.3','0.5','0.7','0.9'],correct:1},
-    {id:'q39',text:'[HIDDEN] Fornell-Larcker: what must exceed inter-construct correlations?',options:['Cronbach Alpha','Composite Reliability','AVE','Square root of AVE'],correct:3},
-    {id:'q40',text:'Which SmartPLS procedure reveals path significance?',options:['PLS Algorithm','Outer loadings','Bootstrapping','Initial weights'],correct:2},
-    {id:'s21',text:'[HIDDEN] In SmartPLS, one indicator for service quality has a loading of 0.32. What should the researcher do?',options:['Keep it — any loading is acceptable','Remove it — below 0.40 exploratory threshold','Remove it — below 0.70 threshold in all cases','Replace it with a new item without retesting'],correct:1},
-    {id:'s22',text:'[HIDDEN] A construct has composite reliability of 0.91. What does this suggest?',options:['Discriminant validity is confirmed','The construct has strong internal consistency','AVE must also be above 0.91','The model has multicollinearity'],correct:1},
-    {id:'s23',text:'[HIDDEN] A construct has AVE of 0.62. What does this indicate?',options:['Discriminant validity problem','Weak internal consistency','Convergent validity is confirmed — AVE exceeds 0.50','Model fit is poor'],correct:2}
-  ]},
-  5:{label:'Quiz 5 — Advanced SEM',questions:[
-    {id:'q41',text:'Best SEM for exploratory research with limited theory?',options:['CB-SEM','LISREL','PLS-SEM','AMOS'],correct:2},
-    {id:'q42',text:'Which is NOT a characteristic of SEM?',options:['Models latent variables','Tests mediation effects','Relies only on observed variables','Accounts for measurement error'],correct:2},
-    {id:'q43',text:'Which factor analysis is theory-driven?',options:['EFA','CFA','PCA','PLS'],correct:1},
-    {id:'q44',text:'In SEM, which variable only has arrows pointing OUT?',options:['Endogenous','Mediating','Exogenous','Criterion'],correct:2},
-    {id:'q45',text:'What does the OUTER MODEL represent?',options:['Relationships between constructs','Paths between DVs and IVs','Measurement via observed indicators','Path coefficient results'],correct:2},
-    {id:'q46',text:'What is a second-order construct?',options:['Only observed indicators','Not allowed in SEM','Formed by first-order constructs','Cannot be in SmartPLS'],correct:2}
-  ]},
-  6:{label:'Quiz 6 — Mixed Methods',questions:[
-    {id:'q50',text:'What defines mixed methods research?',options:['Two statistical tests','Combining quant and qual','Using SPSS and SmartPLS','Surveying two populations'],correct:1},
-    {id:'q51',text:'In EXPLANATORY SEQUENTIAL, what happens first?',options:['Qual guides the survey','Quant first, qual explains','Both simultaneously','Pilot study first'],correct:1},
-    {id:'q52',text:'In EXPLORATORY SEQUENTIAL, qual phase purpose?',options:['Validate quant findings','Replace statistics','Build the survey instrument','Rich description only'],correct:2},
-    {id:'q53',text:'Which design collects quant and qual SIMULTANEOUSLY?',options:['Explanatory Sequential','Exploratory Sequential','Convergent Parallel','Embedded design'],correct:2},
-    {id:'q54',text:'Primary purpose of mixed methods in doctoral research?',options:['Longer dissertation','Examiner requirements','Triangulation and complete understanding','Avoid choosing paradigms'],correct:2},
-    {id:'q55',text:'Survey 300 managers then interview 15 to explain findings — which design?',options:['Exploratory Sequential','Convergent Parallel','Explanatory Sequential','Embedded design'],correct:2},
-    {id:'s31',text:'[HIDDEN] Researcher surveys 500 hotel guests, finds satisfaction is low, then interviews 20 guests to understand WHY. Which design?',options:["Exploratory sequential", "Explanatory sequential", "Convergent parallel", "Experimental"],correct:1},
-    {id:'s32',text:'[HIDDEN] Researcher interviews SME owners to discover barriers, then builds and tests a survey with 400 SMEs. Which design?',options:["Exploratory sequential", "Explanatory sequential", "Correlational", "One-way ANOVA"],correct:0},
-    {id:'s33',text:'[HIDDEN] Researcher collects survey and interview data from university students AT THE SAME TIME, then compares both. Which design?',options:["Explanatory sequential", "Exploratory sequential", "Convergent parallel", "Longitudinal experiment"],correct:2},
-    {id:'s34',text:'[HIDDEN] Survey shows students are satisfied with AI tutoring but interviews reveal anxiety and dependence. What should the researcher do?',options:["Ignore interviews \u2014 numbers are better", "Ignore survey \u2014 interviews are deeper", "Use contradiction as important mixed methods insight", "Delete conflicting data"],correct:2},
-    {id:'s35',text:'[HIDDEN] Why might a researcher combine survey data, interviews, and observation in a study of classroom AI use?',options:["Make the study longer", "Strengthen understanding from multiple sources", "Avoid writing a literature review", "Remove need for research questions"],correct:1},
-    {id:'s36',text:'[HIDDEN] PhD student has limited time and wants to understand why a quantitative relationship was not significant. Most suitable approach?',options:["Explanatory sequential design", "Pure experiment", "Nominal scale conversion", "One-way ANOVA only"],correct:0},
-    {id:'s40',text:'[HIDDEN] A researcher measures entrepreneurial success using only one item: Are you successful? Yes/No. Main weakness?',options:["Construct too complex for a single binary item", "Variable has too many dimensions", "Data must be normally distributed", "Sample size is automatically too large"],correct:0},
-    {id:'s41',text:'[HIDDEN] Student says: Because my questionnaire uses numbers 1-5, all variables are definitely ratio scale. Best response?',options:["Not necessarily \u2014 Likert responses are usually ordinal and may be treated as interval carefully", "Correct \u2014 all numbered responses are ratio", "Correct \u2014 all survey data are ratio", "Incorrect \u2014 all survey data are nominal"],correct:0},
-    {id:'s42',text:'[HIDDEN] An SME income dataset has one company earning RM10 million monthly while most earn below RM100,000. Which statistic is most affected?',options:["Mean", "Median", "Mode", "Frequency count"],correct:0}
-  ]}
-};
 
 // ── INIT ──
 function init(){
-  fetchConfig(function(){renderToggles();});
   renderRoster();
-  renderQuizTabs();
-  renderScores();
-  setInterval(renderScores, 5000);
+  setInterval(renderRoster, 5000);
   startPoll();
 }
 
-// ── ROSTER — pulls from Worker KV so ALL registered students appear ──
+// ── ROSTER ──
 let cachedStudents = [];
-
 async function renderRoster(){
   try {
-    const controller = new AbortController();
-    setTimeout(()=>controller.abort(), 4000);
-    const r = await fetch(API+'/students', {signal:controller.signal});
-    const workerStudents = await r.json();
-    if(Array.isArray(workerStudents) && workerStudents.length > 0){
-      cachedStudents = workerStudents;
-      // Also sync to localStorage so quiz wall of shame works
-      localStorage.setItem('rm_v2', JSON.stringify(cachedStudents));
+    const ctrl = new AbortController();
+    setTimeout(()=>ctrl.abort(), 4000);
+    const r = await fetch(API+'/students', {signal:ctrl.signal});
+    const data = await r.json();
+    if(Array.isArray(data) && data.length > 0){
+      cachedStudents = data;
+      localStorage.setItem(KEY, JSON.stringify(data));
     } else {
-      // Fall back to localStorage if Worker returns empty
-      try { cachedStudents = JSON.parse(localStorage.getItem('rm_v2')||'[]'); } catch{}
+      try{ cachedStudents = JSON.parse(localStorage.getItem(KEY)||'[]'); }catch{}
     }
   } catch(e){
-    // Worker offline — use localStorage
-    try { cachedStudents = JSON.parse(localStorage.getItem('rm_v2')||'[]'); } catch{}
-    document.getElementById('status-text').textContent = 'Offline mode';
+    try{ cachedStudents = JSON.parse(localStorage.getItem(KEY)||'[]'); }catch{}
+    document.getElementById('status-text').textContent = 'Offline';
   }
-
-  const students = cachedStudents;
-  document.getElementById('roster-count').textContent = students.length;
-  document.getElementById('stat-students').textContent = students.length;
-  document.getElementById('roster-sub').textContent = `student${students.length!==1?'s':''} registered`;
+  const s = cachedStudents;
+  document.getElementById('roster-count').textContent = s.length;
+  document.getElementById('stat-students').textContent = s.length;
+  document.getElementById('roster-sub').textContent = 'student'+(s.length!==1?'s':'')+' registered';
   const list = document.getElementById('roster-list');
-  if(!students.length){
-    list.innerHTML = '<div style="font-family:var(--mono);font-size:0.72rem;color:var(--muted);">No students yet — share the class URL</div>';
-    return;
-  }
-  list.innerHTML = students.map((s,i) => `
+  if(!s.length){ list.innerHTML='<div style="font-family:var(--mono);font-size:0.72rem;color:var(--muted);">No students yet</div>'; return; }
+  list.innerHTML = s.map((st,i)=>`
     <div class="roster-item">
       <span class="ri-num">${i+1}</span>
-      <span class="ri-name">${s.first} ${s.last}</span>
-      <span class="ri-tag">${s.country||'?'}</span>
-      <span style="font-family:var(--mono);font-size:0.58rem;color:var(--muted);">${s.prog||''}</span>
+      <span class="ri-name">${st.first} ${st.last}</span>
+      <span class="ri-tag">${st.country||'?'}</span>
     </div>`).join('');
 }
 
-// ── SECTION TOGGLES ──
-var SECTION_LABELS = [
-  'Quiz 1 — Scales & Tendency',
-  'Quiz 2 — Distribution & Correlation',
-  'Quiz 3 — Inferential Tests',
-  'Quiz 4 — SEM Foundations',
-  'Quiz 5 — Advanced SEM',
-  'Quiz 6 — Mixed Methods'
-];
-
-var hiddenSections = [];
-
-function fetchConfig(cb){
-  fetch(API+'/config?t='+Date.now())
-    .then(function(r){return r.json();})
-    .then(function(c){hiddenSections=c.hidden||[];if(cb)cb();})
-    .catch(function(){if(cb)cb();});
-}
-
-function pushConfig(hidden){
-  var st=document.getElementById('toggle-status');
-  st.textContent='Saving...';st.style.color='var(--amber)';
-  fetch(API+'/config',{
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({hidden:hidden})
-  }).then(function(){
-    st.textContent='Saved ✓ — students see this instantly';
-    st.style.color='var(--green)';
-    setTimeout(function(){st.textContent='';},4000);
-  }).catch(function(e){
-    st.textContent='Error: '+e.message;
-    st.style.color='var(--red)';
-  });
-}
-
-function renderToggles(){
-  var html='';
-  SECTION_LABELS.forEach(function(label,idx){
-    var vis=hiddenSections.indexOf(idx)<0;
-    html+='<div class="toggle-row">';
-    html+='<span><span class="toggle-quiz-num">Q'+(idx+1)+'</span>';
-    html+='<span class="toggle-label">'+label.replace(/Quiz \d+ — /,'')+'</span></span>';
-    html+='<label class="toggle-switch">';
-    html+='<input type="checkbox" '+(vis?'checked':'')+'onchange="toggleSection('+idx+',this.checked)">';
-    html+='<span class="toggle-slider"></span></label></div>';
-  });
-  document.getElementById('section-toggles').innerHTML=html;
-}
-
-function toggleSection(idx,visible){
-  if(visible){hiddenSections=hiddenSections.filter(function(i){return i!==idx;});}
-  else{if(hiddenSections.indexOf(idx)<0)hiddenSections.push(idx);}
-  pushConfig(hiddenSections);
-}
-
-// Add clear roster button handler
 async function clearRoster(){
-  if(!confirm('Clear ALL student registrations from the server? This cannot be undone.')) return;
+  if(!confirm('Clear ALL student registrations? Cannot be undone.')) return;
   try {
-    const controller = new AbortController();
-    setTimeout(()=>controller.abort(), 5000);
-    await fetch(API+'/clear', {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({secret:'drtan2025clear'}),
-      signal: controller.signal
-    });
-    localStorage.removeItem('rm_v2');
+    const ctrl = new AbortController();
+    setTimeout(()=>ctrl.abort(), 5000);
+    await fetch(API+'/clear',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({secret:'drtan2025clear'}),signal:ctrl.signal});
+    localStorage.removeItem(KEY);
     cachedStudents = [];
-    await renderRoster();
-    alert('Roster cleared.');
-  } catch(e){ alert('Error clearing roster: '+e.message); }
-}
-
-// ── QUIZ TABS ──
-function renderQuizTabs(){
-  const tabs = document.getElementById('quiz-tabs');
-  tabs.innerHTML = Object.entries(BREAKS).map(([num,q]) => `
-    <div class="quiz-tab ${selectedQuiz==num?'active-quiz':''}" onclick="selectQuiz(${num})">
-      <span class="qt-label">${q.label}</span>
-      <span class="qt-count">${q.questions.length}Q</span>
-    </div>`).join('');
-  renderQList();
-}
-
-function selectQuiz(num){
-  selectedQuiz = num;
-  selectedQ = null;
-  document.getElementById('launch-btn').disabled = true;
-  renderQuizTabs();
-}
-
-function renderQList(){
-  const qs = BREAKS[selectedQuiz].questions;
-  const list = document.getElementById('q-list');
-  list.innerHTML = qs.map((q,i) => `
-    <div onclick="selectQ('${q.id}')" style="padding:0.45rem 0.65rem;background:${selectedQ===q.id?'rgba(245,158,11,0.1)':'var(--bg3)'};border:1px solid ${selectedQ===q.id?'rgba(245,158,11,0.4)':'var(--border)'};border-radius:6px;cursor:pointer;font-size:0.8rem;transition:all 0.15s;">
-      <span style="font-family:var(--mono);font-size:0.6rem;color:var(--muted);margin-right:0.4rem;">Q${i+1}</span>
-      ${q.text.startsWith('[HIDDEN]') ? '<span style="background:#ff6b00;color:#fff;font-size:0.65rem;font-weight:bold;padding:1px 5px;border-radius:2px;margin-right:4px;">HIDDEN</span>' + q.text.replace('[HIDDEN] ','').substring(0,45)+'...' : (q.text.length>55?q.text.substring(0,53)+'...':q.text)}
-    </div>`).join('');
-}
-
-function selectQ(qid){
-  selectedQ = qid;
-  document.getElementById('launch-btn').disabled = false;
-  renderQList();
-  // Preview the question
-  const allQ = Object.values(BREAKS).flatMap(b=>b.questions);
-  const q = allQ.find(q=>q.id===qid);
-  if(q){
-    document.getElementById('active-q-preview').innerHTML = `
-      <div class="q-text">${q.text}</div>
-      <div class="q-options">
-        ${q.options.map((o,i)=>`<div class="q-opt ${i===q.correct?'correct':''}">${String.fromCharCode(65+i)}) ${o} ${i===q.correct?'✓':''}</div>`).join('')}
-      </div>`;
-    document.getElementById('no-active').style.display='none';
-    document.getElementById('active-q-display').style.display='block';
-    var qRawText = q.text;
-    if(qRawText.startsWith('[HIDDEN]')){
-      document.getElementById('active-q-text').innerHTML = '<span style="background:#ff6b00;color:#fff;font-size:0.7rem;font-weight:bold;padding:2px 7px;border-radius:3px;margin-right:6px;">HIDDEN FROM STUDENTS</span>' + qRawText.replace('[HIDDEN] ','');
-    } else {
-      document.getElementById('active-q-text').textContent = qRawText;
-    }
-    document.getElementById('active-q-meta').textContent = `Quiz ${selectedQuiz} · Question ${BREAKS[selectedQuiz].questions.findIndex(x=>x.id===qid)+1} of ${BREAKS[selectedQuiz].questions.length}`;
-  }
-}
-
-// ── LAUNCH / CLOSE / REVEAL ──
-async function launchSelected(){
-  if(!selectedQ) return;
-  try {
-    const controller = new AbortController();
-    setTimeout(()=>controller.abort(),5000);
-    await fetch(API+'/quiz/launch', {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({questionId:selectedQ, duration:180}),
-      signal: controller.signal
-    });
-  } catch(e){ console.warn('Worker offline — local mode'); }
-  document.getElementById('launch-btn').style.display='none';
-  document.getElementById('close-btn').style.display='block';
-  document.getElementById('reveal-btn').style.display='none';
-  document.getElementById('wall-card').style.display='block';
-  document.getElementById('results-card').style.display='block';
-  document.getElementById('active-q-label').textContent='● LIVE';
-  document.getElementById('active-q-label').style.color='var(--green)';
-}
-
-async function closeQuestion(){
-  try {
-    const controller = new AbortController();
-    setTimeout(()=>controller.abort(),5000);
-    await fetch(API+'/quiz/close',{method:'POST',signal:controller.signal});
-  } catch(e){}
-  document.getElementById('close-btn').style.display='none';
-  document.getElementById('reveal-btn').style.display='block';
-  document.getElementById('active-q-label').textContent='Closed';
-  document.getElementById('active-q-label').style.color='var(--muted)';
-}
-
-async function revealResults(){
-  try {
-    const controller = new AbortController();
-    setTimeout(()=>controller.abort(),5000);
-    await fetch(API+'/quiz/results',{method:'POST',signal:controller.signal});
-  } catch(e){}
-  document.getElementById('reveal-btn').style.display='none';
-  document.getElementById('launch-btn').style.display='block';
-  document.getElementById('launch-btn').disabled = false;
-  document.getElementById('wall-card').style.display='none';
-  document.getElementById('active-q-label').textContent='No active quiz';
-  document.getElementById('active-q-label').style.color='var(--amber)';
+    renderRoster();
+  } catch(e){ alert('Error: '+e.message); }
 }
 
 // ── POLL ──
-function startPoll(){
-  poll();
-  pollTimer = setInterval(poll, 2500);
-}
+function startPoll(){ poll(); setInterval(poll, 2500); }
 
 async function poll(){
-  renderRoster();
   let students = [];
-  try { students = JSON.parse(localStorage.getItem(KEY)||'[]'); } catch{}
+  try{ students = JSON.parse(localStorage.getItem(KEY)||'[]'); }catch{}
 
-  let state = {}, allResp = {};
+  let state={}, allResp={};
   try {
-    const controller = new AbortController();
-    setTimeout(()=>controller.abort(),4000);
-    const [sr, rr] = await Promise.all([
-      fetch(API+'/quiz/state',{signal:controller.signal}),
-      fetch(API+'/quiz/responses',{signal:controller.signal})
+    const ctrl = new AbortController();
+    setTimeout(()=>ctrl.abort(), 4000);
+    const [sr,rr] = await Promise.all([
+      fetch(API+'/quiz/state',{signal:ctrl.signal}),
+      fetch(API+'/quiz/responses',{signal:ctrl.signal})
     ]);
     state = await sr.json();
     allResp = await rr.json();
     document.getElementById('status-text').textContent = 'Live';
   } catch(e){
-    document.getElementById('status-text').textContent = 'Offline mode';
+    document.getElementById('status-text').textContent = 'Offline';
     return;
   }
 
-  if(!state.activeQ) return;
+  if(!state.activeQ){
+    document.getElementById('no-active').style.display='block';
+    document.getElementById('active-q-display').style.display='none';
+    document.getElementById('wall-card').style.display='none';
+    document.getElementById('results-card').style.display='none';
+    document.getElementById('stat-responded').textContent='0';
+    document.getElementById('stat-pending').textContent='0';
+    return;
+  }
 
   const qId = state.activeQ;
-  const responses = allResp[qId] || [];
+  const responses = allResp[qId]||[];
   const respondedNames = new Set(responses.map(r=>(r.name||'').toLowerCase().trim()));
-
-  const pending = students.filter(s => {
-    const full = (s.first+' '+s.last).toLowerCase().trim();
-    return !respondedNames.has(full) && ![...respondedNames].some(n=>n.includes(s.first.toLowerCase())&&n.includes(s.last.toLowerCase()));
+  const pending = students.filter(s=>{
+    const full=(s.first+' '+s.last).toLowerCase().trim();
+    return !respondedNames.has(full)&&![...respondedNames].some(n=>n.includes(s.first.toLowerCase())&&n.includes(s.last.toLowerCase()));
   });
 
   document.getElementById('stat-responded').textContent = responses.length;
   document.getElementById('stat-pending').textContent = pending.length;
+  document.getElementById('no-active').style.display='none';
+  document.getElementById('active-q-display').style.display='block';
+  document.getElementById('active-q-text').textContent = state.questionText||qId;
+  document.getElementById('active-q-meta').textContent = 'Question ID: '+qId;
+  document.getElementById('wall-card').style.display='block';
+  document.getElementById('results-card').style.display='block';
+  document.getElementById('wall-count').textContent = pending.length+' pending';
+  document.getElementById('wall-chips').innerHTML = pending.length===0
+    ? '<div class="all-done">🎉 Everyone responded!</div>'
+    : pending.map(s=>`<div class="wall-chip">${s.first} ${s.last}</div>`).join('');
 
-  // Wall of shame
-  document.getElementById('wall-count').textContent = pending.length + ' pending';
-  if(pending.length === 0){
-    document.getElementById('wall-chips').innerHTML = `<div class="all-done"><div class="all-done-icon">🎉</div><div class="all-done-text">Everyone responded!</div></div>`;
-  } else {
-    document.getElementById('wall-chips').innerHTML = pending.map(s=>`
-      <div class="wall-chip">${s.first} ${s.last}<span class="country">${s.country||''}</span></div>`).join('');
-  }
-
-  // Results
-  const allQ = Object.values(BREAKS).flatMap(b=>b.questions);
-  const q = allQ.find(x=>x.id===qId);
-  if(q && responses.length){
-    const counts = {};
-    q.options.forEach((_,i)=>counts[i]=0);
+  if(responses.length && state.options){
+    const opts = state.options;
+    const counts={};
+    opts.forEach((_,i)=>counts[i]=0);
     responses.forEach(r=>{
-      const idx = q.options.findIndex(o=>o===r.answer||o.toLowerCase().includes((r.answer||'').toLowerCase()));
+      const idx=opts.findIndex(o=>o===r.answer||o.toLowerCase().includes((r.answer||'').toLowerCase()));
       if(idx>=0) counts[idx]=(counts[idx]||0)+1;
     });
-    const total = responses.length || 1;
-    document.getElementById('results-count').textContent = responses.length + ' responses';
-    document.getElementById('results-grid').innerHTML = q.options.map((opt,i)=>{
-      const pct = Math.round(((counts[i]||0)/total)*100);
-      const isCorrect = i===q.correct;
-      return `<div class="result-bar">
-        <div class="rb-header">
-          <span class="rb-label ${isCorrect?'rb-correct':''}">${String.fromCharCode(65+i)}) ${opt} ${isCorrect?'✓':''}</span>
-          <span class="rb-val">${counts[i]||0} · ${pct}%</span>
-        </div>
-        <div class="rb-track"><div class="rb-fill ${isCorrect?'correct':''}" style="width:${pct}%"></div></div>
-      </div>`;
+    const total=responses.length||1;
+    document.getElementById('results-count').textContent=responses.length+' responses';
+    document.getElementById('results-grid').innerHTML=opts.map((opt,i)=>{
+      const pct=Math.round(((counts[i]||0)/total)*100);
+      const correct=i===state.correctIndex;
+      return `<div class="result-bar"><div class="rb-header"><span class="rb-label ${correct?'rb-correct':''}">${String.fromCharCode(65+i)}) ${opt} ${correct?'✓':''}</span><span class="rb-val">${counts[i]||0} · ${pct}%</span></div><div class="rb-track"><div class="rb-fill ${correct?'correct':''}" style="width:${pct}%"></div></div></div>`;
     }).join('');
   }
 }

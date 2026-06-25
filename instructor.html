@@ -129,6 +129,18 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);min-height:1
 .toggle-switch input:checked + .toggle-slider{background:var(--green);}
 .toggle-switch input:checked + .toggle-slider:before{background:#fff;transform:translateX(20px);}
 .toggle-quiz-num{font-family:var(--mono);font-size:0.62rem;color:var(--violet);margin-right:0.5rem;}
+
+  .hidden-q-badge {
+    display: inline-block;
+    background: #ff6b00;
+    color: #fff;
+    font-size: 0.7rem;
+    font-weight: bold;
+    padding: 1px 5px;
+    border-radius: 3px;
+    margin-right: 5px;
+    vertical-align: middle;
+  }
 </style>
 </head>
 <body>
@@ -351,10 +363,13 @@ const BREAKS = {
     {id:'q34',text:'When to choose PLS-SEM over CB-SEM?',options:['Large sample, normal data','Theory-driven, high specification','Small sample, prediction focus','Reciprocal causation needed'],correct:2},
     {id:'q35',text:'What defines a FORMATIVE measurement model?',options:['Indicators reflect the construct','Indicators are interchangeable','Indicators CAUSE the construct','Indicators must correlate highly'],correct:2},
     {id:'q36',text:'Which SEM component shows relationships BETWEEN constructs?',options:['Outer model','Measurement model','Structural model','Confirmatory model'],correct:2},
-    {id:'q37',text:'Minimum CR threshold for exploratory research?',options:['0.3','0.4','0.6','0.9'],correct:2},
-    {id:'q38',text:'Minimum AVE for convergent validity?',options:['0.3','0.5','0.7','0.9'],correct:1},
-    {id:'q39',text:'Fornell-Larcker: what must exceed inter-construct correlations?',options:['Cronbach Alpha','Composite Reliability','AVE','Square root of AVE'],correct:3},
-    {id:'q40',text:'Which SmartPLS procedure reveals path significance?',options:['PLS Algorithm','Outer loadings','Bootstrapping','Initial weights'],correct:2}
+    {id:'q37',text:'[HIDDEN] Minimum CR threshold for exploratory research?',options:['0.3','0.4','0.6','0.9'],correct:2},
+    {id:'q38',text:'[HIDDEN] Minimum AVE for convergent validity?',options:['0.3','0.5','0.7','0.9'],correct:1},
+    {id:'q39',text:'[HIDDEN] Fornell-Larcker: what must exceed inter-construct correlations?',options:['Cronbach Alpha','Composite Reliability','AVE','Square root of AVE'],correct:3},
+    {id:'q40',text:'Which SmartPLS procedure reveals path significance?',options:['PLS Algorithm','Outer loadings','Bootstrapping','Initial weights'],correct:2},
+    {id:'s21',text:'[HIDDEN] In SmartPLS, one indicator for service quality has a loading of 0.32. What should the researcher do?',options:['Keep it — any loading is acceptable','Remove it — below 0.40 exploratory threshold','Remove it — below 0.70 threshold in all cases','Replace it with a new item without retesting'],correct:1},
+    {id:'s22',text:'[HIDDEN] A construct has composite reliability of 0.91. What does this suggest?',options:['Discriminant validity is confirmed','The construct has strong internal consistency','AVE must also be above 0.91','The model has multicollinearity'],correct:1},
+    {id:'s23',text:'[HIDDEN] A construct has AVE of 0.62. What does this indicate?',options:['Discriminant validity problem','Weak internal consistency','Convergent validity is confirmed — AVE exceeds 0.50','Model fit is poor'],correct:2}
   ]},
   5:{label:'Quiz 5 — Advanced SEM',questions:[
     {id:'q41',text:'Best SEM for exploratory research with limited theory?',options:['CB-SEM','LISREL','PLS-SEM','AMOS'],correct:2},
@@ -524,7 +539,7 @@ function renderQList(){
   list.innerHTML = qs.map((q,i) => `
     <div onclick="selectQ('${q.id}')" style="padding:0.45rem 0.65rem;background:${selectedQ===q.id?'rgba(245,158,11,0.1)':'var(--bg3)'};border:1px solid ${selectedQ===q.id?'rgba(245,158,11,0.4)':'var(--border)'};border-radius:6px;cursor:pointer;font-size:0.8rem;transition:all 0.15s;">
       <span style="font-family:var(--mono);font-size:0.6rem;color:var(--muted);margin-right:0.4rem;">Q${i+1}</span>
-      ${q.text.length>55?q.text.substring(0,53)+'...':q.text}
+      ${q.text.startsWith('[HIDDEN]') ? '<span style="background:#ff6b00;color:#fff;font-size:0.65rem;font-weight:bold;padding:1px 5px;border-radius:2px;margin-right:4px;">HIDDEN</span>' + q.text.replace('[HIDDEN] ','').substring(0,45)+'...' : (q.text.length>55?q.text.substring(0,53)+'...':q.text)}
     </div>`).join('');
 }
 
@@ -543,7 +558,12 @@ function selectQ(qid){
       </div>`;
     document.getElementById('no-active').style.display='none';
     document.getElementById('active-q-display').style.display='block';
-    document.getElementById('active-q-text').textContent = q.text;
+    var qRawText = q.text;
+    if(qRawText.startsWith('[HIDDEN]')){
+      document.getElementById('active-q-text').innerHTML = '<span style="background:#ff6b00;color:#fff;font-size:0.7rem;font-weight:bold;padding:2px 7px;border-radius:3px;margin-right:6px;">HIDDEN FROM STUDENTS</span>' + qRawText.replace('[HIDDEN] ','');
+    } else {
+      document.getElementById('active-q-text').textContent = qRawText;
+    }
     document.getElementById('active-q-meta').textContent = `Quiz ${selectedQuiz} · Question ${BREAKS[selectedQuiz].questions.findIndex(x=>x.id===qid)+1} of ${BREAKS[selectedQuiz].questions.length}`;
   }
 }

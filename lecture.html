@@ -761,7 +761,23 @@ li strong{color:var(--text);}
   </div>
   </div>
 
-  <!-- Quality Criteria section hidden -->
+  <div id="quality" style="display:none">
+  <h3>PLS-SEM Quality Criteria — What to Report</h3>
+  <table class="data-table">
+    <thead>
+      <tr><th>Criterion</th><th>Where in SmartPLS</th><th>Threshold</th><th>Assesses</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Outer Loadings</strong></td><td>PLS Results → Outer Loadings</td><td>&gt; 0.70 (≥ 0.40 exploratory)</td><td>Indicator Reliability</td></tr>
+      <tr><td><strong>Composite Reliability</strong></td><td>Quality Criteria → CR&amp;V</td><td>&gt; 0.70 (≥ 0.60 exploratory)</td><td>Internal Consistency</td></tr>
+      <tr><td><strong>AVE</strong></td><td>Quality Criteria → CR&amp;V</td><td>&gt; 0.50</td><td>Convergent Validity</td></tr>
+      <tr><td><strong>Discriminant Validity</strong></td><td>Quality Criteria → DV</td><td>√AVE &gt; correlations</td><td>Discriminant Validity</td></tr>
+      <tr><td><strong>Path Coefficients</strong></td><td>Bootstrapping → Path Coeff</td><td>p &lt; 0.05</td><td>Hypothesis Support</td></tr>
+      <tr><td><strong>R²</strong></td><td>PLS Results → R²</td><td>&gt; 0.26 substantial</td><td>Explanatory Power</td></tr>
+      <tr><td><strong>VIF</strong></td><td>Quality Criteria → Collinearity</td><td>&lt; 5.0</td><td>Multicollinearity</td></tr>
+    </tbody>
+  </table>
+</div>
   <h3>Endogenous vs Exogenous Variables</h3>
   <div class="concept-grid">
     <div class="concept-card">

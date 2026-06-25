@@ -427,6 +427,36 @@ li strong{color:var(--text);}
     </div>
   </div>
 
+
+  <div class="concept-card" style="border-left:4px solid var(--teal);margin-top:1.5rem;">
+    <div class="concept-title" style="color:var(--teal);">⚡ The Central Limit Theorem — Why Statistics Works</div>
+    <p>The Central Limit Theorem (CLT) is one of the most powerful ideas in all of statistics. It states:</p>
+    <div class="callout callout-key" style="margin:1rem 0;">
+      <div class="callout-label">📐 The Theorem</div>
+      <p><strong>When you take repeated random samples from ANY population — regardless of its shape — the distribution of sample means will approach a normal distribution as sample size increases.</strong></p>
+    </div>
+    <p style="margin-top:0.75rem;">What this means in plain English: even if your population data is skewed, bimodal, or weirdly shaped — your <em>sample means</em> will still be normally distributed if your sample is large enough. This is why parametric tests work in real-world research even when your raw data isn't perfectly normal.</p>
+    <div class="stat-grid" style="margin-top:1rem;">
+      <div class="stat-item">
+        <div class="stat-value" style="color:var(--teal);">n ≥ 30</div>
+        <div class="stat-label">CLT kicks in — sample means approximate normal distribution</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value" style="color:var(--gold);">n ≥ 100</div>
+        <div class="stat-label">CLT works well even for heavily skewed populations</div>
+      </div>
+    </div>
+    <div class="callout" style="margin-top:1rem;background:rgba(0,184,148,0.06);border-color:var(--teal);">
+      <div class="callout-label">🏨 Why This Matters For Your Research</div>
+      <p><strong>Hotel satisfaction survey:</strong> Your raw satisfaction scores may be negatively skewed — most guests are happy, a few very unhappy guests create a left tail. But with n = 200 respondents, the CLT guarantees your sample mean is normally distributed. You can safely use t-tests, ANOVA, and regression.</p>
+      <p style="margin-top:0.5rem;"><strong>SME revenue data:</strong> Highly positively skewed — a few large firms distort the distribution. With n ≥ 30, your sample means still behave normally. The CLT saves your analysis.</p>
+      <p style="margin-top:0.5rem;"><strong>The practical rule:</strong> If n ≥ 30, invoke the CLT and proceed with parametric tests. If n &lt; 30 AND your data is non-normal — consider non-parametric alternatives.</p>
+    </div>
+    <div class="callout callout-warn" style="margin-top:0.75rem;">
+      <div class="callout-label">⚠️ Viva Alert</div>
+      <p>"Why did you use a t-test when your data was not normally distributed?" Answer: "With a sample of n = 187, the Central Limit Theorem ensures that the sampling distribution of the mean is approximately normal, satisfying the assumptions of the t-test regardless of the population distribution shape."</p>
+    </div>
+  </div>
   <div class="callout callout-key">
     <div class="callout-label">🔑 When to use non-parametric tests</div>
     <p>If your data is significantly skewed (|skewness| &gt; 2) or has extreme kurtosis, parametric tests like t-tests and ANOVA may give you misleading results. Switch to non-parametric alternatives: <strong>Mann-Whitney U</strong> instead of independent t-test, <strong>Wilcoxon</strong> instead of paired t-test, <strong>Kruskal-Wallis</strong> instead of ANOVA. PLS-SEM is particularly valuable here because it makes <strong>no distributional assumptions</strong>.</p>

@@ -170,12 +170,20 @@ function goHome() {
   show('pg-home');
 }
 
+function getHidden() {
+  try { return JSON.parse(localStorage.getItem('drtan_hidden_sections') || '[]'); } catch(e) { return []; }
+}
+
 function renderHome() {
   var name = document.getElementById('home-name').value.trim();
   if(name) { myName = name; localStorage.setItem('student_name_v1', name); }
   var scores = getScores();
+  var hidden = getHidden();
   var html = '';
+  var anyVisible = false;
   ALL_SECTIONS.forEach(function(section, idx) {
+    if(hidden.indexOf(idx) >= 0) return; // skip hidden sections
+    anyVisible = true;
     var key = 'section_' + idx + '_' + myName.toLowerCase();
     var sc = scores[key];
     var done = sc ? true : false;
@@ -186,6 +194,7 @@ function renderHome() {
     if(done) html += '<div class="qc-score">&#10003; ' + sc.score + '/' + sc.total + ' (' + sc.pct + '%)</div>';
     html += '</div>';
   });
+  if(!anyVisible) html = '<div style="text-align:center;padding:3rem;color:#64748b;font-family:monospace;font-size:0.85rem;">No quiz sections available yet.<br>Check back soon.</div>';
   document.getElementById('quiz-grid').innerHTML = html;
 }
 

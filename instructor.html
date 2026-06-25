@@ -360,6 +360,8 @@ function init(){
   fetchConfig(function(){renderToggles();});
   renderRoster();
   renderQuizTabs();
+  renderScores();
+  setInterval(renderScores, 5000);
   startPoll();
 }
 

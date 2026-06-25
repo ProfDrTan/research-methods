@@ -190,9 +190,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);min-height:1
     background: var(--border);
     margin: 0.3rem 0;
   }
-  body.has-left-nav #cmd {
-    padding-left: 52px;
-  }
+  #cmd { padding-left: 52px; }
 
 </style>
 </head>
@@ -204,7 +202,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);min-height:1
     <div style="font-size:2rem;margin-bottom:0.75rem;">🎓</div>
     <div class="pin-title">Instructor Access</div>
     <div class="pin-sub">Dr. Tan's Command Centre — Research Methods</div>
-    <input class="pin-input" type="password" id="pin-input" placeholder="••••" maxlength="4"
+    <input class="pin-input" type="password" id="pin-input" placeholder="Enter PIN"
+      inputmode="numeric" autocomplete="off"
       onkeydown="if(event.key==='Enter')checkPin()">
     <button class="pin-btn" onclick="checkPin()">Enter →</button>
     <div class="pin-error" id="pin-error"></div>
@@ -212,6 +211,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);min-height:1
 </div>
 
 <!-- COMMAND CENTRE -->
+<script>document.addEventListener("DOMContentLoaded",function(){var p=document.getElementById("pin-input");if(p)p.focus();});</script>
 <div id="cmd">
   <div class="topbar">
     <div class="tb-brand">🎓 DR. TAN // INSTRUCTOR COMMAND CENTRE</div>
@@ -338,14 +338,29 @@ function checkPin(){
   if(!v){ document.getElementById('pin-error').textContent='Enter PIN'; return; }
   if(v === PIN){
     document.getElementById('pin-screen').style.display = 'none';
-    document.getElementById('cmd').style.display = 'block';
+    var cmd = document.getElementById('cmd');
+    cmd.style.setProperty('display','block','important');
+    // Also save to sessionStorage so page refresh skips PIN
+    sessionStorage.setItem('instructor_auth','1');
     init();
   } else {
-    document.getElementById('pin-error').textContent = 'Incorrect PIN';
+    document.getElementById('pin-error').textContent = 'Incorrect PIN — try again';
     document.getElementById('pin-input').value = '';
+    document.getElementById('pin-input').focus();
   }
 }
-document.getElementById('pin-input').addEventListener('keydown', e => { if(e.key==='Enter') checkPin(); });
+
+// Auto-bypass if already authenticated this session
+(function(){
+  if(sessionStorage.getItem('instructor_auth')==='1'){
+    document.getElementById('pin-screen').style.display='none';
+    var cmd = document.getElementById('cmd');
+    cmd.style.setProperty('display','block','important');
+    // init() will be called after DOM ready
+    document.addEventListener('DOMContentLoaded', function(){ init(); });
+  }
+})();
+// Enter key handled by onkeydown on input element
 
 // ── QUESTION BANK ──
 const BREAKS = {

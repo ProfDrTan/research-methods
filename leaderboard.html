@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leaderboard — Dr. Tan</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#020817;color:#e2e8f0;font-family:'Segoe UI',Arial,sans-serif;min-height:100vh;padding:1.5rem;}
+h1{font-size:1.6rem;font-weight:700;color:#00e5ff;margin-bottom:0.25rem;font-family:monospace;}
+.sub{color:#64748b;font-size:0.85rem;margin-bottom:1.5rem;}
+.filters{display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1.25rem;}
+.fb{padding:0.4rem 1rem;border:1px solid #1e2d45;border-radius:6px;background:transparent;color:#64748b;cursor:pointer;font-size:0.85rem;}
+.fb.active{border-color:#00e5ff;color:#00e5ff;background:rgba(0,229,255,0.08);}
+table{width:100%;border-collapse:collapse;}
+th{padding:0.6rem 1rem;text-align:left;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:#64748b;border-bottom:1px solid #1e2d45;}
+td{padding:0.75rem 1rem;border-bottom:1px solid #0f172a;font-size:0.95rem;}
+tr:hover td{background:rgba(255,255,255,0.02);}
+.rank{font-family:monospace;color:#64748b;width:40px;}
+.rank.gold{color:#f59e0b;font-size:1.2rem;}
+.rank.silver{color:#94a3b8;font-size:1.1rem;}
+.rank.bronze{color:#b45309;font-size:1.1rem;}
+.name{font-weight:700;font-size:1rem;}
+.section{color:#a78bfa;font-size:0.78rem;}
+.score{font-family:monospace;font-size:1rem;color:#00e5ff;}
+.pct{font-family:monospace;font-weight:700;font-size:1rem;}
+.pct.high{color:#10b981;}
+.pct.mid{color:#f59e0b;}
+.pct.low{color:#ef4444;}
+.bar{height:6px;background:#1e2d45;border-radius:3px;margin-top:4px;}
+.bar-fill{height:100%;border-radius:3px;transition:width 0.5s;}
+.empty{text-align:center;padding:4rem;color:#64748b;font-size:1rem;}
+.refresh{font-family:monospace;font-size:0.72rem;color:#64748b;margin-top:1rem;}
+</style>
+</head>
+<body>
+<h1>🏆 Live Leaderboard</h1>
+<div class="sub">Research Methods — Dr. Tan · Auto-refreshes every 10 seconds</div>
+
+<div class="filters" id="filters">
+  <button class="fb active" onclick="setFilter('all',this)">All Sections</button>
+  <button class="fb" onclick="setFilter(0,this)">Quiz 1</button>
+  <button class="fb" onclick="setFilter(1,this)">Quiz 2</button>
+  <button class="fb" onclick="setFilter(2,this)">Quiz 3</button>
+  <button class="fb" onclick="setFilter(3,this)">Quiz 4</button>
+  <button class="fb" onclick="setFilter(4,this)">Quiz 5</button>
+  <button class="fb" onclick="setFilter(5,this)">Quiz 6</button>
+</div>
+
+<div id="board"></div>
+<div class="refresh" id="refresh-time"></div>
+
+<script>
+var WORKER = 'https://rm-students.teikkheong.workers.dev';
+var currentFilter = 'all';
+
+function setFilter(f, btn) {
+  currentFilter = f;
+  document.querySelectorAll('.fb').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  load();
+}
+
+function load() {
+  var url = WORKER + '/scores' + (currentFilter !== 'all' ? '?section='+currentFilter : '') + '&t=' + Date.now();
+  fetch(url)
+    .then(function(r){ return r.json(); })
+    .then(function(scores){
+      scores.sort(function(a,b){ return b.pct - a.pct || b.score - a.score; });
+      var el = document.getElementById('board');
+      if(!scores.length){
+        el.innerHTML = '<div class="empty">No scores yet — students are still taking the quiz.</div>';
+        return;
+      }
+      var medals = ['🥇','🥈','🥉'];
+      var sectionNames = ['Scales & Tendency','Distribution & Correlation','Inferential Tests','SEM Foundations','Advanced SEM','Mixed Methods'];
+      var html = '<table><thead><tr><th>Rank</th><th>Student</th><th>Section</th><th>Score</th><th>Result</th></tr></thead><tbody>';
+      scores.forEach(function(s, i){
+        var rankClass = i===0?'gold':i===1?'silver':i===2?'bronze':'';
+        var rankLabel = i < 3 ? medals[i] : (i+1);
+        var pctClass = s.pct>=75?'high':s.pct>=50?'mid':'low';
+        var barColor = s.pct>=75?'#10b981':s.pct>=50?'#f59e0b':'#ef4444';
+        html += '<tr>';
+        html += '<td class="rank '+rankClass+'">'+rankLabel+'</td>';
+        html += '<td class="name">'+s.name+'</td>';
+        html += '<td class="section">Q'+(s.section+1)+' '+(sectionNames[s.section]||'')+'</td>';
+        html += '<td class="score">'+s.score+'/'+s.total+'</td>';
+        html += '<td><span class="pct '+pctClass+'">'+s.pct+'%</span><div class="bar"><div class="bar-fill" style="width:'+s.pct+'%;background:'+barColor+'"></div></div></td>';
+        html += '</tr>';
+      });
+      html += '</tbody></table>';
+      el.innerHTML = html;
+      document.getElementById('refresh-time').textContent = 'Last updated: ' + new Date().toLocaleTimeString();
+    }).catch(function(){
+      document.getElementById('board').innerHTML = '<div class="empty">Connecting to server...</div>';
+    });
+}
+
+load();
+setInterval(load, 10000);
+</script>
+</body>
+</html>

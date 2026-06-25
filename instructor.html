@@ -414,12 +414,10 @@ var SECTION_LABELS = [
   'Quiz 6 — Mixed Methods'
 ];
 
-var GPAT = 'github' + '_pat_11BYABRPI0Op8Lhxdscy9d_DgO5wqHjm3vlQBn6vnLTka7iWeBVk1hRQtRDOXmElu8EMYYGOXIqvVvIxCc';
-var GREPO = 'ProfDrTan/research-methods';
 var hiddenSections = [];
 
 function fetchConfig(cb){
-  fetch('https://raw.githubusercontent.com/'+GREPO+'/main/config.json?t='+Date.now())
+  fetch(API+'/config?t='+Date.now())
     .then(function(r){return r.json();})
     .then(function(c){hiddenSections=c.hidden||[];if(cb)cb();})
     .catch(function(){if(cb)cb();});
@@ -428,22 +426,18 @@ function fetchConfig(cb){
 function pushConfig(hidden){
   var st=document.getElementById('toggle-status');
   st.textContent='Saving...';st.style.color='var(--amber)';
-  fetch('https://api.github.com/repos/'+GREPO+'/contents/config.json',{
-    headers:{'Authorization':'token '+GPAT}
-  }).then(function(r){return r.json();})
-  .then(function(d){
-    var body=JSON.stringify({
-      message:'update: section visibility',
-      content:btoa(JSON.stringify({hidden:hidden})),
-      sha:d.sha
-    });
-    return fetch('https://api.github.com/repos/'+GREPO+'/contents/config.json',{
-      method:'PUT',headers:{'Authorization':'token '+GPAT,'Content-Type':'application/json'},body:body
-    });
+  fetch(API+'/config',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({hidden:hidden})
   }).then(function(){
-    st.textContent='Saved ✓ — students see this in ~60s';st.style.color='var(--green)';
-    setTimeout(function(){st.textContent='';},6000);
-  }).catch(function(e){st.textContent='Error: '+e.message;st.style.color='var(--red)';});
+    st.textContent='Saved ✓ — students see this instantly';
+    st.style.color='var(--green)';
+    setTimeout(function(){st.textContent='';},4000);
+  }).catch(function(e){
+    st.textContent='Error: '+e.message;
+    st.style.color='var(--red)';
+  });
 }
 
 function renderToggles(){

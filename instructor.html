@@ -3,345 +3,219 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Instructor Dashboard — Dr. Tan</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<title>Instructor — Dr. Tan</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
-:root{--bg:#020817;--surface:#111827;--border:#1e2d45;--cyan:#00e5ff;--violet:#7c3aed;--green:#10b981;--amber:#f59e0b;--red:#ef4444;--text:#e2e8f0;--muted:#64748b;--mono:'Space Mono',monospace;--sans:'Space Grotesk',sans-serif;}
-body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;} #pin-screen{display:none!important;}
-
-/* PIN */
-#pin-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;}
-.pin-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:2.5rem;text-align:center;width:320px;}
-.pin-card h2{font-family:var(--sans);font-weight:700;font-size:1.2rem;margin-bottom:0.3rem;}
-.pin-card p{color:var(--muted);font-size:0.82rem;margin-bottom:1.5rem;}
-.pin-input{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:0.85rem;color:var(--text);font-family:var(--mono);font-size:1.4rem;text-align:center;outline:none;margin-bottom:0.75rem;}
-.pin-input:focus{border-color:var(--cyan);}
-.pin-btn{width:100%;padding:0.85rem;background:linear-gradient(135deg,var(--cyan),#0097b2);color:#000;border:none;border-radius:8px;font-family:var(--sans);font-weight:700;font-size:0.95rem;cursor:pointer;}
-.pin-err{color:var(--red);font-size:0.8rem;margin-top:0.5rem;font-family:var(--mono);}
-
-/* DASHBOARD */
-#dashboard{display:none;}
-nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:52px;position:sticky;top:0;z-index:100;}
-.brand{font-family:var(--mono);font-size:0.8rem;color:var(--amber);}
-.nav-links{display:flex;gap:0.5rem;}
-.nl{padding:0.3rem 0.75rem;border:1px solid var(--border);border-radius:6px;color:var(--muted);text-decoration:none;font-size:0.78rem;}
-.nl:hover{color:var(--cyan);border-color:var(--cyan);}
-.live-dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);animation:pulse 2s infinite;display:inline-block;margin-right:0.4rem;}
-@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
-
+body{background:#020817;color:#e2e8f0;font-family:Arial,sans-serif;min-height:100vh;}
+nav{background:#111827;border-bottom:1px solid #1e2d45;padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:52px;position:sticky;top:0;}
+.brand{font-family:monospace;font-size:0.85rem;color:#f59e0b;}
+.nav-links a{color:#64748b;text-decoration:none;margin-left:1rem;font-size:0.82rem;}
+.nav-links a:hover{color:#00e5ff;}
 .wrap{max-width:1100px;margin:0 auto;padding:1.25rem 1rem;}
-
-/* QUICK LINKS */
-.quick-links{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:0.75rem;margin-bottom:1.5rem;}
-.ql{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1rem;text-decoration:none;text-align:center;transition:all 0.2s;}
-.ql:hover{border-color:var(--cyan);transform:translateY(-2px);}
+.ql-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:0.75rem;margin-bottom:1.5rem;}
+.ql{background:#111827;border:1px solid #1e2d45;border-radius:10px;padding:1rem;text-decoration:none;text-align:center;display:block;}
+.ql:hover{border-color:#00e5ff;}
 .ql-icon{font-size:1.5rem;margin-bottom:0.4rem;}
-.ql-label{font-family:var(--sans);font-weight:600;font-size:0.82rem;color:var(--text);}
-.ql-sub{font-size:0.7rem;color:var(--muted);margin-top:0.2rem;}
-
-/* GRID */
-.grid{display:grid;grid-template-columns:320px 1fr;gap:1rem;}
-@media(max-width:800px){.grid{grid-template-columns:1fr;}}
-
-/* CARDS */
-.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:1rem;}
-.card-head{padding:0.75rem 1rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
-.card-title{font-family:var(--mono);font-size:0.65rem;letter-spacing:0.1em;color:var(--muted);text-transform:uppercase;}
+.ql-label{font-weight:700;font-size:0.82rem;color:#e2e8f0;}
+.ql-sub{font-size:0.7rem;color:#64748b;margin-top:0.2rem;}
+.grid{display:grid;grid-template-columns:300px 1fr;gap:1rem;}
+@media(max-width:700px){.grid{grid-template-columns:1fr;}}
+.card{background:#111827;border:1px solid #1e2d45;border-radius:12px;margin-bottom:1rem;}
+.card-head{padding:0.75rem 1rem;border-bottom:1px solid #1e2d45;display:flex;justify-content:space-between;align-items:center;}
+.card-title{font-family:monospace;font-size:0.65rem;letter-spacing:0.1em;color:#64748b;text-transform:uppercase;}
 .card-body{padding:1rem;}
-
-/* ROSTER */
-.roster-count{font-family:var(--mono);font-size:2.5rem;font-weight:700;color:var(--cyan);}
-.roster-sub{font-size:0.78rem;color:var(--muted);margin-bottom:0.75rem;}
-.roster-list{display:flex;flex-direction:column;gap:0.35rem;max-height:260px;overflow-y:auto;}
-.ri{display:flex;align-items:center;gap:0.5rem;padding:0.35rem 0.6rem;background:var(--bg);border-radius:6px;font-size:0.82rem;}
-.ri-num{font-family:var(--mono);font-size:0.6rem;color:var(--muted);width:16px;}
+.roster-count{font-family:monospace;font-size:2.5rem;font-weight:700;color:#00e5ff;}
+.roster-sub{font-size:0.78rem;color:#64748b;margin-bottom:0.75rem;}
+.r-list{display:flex;flex-direction:column;gap:0.35rem;max-height:240px;overflow-y:auto;}
+.ri{display:flex;align-items:center;gap:0.5rem;padding:0.35rem 0.6rem;background:#0b1120;border-radius:6px;font-size:0.82rem;}
+.ri-num{font-family:monospace;font-size:0.6rem;color:#64748b;width:16px;}
 .ri-name{flex:1;font-weight:600;}
-.ri-tag{font-family:var(--mono);font-size:0.58rem;padding:0.1rem 0.35rem;background:rgba(0,229,255,0.07);border:1px solid rgba(0,229,255,0.15);border-radius:3px;color:var(--cyan);}
-.clear-btn{width:100%;margin-top:0.75rem;padding:0.45rem;background:transparent;border:1px solid rgba(239,68,68,0.2);color:rgba(239,68,68,0.5);border-radius:6px;font-size:0.72rem;cursor:pointer;font-family:var(--mono);}
-.clear-btn:hover{border-color:var(--red);color:var(--red);}
-
-/* TOGGLES */
-.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:0.6rem 0;border-bottom:1px solid var(--border);}
-.toggle-row:last-child{border-bottom:none;}
-.toggle-label{font-size:0.85rem;font-weight:500;}
-.toggle-num{font-family:var(--mono);font-size:0.62rem;color:var(--violet);margin-right:0.4rem;}
+.ri-tag{font-family:monospace;font-size:0.58rem;padding:0.1rem 0.35rem;background:rgba(0,229,255,0.07);border:1px solid rgba(0,229,255,0.15);border-radius:3px;color:#00e5ff;}
+.clear-btn{width:100%;margin-top:0.75rem;padding:0.45rem;background:transparent;border:1px solid rgba(239,68,68,0.2);color:rgba(239,68,68,0.5);border-radius:6px;font-size:0.72rem;cursor:pointer;}
+.clear-btn:hover{border-color:#ef4444;color:#ef4444;}
+.tog-row{display:flex;align-items:center;justify-content:space-between;padding:0.6rem 0;border-bottom:1px solid #1e2d45;}
+.tog-row:last-child{border-bottom:none;}
+.tog-num{font-family:monospace;font-size:0.62rem;color:#a78bfa;margin-right:0.4rem;}
 .switch{position:relative;width:44px;height:24px;flex-shrink:0;}
 .switch input{opacity:0;width:0;height:0;}
 .slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#1e2d45;border-radius:24px;transition:0.3s;}
-.slider:before{position:absolute;content:"";height:18px;width:18px;left:3px;bottom:3px;background:var(--muted);border-radius:50%;transition:0.3s;}
-.switch input:checked + .slider{background:var(--green);}
+.slider:before{position:absolute;content:"";height:18px;width:18px;left:3px;bottom:3px;background:#64748b;border-radius:50%;transition:0.3s;}
+.switch input:checked + .slider{background:#10b981;}
 .switch input:checked + .slider:before{background:#fff;transform:translateX(20px);}
-.toggle-status{font-family:var(--mono);font-size:0.65rem;color:var(--green);margin-top:0.5rem;min-height:1rem;}
-
-/* SCORES */
-.score-table{width:100%;border-collapse:collapse;font-size:0.85rem;}
-.score-table th{padding:0.5rem 0.75rem;text-align:left;font-size:0.65rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);font-family:var(--mono);}
-.score-table td{padding:0.6rem 0.75rem;border-bottom:1px solid rgba(30,45,69,0.5);}
-.score-table tr:last-child td{border-bottom:none;}
-.score-table tr:hover td{background:rgba(255,255,255,0.02);}
-.s-name{font-weight:700;}
-.s-sec{color:var(--violet);font-size:0.75rem;font-family:var(--mono);}
-.s-score{font-family:var(--mono);color:var(--cyan);}
-.s-pct{font-family:var(--mono);font-weight:700;}
-.s-bar{height:4px;background:var(--border);border-radius:2px;margin-top:3px;}
-.s-bar-fill{height:100%;border-radius:2px;}
-.no-scores{text-align:center;padding:2rem;color:var(--muted);font-size:0.85rem;}
-.score-filter{display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.75rem;}
-.sf{padding:0.25rem 0.65rem;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--muted);font-size:0.75rem;cursor:pointer;}
-.sf.active{border-color:var(--cyan);color:var(--cyan);background:rgba(0,229,255,0.06);}
+.tog-status{font-family:monospace;font-size:0.65rem;margin-top:0.5rem;min-height:1rem;}
+.sf-row{display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.75rem;}
+.sf{padding:0.25rem 0.65rem;border:1px solid #1e2d45;border-radius:5px;background:transparent;color:#64748b;font-size:0.75rem;cursor:pointer;}
+.sf.on{border-color:#00e5ff;color:#00e5ff;}
+table{width:100%;border-collapse:collapse;font-size:0.85rem;}
+th{padding:0.5rem 0.75rem;text-align:left;font-size:0.65rem;letter-spacing:0.08em;text-transform:uppercase;color:#64748b;border-bottom:1px solid #1e2d45;font-family:monospace;}
+td{padding:0.6rem 0.75rem;border-bottom:1px solid rgba(30,45,69,0.5);}
+.no-data{text-align:center;padding:2rem;color:#64748b;font-size:0.85rem;}
+.live-dot{width:7px;height:7px;border-radius:50%;background:#10b981;box-shadow:0 0 6px #10b981;animation:pulse 2s infinite;display:inline-block;margin-right:0.4rem;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
 </style>
 </head>
 <body>
+<nav>
+  <div class="brand">&#127891; DR. TAN // INSTRUCTOR</div>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="lecture.html">Lecture</a>
+    <a href="notes.html">Notes</a>
+    <a href="answers.html">Answers</a>
+    <a href="leaderboard.html">Leaderboard</a>
+  </div>
+</nav>
+<div class="wrap">
 
+<div class="ql-grid">
+  <a href="notes.html" class="ql"><div class="ql-icon">&#128203;</div><div class="ql-label">Speaker Notes</div><div class="ql-sub">Private — phone only</div></a>
+  <a href="answers.html" class="ql"><div class="ql-icon">&#128273;</div><div class="ql-label">Answer Scripts</div><div class="ql-sub">All questions</div></a>
+  <a href="leaderboard.html" class="ql"><div class="ql-icon">&#127942;</div><div class="ql-label">Leaderboard</div><div class="ql-sub">Project to class</div></a>
+  <a href="lecture.html" class="ql"><div class="ql-icon">&#128214;</div><div class="ql-label">Lecture</div><div class="ql-sub">6 modules</div></a>
+  <a href="quiz.html" class="ql"><div class="ql-icon">&#9998;&#65039;</div><div class="ql-label">Student Quiz</div><div class="ql-sub">Preview as student</div></a>
+</div>
 
-
-<!-- DASHBOARD -->
-<div id="dashboard">
-  <nav>
-    <div class="brand">🎓 DR. TAN // INSTRUCTOR</div>
-    <div style="display:flex;align-items:center;gap:0.75rem;">
-      <span style="font-size:0.75rem;color:var(--muted);font-family:var(--mono);"><span class="live-dot"></span>Live</span>
-      <div class="nav-links">
-        <a href="index.html" class="nl">Dashboard</a>
-        <a href="lecture.html" class="nl">Lecture</a>
-        <a href="notes.html" class="nl">Notes</a>
-        <a href="answers.html" class="nl">Answers</a>
-        <a href="leaderboard.html" class="nl">Leaderboard</a>
+<div class="grid">
+  <div>
+    <div class="card">
+      <div class="card-head"><span class="card-title">Class Roster</span><span class="live-dot"></span></div>
+      <div class="card-body">
+        <div class="roster-count" id="r-count">0</div>
+        <div class="roster-sub" id="r-sub">students registered</div>
+        <div class="r-list" id="r-list"><div style="color:#64748b;font-size:0.78rem;">Loading...</div></div>
+        <button class="clear-btn" onclick="clearRoster()">&#8635; Clear Roster</button>
       </div>
     </div>
-  </nav>
-
-  <div class="wrap">
-
-    <!-- QUICK LINKS -->
-    <div class="quick-links">
-      <a href="notes.html" class="ql">
-        <div class="ql-icon">📋</div>
-        <div class="ql-label">Speaker Notes</div>
-        <div class="ql-sub">Private — phone only</div>
-      </a>
-      <a href="answers.html" class="ql">
-        <div class="ql-icon">🔑</div>
-        <div class="ql-label">Answer Scripts</div>
-        <div class="ql-sub">All 97 questions</div>
-      </a>
-      <a href="leaderboard.html" class="ql">
-        <div class="ql-icon">🏆</div>
-        <div class="ql-label">Leaderboard</div>
-        <div class="ql-sub">Project to class</div>
-      </a>
-      <a href="lecture.html" class="ql">
-        <div class="ql-icon">📖</div>
-        <div class="ql-label">Lecture</div>
-        <div class="ql-sub">6 modules</div>
-      </a>
-      <a href="quiz.html" class="ql">
-        <div class="ql-icon">✏️</div>
-        <div class="ql-label">Student Quiz</div>
-        <div class="ql-sub">Preview as student</div>
-      </a>
+    <div class="card">
+      <div class="card-head">
+        <span class="card-title">&#9889; Quiz Visibility</span>
+        <span id="tog-status" class="tog-status"></span>
+      </div>
+      <div class="card-body">
+        <p style="font-size:0.78rem;color:#64748b;margin-bottom:0.75rem;">Toggle ON to release to students.</p>
+        <div id="toggles"></div>
+      </div>
     </div>
-
-    <div class="grid">
-
-      <!-- LEFT: ROSTER + TOGGLES -->
-      <div>
-
-        <!-- ROSTER -->
-        <div class="card">
-          <div class="card-head">
-            <span class="card-title">Class Roster</span>
-            <span class="live-dot"></span>
-          </div>
-          <div class="card-body">
-            <div class="roster-count" id="r-count">0</div>
-            <div class="roster-sub" id="r-sub">students registered</div>
-            <div class="roster-list" id="r-list">
-              <div style="color:var(--muted);font-size:0.78rem;font-family:var(--mono);">Loading...</div>
-            </div>
-            <button class="clear-btn" onclick="clearRoster()">⟳ Clear Roster</button>
-          </div>
-        </div>
-
-        <!-- QUIZ TOGGLES -->
-        <div class="card">
-          <div class="card-head">
-            <span class="card-title">⚡ Quiz Visibility</span>
-            <span id="tog-status" class="toggle-status"></span>
-          </div>
-          <div class="card-body">
-            <p style="font-size:0.78rem;color:var(--muted);margin-bottom:0.85rem;">Toggle ON to release a quiz section to students.</p>
-            <div id="toggles"></div>
-          </div>
-        </div>
-
+  </div>
+  <div>
+    <div class="card">
+      <div class="card-head">
+        <span class="card-title">&#128202; Quiz Scores</span>
+        <span id="scores-count" style="font-family:monospace;font-size:0.68rem;color:#64748b;"></span>
       </div>
-
-      <!-- RIGHT: SCORES -->
-      <div>
-        <div class="card">
-          <div class="card-head">
-            <span class="card-title">📊 Quiz Scores — All Students</span>
-            <span id="scores-count" style="font-family:var(--mono);font-size:0.68rem;color:var(--muted);"></span>
-          </div>
-          <div class="card-body">
-            <div class="score-filter" id="score-filter">
-              <button class="sf active" onclick="filterScores('all',this)">All</button>
-              <button class="sf" onclick="filterScores(0,this)">Q1</button>
-              <button class="sf" onclick="filterScores(1,this)">Q2</button>
-              <button class="sf" onclick="filterScores(2,this)">Q3</button>
-              <button class="sf" onclick="filterScores(3,this)">Q4</button>
-              <button class="sf" onclick="filterScores(4,this)">Q5</button>
-            </div>
-            <div id="scores-table"><div class="no-scores">Loading scores...</div></div>
-          </div>
+      <div class="card-body">
+        <div class="sf-row">
+          <button class="sf on" onclick="filterScores('all',this)">All</button>
+          <button class="sf" onclick="filterScores(0,this)">Q1</button>
+          <button class="sf" onclick="filterScores(1,this)">Q2</button>
+          <button class="sf" onclick="filterScores(2,this)">Q3</button>
+          <button class="sf" onclick="filterScores(3,this)">Q4</button>
+          <button class="sf" onclick="filterScores(4,this)">Q5</button>
         </div>
+        <div id="scores-table"><div class="no-data">Loading...</div></div>
       </div>
-
     </div>
   </div>
 </div>
+</div>
 
 <script>
-const PIN = '6664';
-const API = 'https://rm-students.teikkheong.workers.dev';
-const KEY = 'rm_v2';
+var API = 'https://rm-students.teikkheong.workers.dev';
+var KEY = 'rm_v2';
 var hiddenSections = [5];
 var scoreFilter = 'all';
+var LABELS = ['Scales & Tendency','Distribution & Correlation','Inferential Tests','SEM Foundations','Advanced SEM','Mixed Methods'];
 
-const SECTION_LABELS = [
-  'Scales & Tendency',
-  'Distribution & Correlation',
-  'Inferential Tests',
-  'SEM Foundations',
-  'Advanced SEM',
-  'Mixed Methods'
-];
-
-// No PIN required — direct access
-
-window.addEventListener('DOMContentLoaded', function(){ init(); });
-
-// ── INIT ──
-function init(){
+function init() {
   fetchConfig();
-  renderRoster();
-  renderScores();
-  setInterval(function(){ renderRoster(); renderScores(); }, 5000);
+  loadRoster();
+  loadScores();
+  setInterval(function(){ loadRoster(); loadScores(); }, 5000);
 }
 
-// ── ROSTER ──
-function renderRoster(){
-  var students = [];
-  try{ students = JSON.parse(localStorage.getItem(KEY)||'[]'); }catch{}
-  
-  // Also try Worker
-  fetch(API+'/students?t='+Date.now()).then(function(r){return r.json();})
-  .then(function(ws){
-    if(ws && ws.length > 0){
-      students = ws;
-      localStorage.setItem(KEY, JSON.stringify(ws));
-    }
-    displayRoster(students);
-  }).catch(function(){ displayRoster(students); });
+function loadRoster() {
+  var local = [];
+  try{ local = JSON.parse(localStorage.getItem(KEY)||'[]'); }catch{}
+  fetch(API+'/students?t='+Date.now())
+    .then(function(r){return r.json();})
+    .then(function(w){ if(w&&w.length>0){local=w;localStorage.setItem(KEY,JSON.stringify(w));} showRoster(local); })
+    .catch(function(){ showRoster(local); });
 }
 
-function displayRoster(students){
-  document.getElementById('r-count').textContent = students.length;
-  document.getElementById('r-sub').textContent = 'student'+(students.length!==1?'s':'')+' registered';
-  var list = document.getElementById('r-list');
-  if(!students.length){
-    list.innerHTML = '<div style="color:var(--muted);font-size:0.78rem;font-family:var(--mono);">No students yet</div>';
-    return;
-  }
-  list.innerHTML = students.map(function(s,i){
-    return '<div class="ri"><span class="ri-num">'+(i+1)+'</span><span class="ri-name">'+s.first+' '+s.last+'</span><span class="ri-tag">'+(s.country||'?')+'</span><span style="font-family:var(--mono);font-size:0.58rem;color:var(--muted);">'+(s.prog||'')+'</span></div>';
-  }).join('');
+function showRoster(s) {
+  document.getElementById('r-count').textContent = s.length;
+  document.getElementById('r-sub').textContent = 'student'+(s.length!==1?'s':'')+' registered';
+  document.getElementById('r-list').innerHTML = s.length ? s.map(function(x,i){
+    return '<div class="ri"><span class="ri-num">'+(i+1)+'</span><span class="ri-name">'+x.first+' '+x.last+'</span><span class="ri-tag">'+(x.country||'?')+'</span></div>';
+  }).join('') : '<div style="color:#64748b;font-size:0.78rem;">No students yet</div>';
 }
 
-function clearRoster(){
-  if(!confirm('Clear ALL student registrations?')) return;
+function clearRoster() {
+  if(!confirm('Clear all registrations?')) return;
   fetch(API+'/clear',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({secret:'drtan2025clear'})})
-  .then(function(){ localStorage.removeItem(KEY); renderRoster(); alert('Roster cleared.'); })
-  .catch(function(){ localStorage.removeItem(KEY); renderRoster(); });
+  .then(function(){ localStorage.removeItem(KEY); loadRoster(); })
+  .catch(function(){ localStorage.removeItem(KEY); loadRoster(); });
 }
 
-// ── TOGGLES ──
-function fetchConfig(){
+function fetchConfig() {
   fetch(API+'/config?t='+Date.now())
-  .then(function(r){return r.json();})
-  .then(function(c){ hiddenSections = c.hidden||[5]; renderToggles(); })
-  .catch(function(){ hiddenSections=[5]; renderToggles(); });
+    .then(function(r){return r.json();})
+    .then(function(c){ hiddenSections=c.hidden&&c.hidden.length>0?c.hidden:[5]; renderToggles(); })
+    .catch(function(){ hiddenSections=[5]; renderToggles(); });
 }
 
-function renderToggles(){
+function renderToggles() {
   var html = '';
-  SECTION_LABELS.forEach(function(label, idx){
-    if(idx === 5) return; // Never show Mixed Methods toggle — it's always hidden
-    var vis = hiddenSections.indexOf(idx) < 0;
-    html += '<div class="toggle-row">';
-    html += '<span><span class="toggle-num">Q'+(idx+1)+'</span><span class="toggle-label">'+label+'</span></span>';
-    html += '<label class="switch"><input type="checkbox" '+(vis?'checked':'')+' onchange="toggleSection('+idx+',this.checked)"><span class="slider"></span></label>';
-    html += '</div>';
-  });
+  for(var i=0;i<5;i++){
+    var vis = hiddenSections.indexOf(i)<0;
+    html += '<div class="tog-row"><span><span class="tog-num">Q'+(i+1)+'</span>'+LABELS[i]+'</span>';
+    html += '<label class="switch"><input type="checkbox" '+(vis?'checked':'')+' data-idx="'+i+'" onchange="toggle(this)"><span class="slider"></span></label></div>';
+  }
   document.getElementById('toggles').innerHTML = html;
 }
 
-function toggleSection(idx, visible){
-  if(visible){ hiddenSections = hiddenSections.filter(function(i){return i!==idx;}); }
-  else{ if(hiddenSections.indexOf(idx)<0) hiddenSections.push(idx); }
-  hiddenSections = hiddenSections.filter(function(i){return i!==idx||!visible;});
-  // Recalculate
-  if(visible){ hiddenSections = hiddenSections.filter(function(i){return i!==idx;}); }
-  else{ if(hiddenSections.indexOf(idx)<0) hiddenSections.push(idx); }
-  // Always keep 5 hidden
-  if(hiddenSections.indexOf(5)<0) hiddenSections.push(5);
+function toggle(el) {
+  var idx = parseInt(el.getAttribute('data-idx'));
+  var visible = el.checked;
+  if(visible){ hiddenSections=hiddenSections.filter(function(i){return i!==idx;}); }
+  else{ if(hiddenSections.indexOf(idx)<0)hiddenSections.push(idx); }
+  if(hiddenSections.indexOf(5)<0)hiddenSections.push(5);
   var st = document.getElementById('tog-status');
-  st.textContent = 'Saving...';
-  st.style.color = 'var(--amber)';
-  fetch(API+'/config',{
-    method:'POST',headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({hidden:hiddenSections})
-  }).then(function(){
-    st.textContent = 'Saved \u2713';
-    st.style.color = 'var(--green)';
-    setTimeout(function(){st.textContent='';},3000);
-  }).catch(function(e){ st.textContent='Error'; st.style.color='var(--red)'; });
+  st.textContent='Saving...'; st.style.color='#f59e0b';
+  fetch(API+'/config',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({hidden:hiddenSections})})
+  .then(function(){ st.textContent='Saved \u2713'; st.style.color='#10b981'; setTimeout(function(){st.textContent='';},3000); })
+  .catch(function(){ st.textContent='Error'; st.style.color='#ef4444'; });
 }
 
-// ── SCORES ──
-function filterScores(f, btn){
-  scoreFilter = f;
-  document.querySelectorAll('.sf').forEach(function(b){b.classList.remove('active');});
-  btn.classList.add('active');
-  renderScores();
+function filterScores(f,btn) {
+  scoreFilter=f;
+  document.querySelectorAll('.sf').forEach(function(b){b.classList.remove('on');});
+  btn.classList.add('on');
+  loadScores();
 }
 
-function renderScores(){
+function loadScores() {
   var url = API+'/scores'+(scoreFilter!=='all'?'?section='+scoreFilter:'')+'&t='+Date.now();
   fetch(url).then(function(r){return r.json();})
   .then(function(scores){
     scores.sort(function(a,b){return b.pct-a.pct||b.score-a.score;});
-    document.getElementById('scores-count').textContent = scores.length+' result'+(scores.length!==1?'s':'');
-    if(!scores.length){
-      document.getElementById('scores-table').innerHTML='<div class="no-scores">No scores yet for this section.</div>';
-      return;
-    }
-    var html = '<table class="score-table"><thead><tr><th>#</th><th>Student</th><th>Section</th><th>Score</th><th>Result</th></tr></thead><tbody>';
+    document.getElementById('scores-count').textContent=scores.length+' result'+(scores.length!==1?'s':'');
+    if(!scores.length){document.getElementById('scores-table').innerHTML='<div class="no-data">No scores yet.</div>';return;}
+    var html='<table><thead><tr><th>#</th><th>Student</th><th>Section</th><th>Score</th><th>%</th></tr></thead><tbody>';
     scores.forEach(function(s,i){
-      var color = s.pct>=75?'#10b981':s.pct>=50?'#f59e0b':'#ef4444';
-      html+='<tr><td style="color:var(--muted);font-family:var(--mono);font-size:0.72rem;">'+(i+1)+'</td>';
-      html+='<td class="s-name">'+s.name+'</td>';
-      html+='<td class="s-sec">Q'+(s.section+1)+' '+SECTION_LABELS[s.section]+'</td>';
-      html+='<td class="s-score">'+s.score+'/'+s.total+'</td>';
-      html+='<td><span class="s-pct" style="color:'+color+';">'+s.pct+'%</span><div class="s-bar"><div class="s-bar-fill" style="width:'+s.pct+'%;background:'+color+';"></div></div></td>';
-      html+='</tr>';
+      var c=s.pct>=75?'#10b981':s.pct>=50?'#f59e0b':'#ef4444';
+      html+='<tr><td style="color:#64748b;font-family:monospace;font-size:0.72rem;">'+(i+1)+'</td>';
+      html+='<td style="font-weight:700;">'+s.name+'</td>';
+      html+='<td style="color:#a78bfa;font-size:0.75rem;">Q'+(s.section+1)+' '+LABELS[s.section]+'</td>';
+      html+='<td style="font-family:monospace;color:#00e5ff;">'+s.score+'/'+s.total+'</td>';
+      html+='<td style="font-family:monospace;font-weight:700;color:'+c+';">'+s.pct+'%</td></tr>';
     });
     html+='</tbody></table>';
     document.getElementById('scores-table').innerHTML=html;
-  }).catch(function(){ document.getElementById('scores-table').innerHTML='<div class="no-scores">Could not load scores.</div>'; });
+  }).catch(function(){document.getElementById('scores-table').innerHTML='<div class="no-data">Could not load scores.</div>';});
 }
+
+window.addEventListener('DOMContentLoaded', init);
 </script>
 </body>
 </html>

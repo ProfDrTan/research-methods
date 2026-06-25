@@ -8,7 +8,7 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 :root{--bg:#020817;--surface:#111827;--border:#1e2d45;--cyan:#00e5ff;--violet:#7c3aed;--green:#10b981;--amber:#f59e0b;--red:#ef4444;--text:#e2e8f0;--muted:#64748b;--mono:'Space Mono',monospace;--sans:'Space Grotesk',sans-serif;}
-body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;} #pin-screen{display:none!important;}
 
 /* PIN */
 #pin-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;}
@@ -94,19 +94,7 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 1.
 </head>
 <body>
 
-<!-- PIN -->
-<div id="pin-screen">
-  <div class="pin-card">
-    <div style="font-size:2rem;margin-bottom:0.75rem;">🎓</div>
-    <h2>Instructor Access</h2>
-    <p>Dr. Tan's Command Centre</p>
-    <input class="pin-input" type="tel" id="pin-in" maxlength="4" placeholder="PIN"
-      autocomplete="off" oninput="this.value=this.value.replace(/[^0-9]/g,'')"
-      onkeydown="if(event.key==='Enter')checkPin()">
-    <button class="pin-btn" onclick="checkPin()">Enter →</button>
-    <div class="pin-err" id="pin-err"></div>
-  </div>
-</div>
+
 
 <!-- DASHBOARD -->
 <div id="dashboard">
@@ -231,20 +219,9 @@ const SECTION_LABELS = [
   'Mixed Methods'
 ];
 
-// ── PIN ──
-function checkPin(){
-  var v = document.getElementById('pin-in').value.trim();
-  if(!v){ document.getElementById('pin-err').textContent='Enter PIN'; return; }
-  if(v === PIN){
-    document.getElementById('pin-screen').style.display='none';
-    document.getElementById('dashboard').style.display='block';
-    init();
-  } else {
-    document.getElementById('pin-err').textContent='Incorrect PIN';
-    document.getElementById('pin-in').value='';
-  }
-}
-document.addEventListener('keydown',function(e){ if(e.key==='Enter' && document.getElementById('pin-screen').style.display!=='none') checkPin(); });
+// No PIN required — direct access
+
+window.addEventListener('DOMContentLoaded', function(){ init(); });
 
 // ── INIT ──
 function init(){

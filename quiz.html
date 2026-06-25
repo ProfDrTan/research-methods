@@ -285,20 +285,33 @@ function submitQuiz() {
   var pct = Math.round(correct/totalQ*100);
   var section = ALL_SECTIONS[currentSectionIdx];
   
-  // Save score for this section
+  // Save score locally
   var scores = getScores();
   var sectionKey = 'section_' + currentSectionIdx + '_' + myName.toLowerCase();
   scores[sectionKey] = {name:myName, score:correct, wrong:wrong, total:totalQ, pct:pct, ts:Date.now()};
-  
-  // Build leaderboard for this section
-  var lb = [];
-  Object.keys(scores).forEach(function(k) {
-    if(k.indexOf('section_' + currentSectionIdx + '_') === 0) lb.push(scores[k]);
-  });
-  lb.sort(function(a,b){ return b.score - a.score; });
   saveScores(scores);
-  
-  showResults(correct, wrong, totalQ, pct, lb, section.label);
+
+  // POST score to Worker so all devices see it
+  var scoreData = {name:myName, section:currentSectionIdx, sectionLabel:section.label, score:correct, wrong:wrong, total:totalQ, pct:pct, ts:Date.now()};
+  fetch(WORKER+'/scores', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(scoreData)
+  }).catch(function(){});
+
+  // Fetch leaderboard from Worker
+  fetch(WORKER+'/scores?section='+currentSectionIdx+'&t='+Date.now())
+    .then(function(r){ return r.json(); })
+    .then(function(lb){ showResults(correct, wrong, totalQ, pct, lb, section.label); })
+    .catch(function(){
+      // Fallback to local scores
+      var lb = [];
+      Object.keys(scores).forEach(function(k) {
+        if(k.indexOf('section_' + currentSectionIdx + '_') === 0) lb.push(scores[k]);
+      });
+      lb.sort(function(a,b){ return b.score - a.score; });
+      showResults(correct, wrong, totalQ, pct, lb, section.label);
+    });
 }
 
 function showResults(correct, wrong, total, pct, lb, sectionLabel) {

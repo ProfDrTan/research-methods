@@ -73,6 +73,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
   <a href="#q5" class="qn">Quiz 5</a>
   <a href="#q6" class="qn">Quiz 6</a>
   <a href="#scenarios" class="qn">Scenarios</a>
+  <a href="#clt" class="qn">CLT</a>
 </div>
 
 <div class="wrap">
@@ -1166,6 +1167,50 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
     <p>The median — the middle-ranked SME — remains around RM80,000 because it only cares about rank order, not actual values. The mode and frequency count are equally unaffected by the extreme value.</p>
     <p>This is why income and revenue data in SME research should almost always be reported using median, not mean. The skewed distribution caused by a few large outliers makes the mean a poor representative of the typical case. Always plot your data before calculating statistics.</p>
     <div class="viva"><div class="viva-label">Viva Alert</div><div class="viva-text">"Why did you use median rather than mean to describe your sample's revenue?" — Answer: "Revenue data in SME samples is typically positively skewed due to a small number of high-revenue outliers. I confirmed this with a histogram (skewness = 2.8, indicating significant positive skew), making the median a more appropriate and representative measure of central tendency for this variable."</div></div>
+  </div></div>
+</div>
+
+</div>
+
+
+<!-- CLT QUESTIONS -->
+<div class="quiz-section" id="clt">
+<div class="quiz-header">
+  <div class="quiz-num">Quiz 2 — New</div>
+  <div class="quiz-title">Central Limit Theorem</div>
+</div>
+
+<div class="q-card">
+  <div class="q-top"><span class="q-num">CLT1</span><span class="q-text">What does the Central Limit Theorem state?</span></div>
+  <div class="answer-badge">✓ B) Sample means are normally distributed when n is large enough regardless of population shape</div>
+  <div class="script-body"><div class="script-label">Your Discussion Script</div><div class="script-text">
+    <p>The Central Limit Theorem is arguably the single most important theorem in applied statistics. Here is what it says in plain English: <strong>take repeated random samples from ANY population — no matter how skewed, bimodal, or weird-looking — and the distribution of those sample means will approach a normal distribution as your sample size increases.</strong></p>
+    <p>Notice what it does NOT say: it does not say your raw data must be normally distributed. It does not say the population must be normal. It says the MEANS of samples will be normal. This is a completely different thing — and it is the reason parametric statistics work in real-world research where perfectly normal raw data is essentially impossible to find.</p>
+    <p>Think of it this way: you could survey hotel guests whose satisfaction scores look wildly skewed. But if you took 1,000 different samples of 50 guests each and plotted the mean satisfaction score from each sample — that plot of means would be beautifully bell-shaped. That is the CLT at work. And because your ONE sample mean behaves like a draw from that normal distribution, your t-tests, ANOVA, and regression are all valid.</p>
+    <div class="sector">EDUCATION</div><span style="font-size:0.82rem;color:var(--muted);">This is why you can run a t-test on exam scores even if the scores aren't perfectly normal. The CLT guarantees the sampling distribution of the mean is normal — which is what the t-test actually requires.</span>
+    <div class="viva"><div class="viva-label">Viva Alert</div><div class="viva-text">"Your data was not normally distributed — why did you use parametric tests?" Answer: "With a sample of n = 187, the Central Limit Theorem ensures the sampling distribution of the mean is approximately normal, satisfying the distributional assumption of the statistical tests used, regardless of the population distribution shape."</div></div>
+  </div></div>
+</div>
+
+<div class="q-card">
+  <div class="q-top"><span class="q-num">CLT2</span><span class="q-text">What minimum sample size is commonly cited to invoke the Central Limit Theorem?</span></div>
+  <div class="answer-badge">✓ C) n = 30</div>
+  <div class="script-body"><div class="script-label">Your Discussion Script</div><div class="script-text">
+    <p>The n ≥ 30 rule is the practical threshold most widely cited in statistics textbooks and accepted by most journal reviewers. Below 30, the CLT may not have kicked in sufficiently — especially if your population distribution is heavily skewed. At n = 30 or above, the sampling distribution of the mean is close enough to normal for parametric tests to be valid.</p>
+    <p>But there is important nuance here. <strong>n ≥ 30 is a minimum, not a magic number.</strong> For moderately skewed distributions, n = 30 is usually sufficient. For heavily skewed distributions — like income data, response times, or count data with many zeros — you may need n ≥ 100 or more before the CLT fully normalises the sampling distribution.</p>
+    <p>In practice for management research: with samples of 100, 200, or 300 — which are typical for DBA dissertations — the CLT is operating powerfully. You can invoke it confidently in your methodology chapter as justification for parametric analysis.</p>
+    <div class="sector">SME</div><span style="font-size:0.82rem;color:var(--muted);">SME revenue data is extremely positively skewed. With n = 50 you might still have issues. With n = 150+ the CLT gives you enough assurance to proceed with parametric tests — though always report skewness values and acknowledge the limitation.</span>
+  </div></div>
+</div>
+
+<div class="q-card">
+  <div class="q-top"><span class="q-num">CLT3</span><span class="q-text">Why is the Central Limit Theorem critical for management research?</span></div>
+  <div class="answer-badge">✓ B) It justifies use of parametric tests even when the population distribution is unknown</div>
+  <div class="script-body"><div class="script-label">Your Discussion Script</div><div class="script-text">
+    <p>In the real world of management research, you almost never know the true population distribution — and your sample data is almost never perfectly normally distributed. Hotel satisfaction scores are skewed. Salary data is skewed. Company revenue is extremely skewed. If parametric tests required perfectly normal raw data, we could use almost nothing.</p>
+    <p>The CLT solves this problem elegantly. <strong>It tells us that even if the population is non-normal, our statistical inference — based on sample means — is still valid because those means are normally distributed.</strong> The t-test, ANOVA, regression, and the significance tests in SEM all rely on this theoretical guarantee.</p>
+    <p>This is why in your methodology chapter you should: (1) report skewness and kurtosis values of your variables, (2) acknowledge any non-normality, and (3) cite the CLT as theoretical justification for proceeding with parametric analysis given your sample size. This demonstrates statistical sophistication that examiners notice.</p>
+    <div class="viva"><div class="viva-label">Viva Alert</div><div class="viva-text">"How did you address the non-normality of your data?" Answer: "I assessed normality using skewness and kurtosis statistics. While some variables showed moderate non-normality, the Central Limit Theorem justifies the use of parametric statistics with my sample of n = 214. Additionally, Hair et al. (2019) note that PLS-SEM is robust to non-normal distributions, providing further justification for my analytical approach."</div></div>
   </div></div>
 </div>
 

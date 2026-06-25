@@ -211,7 +211,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);min-height:1
 </div>
 
 <!-- COMMAND CENTRE -->
-<script>document.addEventListener("DOMContentLoaded",function(){var p=document.getElementById("pin-input");if(p)p.focus();});</script>
 <div id="cmd">
   <div class="topbar">
     <div class="tb-brand">🎓 DR. TAN // INSTRUCTOR COMMAND CENTRE</div>
@@ -333,33 +332,30 @@ let pollTimer = null;
 let lastState = {};
 
 // ── PIN ──
+function unlock(){
+  document.getElementById('pin-screen').style.cssText = 'display:none!important';
+  document.getElementById('cmd').style.cssText = 'display:block!important';
+  sessionStorage.setItem('rm_auth','1');
+  init();
+}
+
 function checkPin(){
-  const v = document.getElementById('pin-input').value.trim();
+  var v = document.getElementById('pin-input').value.trim();
   if(!v){ document.getElementById('pin-error').textContent='Enter PIN'; return; }
-  if(v === PIN){
-    document.getElementById('pin-screen').style.display = 'none';
-    var cmd = document.getElementById('cmd');
-    cmd.style.setProperty('display','block','important');
-    // Also save to sessionStorage so page refresh skips PIN
-    sessionStorage.setItem('instructor_auth','1');
-    init();
-  } else {
-    document.getElementById('pin-error').textContent = 'Incorrect PIN — try again';
-    document.getElementById('pin-input').value = '';
+  if(v === PIN){ unlock(); }
+  else {
+    document.getElementById('pin-error').textContent='Wrong PIN';
+    document.getElementById('pin-input').value='';
     document.getElementById('pin-input').focus();
   }
 }
 
-// Auto-bypass if already authenticated this session
-(function(){
-  if(sessionStorage.getItem('instructor_auth')==='1'){
-    document.getElementById('pin-screen').style.display='none';
-    var cmd = document.getElementById('cmd');
-    cmd.style.setProperty('display','block','important');
-    // init() will be called after DOM ready
-    document.addEventListener('DOMContentLoaded', function(){ init(); });
-  }
-})();
+// Skip PIN if already authenticated this session
+if(sessionStorage.getItem('rm_auth')==='1'){
+  unlock();
+} else {
+  document.getElementById('pin-input').focus();
+}
 // Enter key handled by onkeydown on input element
 
 // ── QUESTION BANK ──

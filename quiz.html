@@ -170,14 +170,18 @@ function goHome() {
   show('pg-home');
 }
 
-var hiddenSections = [];
+var hiddenSections = [5]; // Quiz 6 Mixed Methods hidden by default
 var WORKER = 'https://rm-students.teikkheong.workers.dev';
 
 function fetchConfig(callback) {
   fetch(WORKER+'/config?t='+Date.now())
     .then(function(r){ return r.json(); })
-    .then(function(cfg){ hiddenSections = cfg.hidden || []; callback(); })
-    .catch(function(){ hiddenSections = []; callback(); });
+    .then(function(cfg){ 
+      // Use Worker config if available, otherwise keep default [5]
+      hiddenSections = (cfg.hidden && cfg.hidden.length > 0) ? cfg.hidden : [5];
+      callback(); 
+    })
+    .catch(function(){ hiddenSections = [5]; callback(); });
 }
 
 function renderHome() {

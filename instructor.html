@@ -141,9 +141,62 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);min-height:1
     margin-right: 5px;
     vertical-align: middle;
   }
+
+  /* ── LEFT NAV SIDEBAR ── */
+  #left-nav {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 52px;
+    background: #0a0d14;
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 4rem;
+    gap: 0.25rem;
+    z-index: 200;
+  }
+  #left-nav a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 1.1rem;
+    color: var(--muted);
+    transition: background 0.15s, color 0.15s;
+    cursor: pointer;
+  }
+  #left-nav a:hover {
+    background: var(--bg3);
+    color: var(--amber);
+  }
+  #left-nav a .nav-label {
+    font-size: 0.38rem;
+    font-family: var(--mono);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin-top: 1px;
+    line-height: 1;
+  }
+  #left-nav .nav-divider {
+    width: 28px;
+    height: 1px;
+    background: var(--border);
+    margin: 0.3rem 0;
+  }
+  body.has-left-nav #cmd {
+    padding-left: 52px;
+  }
+
 </style>
 </head>
-<body>
+<body class="has-left-nav">
 
 <!-- PIN SCREEN -->
 <div id="pin-screen">
@@ -170,15 +223,33 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);min-height:1
     </div>
   </div>
 
+
+  <!-- FIXED LEFT NAV -->
+  <div id="left-nav">
+    <a onclick="document.getElementById('nav-toggles').scrollIntoView({behavior:'smooth'})" title="Section Toggles">⚡<span class="nav-label">Toggle</span></a>
+    <a onclick="document.getElementById('nav-scores').scrollIntoView({behavior:'smooth'})" title="Quiz Scores">📊<span class="nav-label">Scores</span></a>
+    <div class="nav-divider"></div>
+    <a onclick="document.getElementById('nav-roster').scrollIntoView({behavior:'smooth'})" title="Class Roster">👥<span class="nav-label">Roster</span></a>
+    <a onclick="document.getElementById('nav-launcher').scrollIntoView({behavior:'smooth'})" title="Quiz Launcher">▶<span class="nav-label">Launch</span></a>
+    <div class="nav-divider"></div>
+    <a onclick="document.getElementById('nav-stats').scrollIntoView({behavior:'smooth'})" title="Live Stats">📈<span class="nav-label">Stats</span></a>
+    <a onclick="document.getElementById('nav-active-section').scrollIntoView({behavior:'smooth'})" title="Active Question">❓<span class="nav-label">Active</span></a>
+    <a onclick="document.getElementById('wall-card').scrollIntoView({behavior:'smooth'})" title="Wall of Shame">⚠<span class="nav-label">Wall</span></a>
+    <a onclick="document.getElementById('results-card').scrollIntoView({behavior:'smooth'})" title="Live Results">✅<span class="nav-label">Results</span></a>
+    <div class="nav-divider"></div>
+    <a href="notes.html" title="Speaker Notes">📝<span class="nav-label">Notes</span></a>
+    <a href="answers.html" title="Answer Scripts">💡<span class="nav-label">Answers</span></a>
+  </div>
+
   <!-- QUIZ SECTION TOGGLES -->
-<div style="padding:0.75rem 1rem;background:var(--bg);border-bottom:1px solid var(--border);">
+<div id="nav-toggles" style="padding:0.75rem 1rem;background:var(--bg);border-bottom:1px solid var(--border);">
   <div class="toggle-panel">
     <div class="toggle-header" style="display:flex;justify-content:space-between;align-items:center;"><span>⚡ Quiz Sections — toggle ON to release to students</span><span id="toggle-status" style="font-size:0.68rem;"></span></div>
     <div id="section-toggles"></div>
   </div>
 </div>
 
-<div style="padding:0 1rem 0.75rem;">
+<div id="nav-scores" style="padding:0 1rem 0.75rem;">
   <div class="panel">
     <div class="panel-title" style="display:flex;justify-content:space-between;align-items:center;">
       <span>📊 Quiz Scores — All Students</span>
@@ -201,7 +272,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);min-height:1
     <div class="left">
 
       <!-- CLASS ROSTER -->
-      <div class="card">
+      <div class="card" id="nav-roster">
         <div class="card-header">
           <span class="card-title">Class Roster</span>
           <div class="live-dot"></div>
@@ -217,7 +288,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);min-height:1
       </div>
 
       <!-- QUIZ LAUNCHER -->
-      <div class="card">
+      <div class="card" id="nav-launcher">
         <div class="card-header">
           <span class="card-title">Quiz Launcher</span>
           <span id="active-q-label" style="font-family:var(--mono);font-size:0.62rem;color:var(--amber);">No active quiz</span>
@@ -237,7 +308,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);min-height:1
     <div class="right">
 
       <!-- STATS -->
-      <div class="stats-row">
+      <div class="stats-row" id="nav-stats">
         <div class="stat-card">
           <div class="stat-num" id="stat-students">0</div>
           <div class="stat-label">Students In</div>
@@ -253,7 +324,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);min-height:1
       </div>
 
       <!-- ACTIVE QUESTION -->
-      <div id="active-section">
+      <div id="nav-active-section"><div id="active-section">
         <div class="no-active" id="no-active">No question active — select a quiz and question on the left, then tap Launch.</div>
         <div id="active-q-display" style="display:none;">
           <div class="active-banner">
@@ -265,7 +336,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);min-height:1
           </div>
           <div style="margin-top:0.75rem;" class="q-preview" id="active-q-preview"></div>
         </div>
-      </div>
+      </div></div><!-- /nav-active-section -->
 
       <!-- WALL OF SHAME -->
       <div class="wall-card" id="wall-card" style="display:none;">

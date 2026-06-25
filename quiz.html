@@ -170,15 +170,20 @@ function goHome() {
   show('pg-home');
 }
 
-function getHidden() {
-  try { return JSON.parse(localStorage.getItem('drtan_hidden_sections') || '[]'); } catch(e) { return []; }
+var hiddenSections = [];
+
+function fetchConfig(callback) {
+  var url = 'https://raw.githubusercontent.com/ProfDrTan/research-methods/main/config.json?t=' + Date.now();
+  fetch(url).then(function(r){ return r.json(); })
+    .then(function(cfg){ hiddenSections = cfg.hidden || []; callback(); })
+    .catch(function(){ hiddenSections = []; callback(); });
 }
 
 function renderHome() {
   var name = document.getElementById('home-name').value.trim();
   if(name) { myName = name; localStorage.setItem('student_name_v1', name); }
   var scores = getScores();
-  var hidden = getHidden();
+  var hidden = hiddenSections;
   var html = '';
   var anyVisible = false;
   ALL_SECTIONS.forEach(function(section, idx) {
@@ -340,7 +345,7 @@ function nextQuiz() {
 window.onload = function() {
   var saved = localStorage.getItem('student_name_v1');
   if(saved) document.getElementById('home-name').value = saved;
-  renderHome();
+  fetchConfig(function(){ renderHome(); });
 };
 </script>
 </body>

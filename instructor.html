@@ -226,11 +226,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);min-height:1
 
   <!-- FIXED LEFT NAV -->
   <div id="left-nav">
-    <a onclick="document.getElementById('nav-toggles').scrollIntoView({behavior:'smooth'})" title="Section Toggles">⚡<span class="nav-label">Toggle</span></a>
-    <a onclick="document.getElementById('nav-scores').scrollIntoView({behavior:'smooth'})" title="Quiz Scores">📊<span class="nav-label">Scores</span></a>
-    <div class="nav-divider"></div>
     <a onclick="document.getElementById('nav-roster').scrollIntoView({behavior:'smooth'})" title="Class Roster">👥<span class="nav-label">Roster</span></a>
-    <a onclick="document.getElementById('nav-launcher').scrollIntoView({behavior:'smooth'})" title="Quiz Launcher">▶<span class="nav-label">Launch</span></a>
     <div class="nav-divider"></div>
     <a onclick="document.getElementById('nav-stats').scrollIntoView({behavior:'smooth'})" title="Live Stats">📈<span class="nav-label">Stats</span></a>
     <a onclick="document.getElementById('nav-active-section').scrollIntoView({behavior:'smooth'})" title="Active Question">❓<span class="nav-label">Active</span></a>
@@ -241,31 +237,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);min-height:1
     <a href="answers.html" title="Answer Scripts">💡<span class="nav-label">Answers</span></a>
   </div>
 
-  <!-- QUIZ SECTION TOGGLES -->
-<div id="nav-toggles" style="padding:0.75rem 1rem;background:var(--bg);border-bottom:1px solid var(--border);">
-  <div class="toggle-panel">
-    <div class="toggle-header" style="display:flex;justify-content:space-between;align-items:center;"><span>⚡ Quiz Sections — toggle ON to release to students</span><span id="toggle-status" style="font-size:0.68rem;"></span></div>
-    <div id="section-toggles"></div>
-  </div>
-</div>
 
-<div id="nav-scores" style="padding:0 1rem 0.75rem;">
-  <div class="panel">
-    <div class="panel-title" style="display:flex;justify-content:space-between;align-items:center;">
-      <span>📊 Quiz Scores — All Students</span>
-      <select id="score-filter" onchange="renderScores()" style="background:var(--bg);border:1px solid var(--border);color:var(--muted);border-radius:4px;font-size:0.68rem;padding:0.15rem 0.3rem;">
-        <option value="all">All Sections</option>
-        <option value="0">Quiz 1 — Scales</option>
-        <option value="1">Quiz 2 — Distribution</option>
-        <option value="2">Quiz 3 — Inferential</option>
-        <option value="3">Quiz 4 — SEM</option>
-        <option value="4">Quiz 5 — Advanced SEM</option>
-        <option value="5">Quiz 6 — Mixed Methods</option>
-      </select>
-    </div>
-    <div id="scores-panel" style="margin-top:0.5rem;"><div style="color:var(--muted);font-size:0.78rem;">Loading scores...</div></div>
-  </div>
-</div>
 
 <div class="main">
     <!-- LEFT: ROSTER + QUIZ LAUNCHER -->
@@ -287,20 +259,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);min-height:1
         </div>
       </div>
 
-      <!-- QUIZ LAUNCHER -->
-      <div class="card" id="nav-launcher">
-        <div class="card-header">
-          <span class="card-title">Quiz Launcher</span>
-          <span id="active-q-label" style="font-family:var(--mono);font-size:0.62rem;color:var(--amber);">No active quiz</span>
-        </div>
-        <div class="card-body">
-          <div class="quiz-tabs" id="quiz-tabs"></div>
-          <div id="q-list" style="margin-top:0.75rem;display:flex;flex-direction:column;gap:0.35rem;"></div>
-          <button class="launch-btn" id="launch-btn" onclick="launchSelected()" disabled>▶ Launch Selected Question</button>
-          <button class="reveal-btn" id="reveal-btn" onclick="revealResults()" style="display:none;">📊 Reveal Results to All</button>
-          <button class="close-btn" id="close-btn" onclick="closeQuestion()" style="display:none;">■ Close Question</button>
-        </div>
-      </div>
 
     </div>
 

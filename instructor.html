@@ -166,6 +166,24 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);min-height:1
   </div>
 </div>
 
+<div style="padding:0 1rem 0.75rem;">
+  <div class="panel">
+    <div class="panel-title" style="display:flex;justify-content:space-between;align-items:center;">
+      <span>📊 Quiz Scores — All Students</span>
+      <select id="score-filter" onchange="renderScores()" style="background:var(--bg);border:1px solid var(--border);color:var(--muted);border-radius:4px;font-size:0.68rem;padding:0.15rem 0.3rem;">
+        <option value="all">All Sections</option>
+        <option value="0">Quiz 1 — Scales</option>
+        <option value="1">Quiz 2 — Distribution</option>
+        <option value="2">Quiz 3 — Inferential</option>
+        <option value="3">Quiz 4 — SEM</option>
+        <option value="4">Quiz 5 — Advanced SEM</option>
+        <option value="5">Quiz 6 — Mixed Methods</option>
+      </select>
+    </div>
+    <div id="scores-panel" style="margin-top:0.5rem;"><div style="color:var(--muted);font-size:0.78rem;">Loading scores...</div></div>
+  </div>
+</div>
+
 <div class="main">
     <!-- LEFT: ROSTER + QUIZ LAUNCHER -->
     <div class="left">
@@ -275,7 +293,8 @@ let lastState = {};
 
 // ── PIN ──
 function checkPin(){
-  const v = document.getElementById('pin-input').value;
+  const v = document.getElementById('pin-input').value.trim();
+  if(!v){ document.getElementById('pin-error').textContent='Enter PIN'; return; }
   if(v === PIN){
     document.getElementById('pin-screen').style.display = 'none';
     document.getElementById('cmd').style.display = 'block';

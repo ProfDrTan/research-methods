@@ -143,17 +143,26 @@ function injectScore(sectionIdx, total) {
 function injectAll() {
   var name = document.getElementById('test-name').value.trim() || 'Test Student';
   var score = parseInt(document.getElementById('test-score').value) || 12;
-  document.getElementById('inject-status').textContent = 'Injecting all sections for ' + name + '...';
-  var promises = SECTIONS_INFO.map(function(s, idx) {
+  var st = document.getElementById('inject-status');
+  st.textContent = 'Injecting all sections...';
+  var idx = 0;
+  function next() {
+    if(idx >= SECTIONS_INFO.length) {
+      st.textContent = '\u2713 All ' + SECTIONS_INFO.length + ' sections injected for ' + name;
+      load();
+      return;
+    }
+    var s = SECTIONS_INFO[idx];
     var sc = Math.min(score, s.total);
     var pct = Math.round(sc/s.total*100);
     var data = {name:name, section:idx, sectionLabel:s.label, score:sc, wrong:s.total-sc, total:s.total, pct:pct, ts:Date.now()};
-    return fetch(WORKER+'/scores', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data)});
-  });
-  Promise.all(promises).then(function(){
-    document.getElementById('inject-status').textContent = '✓ All 5 sections injected for ' + name;
-    load();
-  });
+    st.textContent = 'Injecting Q' + (idx+1) + '...';
+    fetch(WORKER+'/scores', {
+      method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data)
+    }).then(function(){ idx++; next(); })
+    .catch(function(e){ st.textContent = 'Error on Q'+(idx+1)+': '+e.message; });
+  }
+  next();
 }
 
 function clearScores() {

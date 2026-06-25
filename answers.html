@@ -14,7 +14,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
 .tb-brand{font-family:var(--mono);font-size:0.72rem;color:var(--amber);}
 .tb-warn{font-family:var(--mono);font-size:0.6rem;color:var(--red);background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);padding:0.18rem 0.5rem;border-radius:4px;}
 
-.quick-nav{display:flex;gap:0.35rem;flex-wrap:wrap;padding:0.6rem 1rem;background:var(--surface);border-bottom:1px solid var(--border);}
+.quick-nav{position:sticky;top:0;z-index:80;display:flex;gap:0.35rem;flex-wrap:wrap;padding:0.6rem 1rem;background:var(--surface);border-bottom:1px solid var(--border);}
 .qn{font-family:var(--mono);font-size:0.6rem;padding:0.2rem 0.5rem;border:1px solid var(--border);border-radius:4px;color:var(--muted);text-decoration:none;}
 .qn:hover{color:var(--amber);border-color:var(--amber);}
 
@@ -56,9 +56,50 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
 .tts-title{font-family:var(--mono);font-size:0.68rem;color:var(--text);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .tts-stop{padding:0.35rem 0.85rem;background:var(--red);color:#fff;border:none;border-radius:5px;font-family:var(--mono);font-size:0.68rem;cursor:pointer;}
 .tts-pause{padding:0.35rem 0.85rem;background:var(--amber);color:var(--bg);border:none;border-radius:5px;font-family:var(--mono);font-size:0.68rem;cursor:pointer;}
+
+/* SIDEBAR TOC */
+.toc{position:fixed;left:0;top:0;width:190px;height:100vh;overflow-y:auto;border-right:1px solid var(--border);background:#0d1117;padding:1rem 0.65rem;z-index:90;}
+.toc-title{font-family:var(--mono);font-size:0.58rem;letter-spacing:0.15em;color:var(--muted);text-transform:uppercase;margin-bottom:0.75rem;padding:0 0.4rem;}
+.toc-list{list-style:none;display:flex;flex-direction:column;gap:0.05rem;}
+.toc-list a{font-size:0.74rem;color:var(--muted);text-decoration:none;padding:0.28rem 0.55rem;border-radius:5px;display:block;transition:all 0.15s;border-left:2px solid transparent;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.toc-list a:hover{color:var(--text);background:rgba(255,255,255,0.04);}
+.toc-list a.active{color:var(--amber);border-left-color:var(--amber);background:rgba(245,158,11,0.07);}
+.toc-list .toc-section{font-family:var(--mono);font-size:0.58rem;color:var(--cyan);padding:0.5rem 0.55rem 0.1rem;letter-spacing:0.08em;text-transform:uppercase;display:block;}
+.toc-list .toc-divider{height:1px;background:var(--border);margin:0.4rem 0.4rem;}
+
+/* PUSH CONTENT RIGHT */
+.topbar{padding-left:calc(190px + 1rem)!important;}
+.quick-nav{padding-left:calc(190px + 0.5rem)!important;}
+.wrap{margin-left:190px;}
+
 </style>
 </head>
 <body>
+
+<aside class="toc">
+  <div class="toc-title">Answer Scripts</div>
+  <ul class="toc-list">
+    <li><span class="toc-section">Core MCQ</span></li>
+    <li><a href="#q1">Quiz 1 — Scales</a></li>
+    <li><a href="#q2">Quiz 2 — Distribution</a></li>
+    <li><a href="#q3">Quiz 3 — Inferential</a></li>
+    <li><a href="#q4">Quiz 4 — SEM</a></li>
+    <li><a href="#q5">Quiz 5 — Adv SEM</a></li>
+    <li><a href="#q6">Quiz 6 — Mixed</a></li>
+    <li><div class="toc-divider"></div></li>
+    <li><span class="toc-section">Scenarios</span></li>
+    <li><a href="#scenarios">All Scenarios</a></li>
+    <li><div class="toc-divider"></div></li>
+    <li><span class="toc-section">Special</span></li>
+    <li><a href="#clt">CLT Questions</a></li>
+    <li><div class="toc-divider"></div></li>
+    <li><span class="toc-section">Navigate</span></li>
+    <li><a href="instructor.html" style="color:var(--violet)!important;">⚙ Instructor</a></li>
+    <li><a href="notes.html" style="color:var(--violet)!important;">📝 Notes</a></li>
+    <li><a href="lecture.html" target="_blank" style="color:var(--violet)!important;">📖 Lecture</a></li>
+  </ul>
+</aside>
+
 
 <div class="topbar">
   <div class="tb-brand">🔒 ANSWER SCRIPTS — DR. TAN — PRIVATE</div>
@@ -1283,5 +1324,28 @@ function stopReading(){
   document.getElementById('tts-pause').textContent = '⏸ Pause';
 }
 </script>
+
+<script>
+// TOC active section highlighting
+(function(){
+  var anchors = ['q1','q2','q3','q4','q5','q6','scenarios','clt'];
+  var obs = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      var link = document.querySelector('.toc-list a[href="#'+e.target.id+'"]');
+      if(link){
+        if(e.isIntersecting){ 
+          document.querySelectorAll('.toc-list a').forEach(function(a){a.classList.remove('active');});
+          link.classList.add('active');
+        }
+      }
+    });
+  }, {threshold:0.1, rootMargin:'0px 0px -70% 0px'});
+  anchors.forEach(function(id){
+    var el = document.getElementById(id);
+    if(el) obs.observe(el);
+  });
+})();
+</script>
+
 </body>
 </html>

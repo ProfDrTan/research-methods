@@ -95,9 +95,49 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
 #jump-top{position:fixed;bottom:1.2rem;right:1rem;width:42px;height:42px;border-radius:50%;background:var(--violet);color:#fff;font-size:1.1rem;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 12px rgba(0,0,0,0.4);z-index:500;opacity:0;transition:opacity 0.3s;}
 #jump-top.show{opacity:1;}
 
+
+/* SIDEBAR TOC */
+.toc{position:fixed;left:0;top:52px;width:200px;height:calc(100vh - 52px);overflow-y:auto;border-right:1px solid var(--border);background:var(--surface);padding:1.2rem 0.75rem;z-index:90;}
+.toc-title{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.15em;color:var(--muted);text-transform:uppercase;margin-bottom:0.75rem;}
+.toc-list{list-style:none;display:flex;flex-direction:column;gap:0.1rem;}
+.toc-list a{font-size:0.76rem;color:var(--muted);text-decoration:none;padding:0.3rem 0.6rem;border-radius:5px;display:block;transition:all 0.2s;border-left:2px solid transparent;}
+.toc-list a:hover{color:var(--text);background:rgba(255,255,255,0.04);}
+.toc-list a.active{color:var(--amber);border-left-color:var(--amber);background:rgba(245,158,11,0.06);}
+.toc-list .toc-break{color:var(--cyan)!important;font-size:0.7rem;}
+.toc-time{font-family:var(--mono);font-size:0.58rem;color:var(--muted);padding:0.2rem 0.6rem;display:block;}
+
+/* PUSH MAIN CONTENT RIGHT */
+body > *:not(.toc):not(#jump-top) { margin-left: 200px; }
+.topbar { margin-left: 0 !important; padding-left: calc(200px + 1rem); }
+
 </style>
 </head>
 <body>
+
+<aside class="toc">
+  <div class="toc-title">Speaker Notes</div>
+  <ul class="toc-list">
+    <li><span class="toc-time">9:20 AM</span></li>
+    <li><a href="#m1">M1 — Foundations</a></li>
+    <li><span class="toc-time">10:00 AM</span></li>
+    <li><a href="#m2">M2 — Descriptives</a></li>
+    <li><a href="#m3-coffee" class="toc-break">☕ Coffee Break</a></li>
+    <li><span class="toc-time">11:00 AM</span></li>
+    <li><a href="#m3">M3 — Inferential</a></li>
+    <li><span class="toc-time">11:45 AM</span></li>
+    <li><a href="#m4">M4 — SEM</a></li>
+    <li><span class="toc-time">12:30 PM</span></li>
+    <li><a href="#m5">M5 — Writing Up</a></li>
+    <li><span class="toc-time">12:50 PM</span></li>
+    <li><a href="#m6">M6 — Mixed Methods</a></li>
+    <li style="margin-top:1rem;border-top:1px solid var(--border);padding-top:0.75rem;">
+      <a href="instructor.html" style="color:var(--violet)!important;">⚙ Instructor</a>
+    </li>
+    <li><a href="answers.html" style="color:var(--violet)!important;">💡 Answers</a></li>
+    <li><a href="lecture.html" target="_blank" style="color:var(--violet)!important;">📖 Lecture</a></li>
+  </ul>
+</aside>
+
 
 
 <button id="jump-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
@@ -110,15 +150,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
   </div>
 </div>
 <div class="progress"><div class="progress-fill" id="prog"></div></div>
-
-<div class="quick-nav">
-  <a href="#m1" class="qn-btn">M1 Foundations</a>
-  <a href="#m2" class="qn-btn">M2 Descriptives</a>
-  <a href="#m3" class="qn-btn">M3 Inferential</a>
-  <a href="#m4" class="qn-btn">M4 SEM</a>
-  <a href="#m5" class="qn-btn">M5 Writing</a>
-  <a href="#m6" class="qn-btn">M6 Mixed Methods</a>
-</div>
 
 <!-- ═══════════════════════════════════════════════════ -->
 <!-- MODULE 1 — FOUNDATIONS -->
@@ -638,22 +669,29 @@ window.addEventListener('scroll', function(){
 </script>
 
 
+
+
+
 <script>
-// Highlight active module in quick-nav
-var modules = ['m1','m2','m3','m4','m5','m6'];
-var observer = new IntersectionObserver(function(entries){
-  entries.forEach(function(entry){
-    var btn = document.querySelector('.qn-btn[href="#'+entry.target.id+'"]');
-    if(btn){
-      if(entry.isIntersecting){ btn.style.color='var(--amber)'; btn.style.borderColor='var(--amber)'; btn.style.background='rgba(245,158,11,0.1)'; }
-      else { btn.style.color=''; btn.style.borderColor=''; btn.style.background=''; }
-    }
-  });
-}, {threshold:0.1, rootMargin:'-52px 0px -70% 0px'});
-modules.forEach(function(id){
-  var el = document.getElementById(id);
-  if(el) observer.observe(el);
-});
+// TOC active link highlighting
+(function(){
+  var tocLinks = document.querySelectorAll('.toc-list a[href^="#"]');
+  var sections = Array.from(tocLinks).map(function(a){
+    return document.querySelector(a.getAttribute('href'));
+  }).filter(Boolean);
+
+  var obs = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        tocLinks.forEach(function(l){ l.classList.remove('active'); });
+        var active = document.querySelector('.toc-list a[href="#'+e.target.id+'"]');
+        if(active) active.classList.add('active');
+      }
+    });
+  }, {threshold:0.15, rootMargin:'-52px 0px -60% 0px'});
+
+  sections.forEach(function(s){ obs.observe(s); });
+})();
 </script>
 
 </body>

@@ -72,6 +72,17 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
 .quick-nav{padding-left:calc(190px + 0.5rem)!important;}
 .wrap{margin-left:190px;}
 
+
+/* TTS */
+.tts-bar{position:fixed;bottom:0;left:0;right:0;background:#111827;border-top:2px solid #f59e0b;padding:0.65rem 1.25rem;display:none;align-items:center;gap:0.75rem;z-index:200;}
+.tts-bar.active{display:flex;}
+.tts-title{font-family:monospace;font-size:0.72rem;color:#e2e8f0;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.tts-btn{padding:0.35rem 0.85rem;border:none;border-radius:5px;font-family:monospace;font-size:0.7rem;cursor:pointer;font-weight:700;}
+.tts-stop{background:#ef4444;color:#fff;}
+.tts-pause{background:#f59e0b;color:#000;}
+.section-read-btn{display:inline-flex;align-items:center;gap:0.4rem;padding:0.45rem 1rem;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);border-radius:7px;cursor:pointer;font-family:monospace;font-size:0.7rem;color:#f59e0b;margin-bottom:1rem;}
+.section-read-btn:hover{background:rgba(245,158,11,0.2);}
+.section-read-btn.reading{background:rgba(239,68,68,0.1);border-color:rgba(239,68,68,0.3);color:#ef4444;}
 </style>
 </head>
 <body>
@@ -127,6 +138,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
   <div class="quiz-num">Quiz 1</div>
   <div class="quiz-title">Central Tendency &amp; Measurement Scales</div>
 </div>
+
+<button class="section-read-btn" onclick="readSection(this,'q1')">🔊 Read Entire Section Aloud</button>
 
 <div class="q-card">
   <div class="q-top"><span class="q-num">Q1</span><span class="q-text">What is the mean in statistics?</span></div>
@@ -257,6 +270,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
   <div class="quiz-title">Distribution, Dispersion &amp; Correlation</div>
 </div>
 
+<button class="section-read-btn" onclick="readSection(this,'q2')">🔊 Read Entire Section Aloud</button>
+
 <div class="q-card">
   <div class="q-top"><span class="q-num">Q11</span><span class="q-text">Which is a measure of dispersion?</span></div>
   <div class="answer-badge">✓ B) Standard Deviation</div>
@@ -378,6 +393,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
   <div class="quiz-num">Quiz 3</div>
   <div class="quiz-title">Inferential Statistics &amp; Statistical Tests</div>
 </div>
+
+<button class="section-read-btn" onclick="readSection(this,'q3')">🔊 Read Entire Section Aloud</button>
 
 <div class="q-card">
   <div class="q-top"><span class="q-num">Q21</span><span class="q-text">Which test compares means between groups?</span></div>
@@ -503,6 +520,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
   <div class="quiz-title">SEM Foundations &amp; SmartPLS</div>
 </div>
 
+<button class="section-read-btn" onclick="readSection(this,'q4')">🔊 Read Entire Section Aloud</button>
+
 <div class="q-card">
   <div class="q-top"><span class="q-num">Q31</span><span class="q-text">Primary advantage of SEM over regression?</span></div>
   <div class="answer-badge">✓ C) Simultaneous measurement and structural models</div>
@@ -624,6 +643,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
   <div class="quiz-title">Advanced SEM &amp; Reflection</div>
 </div>
 
+<button class="section-read-btn" onclick="readSection(this,'q5')">🔊 Read Entire Section Aloud</button>
+
 <div class="q-card">
   <div class="q-top"><span class="q-num">Q41</span><span class="q-text">Best SEM for exploratory research with limited theory?</span></div>
   <div class="answer-badge">✓ C) PLS-SEM</div>
@@ -699,6 +720,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
   <div class="quiz-num">Quiz 6</div>
   <div class="quiz-title">Mixed Methods Research</div>
 </div>
+
+<button class="section-read-btn" onclick="readSection(this,'q6')">🔊 Read Entire Section Aloud</button>
 
 <div class="q-card">
   <div class="q-top"><span class="q-num">Q50</span><span class="q-text">What defines mixed methods research?</span></div>
@@ -778,6 +801,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
   <div class="quiz-num">Scenario Questions</div>
   <div class="quiz-title">Real-World Application & Viva Challenge Questions</div>
 </div>
+
+<button class="section-read-btn" onclick="readSection(this,'scenarios')">🔊 Read Entire Section Aloud</button>
 
 <div class="q-card">
   <div class="q-top"><span class="q-num">S1</span><span class="q-text">Hotel satisfaction scale 1-5. What measurement scale?</span></div>
@@ -1221,6 +1246,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
   <div class="quiz-title">Central Limit Theorem</div>
 </div>
 
+<button class="section-read-btn" onclick="readSection(this,'clt')">🔊 Read Entire Section Aloud</button>
+
 <div class="q-card">
   <div class="q-top"><span class="q-num">CLT1</span><span class="q-text">What does the Central Limit Theorem state?</span></div>
   <div class="answer-badge">✓ B) Sample means are normally distributed when n is large enough regardless of population shape</div>
@@ -1347,5 +1374,103 @@ function stopReading(){
 })();
 </script>
 
+<!-- TTS BAR -->
+<div class="tts-bar" id="tts-bar">
+  <span class="tts-title" id="tts-title">Reading...</span>
+  <button class="tts-btn tts-pause" id="tts-pause" onclick="ttsPause()">⏸ Pause</button>
+  <button class="tts-btn tts-stop" onclick="ttsStop()">■ Stop</button>
+</div>
+
+<script>
+var ttsActive = null;
+var ttsPaused = false;
+var ttsVoice = null;
+
+// Load British female voice
+function loadVoice(){
+  var voices = window.speechSynthesis.getVoices();
+  // Priority: Google UK English Female > Microsoft Hazel > any en-GB female
+  ttsVoice = voices.find(function(v){ return v.name === 'Google UK English Female'; })
+    || voices.find(function(v){ return v.name.indexOf('Hazel') > -1; })
+    || voices.find(function(v){ return v.lang === 'en-GB' && v.name.toLowerCase().indexOf('female') > -1; })
+    || voices.find(function(v){ return v.lang === 'en-GB'; })
+    || voices.find(function(v){ return v.lang.indexOf('en') === 0; })
+    || null;
+}
+
+window.speechSynthesis.onvoiceschanged = loadVoice;
+loadVoice();
+
+function readSection(btn, sectionId){
+  ttsStop();
+  var el = document.getElementById(sectionId);
+  if(!el) return;
+  
+  // Get all script text from this section
+  var scripts = el.querySelectorAll('.script-text');
+  var fullText = '';
+  scripts.forEach(function(s){
+    var qcard = s.closest('.q-card');
+    var qtext = qcard ? qcard.querySelector('.q-text') : null;
+    var answer = qcard ? qcard.querySelector('.answer-badge') : null;
+    if(qtext) fullText += qtext.textContent.trim() + '. ';
+    if(answer) fullText += 'Correct answer: ' + answer.textContent.replace('✓','').trim() + '. ';
+    fullText += s.innerText.replace(/YOUR DISCUSSION SCRIPT/gi,'').replace(/VIVA ALERT/gi,'Viva alert. ').trim() + ' ... ';
+  });
+  
+  if(!fullText.trim()){ return; }
+  
+  var sectionTitle = el.querySelector('.quiz-title');
+  var title = sectionTitle ? sectionTitle.textContent : 'Section';
+  document.getElementById('tts-title').textContent = '🎤 ' + title;
+  document.getElementById('tts-bar').classList.add('active');
+  btn.classList.add('reading');
+  btn.innerHTML = '⏹ Stop Reading Section';
+  ttsActive = btn;
+  ttsPaused = false;
+
+  // Split into chunks (browsers limit utterance length)
+  var chunks = fullText.match(/.{1,800}(?:\s|$)/g) || [fullText];
+  var idx = 0;
+  
+  function speakNext(){
+    if(idx >= chunks.length){ ttsStop(); return; }
+    var utter = new SpeechSynthesisUtterance(chunks[idx]);
+    utter.rate = 0.88;
+    utter.pitch = 1.05;
+    if(ttsVoice) utter.voice = ttsVoice;
+    utter.lang = 'en-GB';
+    utter.onend = function(){ idx++; speakNext(); };
+    utter.onerror = function(){ ttsStop(); };
+    window.speechSynthesis.speak(utter);
+    idx++;
+  }
+  speakNext();
+}
+
+function ttsPause(){
+  if(ttsPaused){
+    window.speechSynthesis.resume();
+    document.getElementById('tts-pause').textContent = '⏸ Pause';
+    ttsPaused = false;
+  } else {
+    window.speechSynthesis.pause();
+    document.getElementById('tts-pause').textContent = '▶ Resume';
+    ttsPaused = true;
+  }
+}
+
+function ttsStop(){
+  window.speechSynthesis.cancel();
+  document.getElementById('tts-bar').classList.remove('active');
+  document.getElementById('tts-pause').textContent = '⏸ Pause';
+  if(ttsActive){
+    ttsActive.classList.remove('reading');
+    ttsActive.innerHTML = '🔊 Read Entire Section Aloud';
+    ttsActive = null;
+  }
+  ttsPaused = false;
+}
+</script>
 </body>
 </html>

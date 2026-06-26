@@ -1406,42 +1406,55 @@ function readSection(btn, sectionId){
   var el = document.getElementById(sectionId);
   if(!el) return;
   
-  // Get all script text from this section
-  var scripts = el.querySelectorAll('.script-text');
-  var fullText = '';
-  scripts.forEach(function(s){
-    var qcard = s.closest('.q-card');
-    var qtext = qcard ? qcard.querySelector('.q-text') : null;
-    var answer = qcard ? qcard.querySelector('.answer-badge') : null;
-    if(qtext) fullText += qtext.textContent.trim() + '. ';
-    if(answer) fullText += 'Correct answer: ' + answer.textContent.replace('✓','').trim() + '. ';
-    fullText += s.innerText.replace(/YOUR DISCUSSION SCRIPT/gi,'').replace(/VIVA ALERT/gi,'Viva alert. ').trim() + ' ... ';
+  // Collect text from all question cards in section
+  var parts = [];
+  var qcards = el.querySelectorAll('.q-card');
+  qcards.forEach(function(card){
+    var qtext = card.querySelector('.q-text');
+    var answer = card.querySelector('.answer-badge');
+    var scripts = card.querySelectorAll('.script-text p, .script-text li');
+    if(qtext) parts.push(qtext.textContent.trim() + '.');
+    if(answer) parts.push('Correct answer: ' + answer.textContent.replace('\u2713','').trim() + '.');
+    scripts.forEach(function(s){
+      var t = s.textContent.trim();
+      if(t && t.length > 10) parts.push(t);
+    });
+    parts.push('...');
   });
   
-  if(!fullText.trim()){ return; }
+  var fullText = parts.join(' ').replace(/\s+/g,' ').trim();
+  if(!fullText){ return; }
   
   var sectionTitle = el.querySelector('.quiz-title');
   var title = sectionTitle ? sectionTitle.textContent : 'Section';
-  document.getElementById('tts-title').textContent = '🎤 ' + title;
+  document.getElementById('tts-title').textContent = '\uD83C\uDFA4 ' + title;
   document.getElementById('tts-bar').classList.add('active');
   btn.classList.add('reading');
-  btn.innerHTML = '⏹ Stop Reading Section';
+  btn.innerHTML = '\u23F9 Stop Reading Section';
   ttsActive = btn;
   ttsPaused = false;
 
-  // Split into chunks (browsers limit utterance length)
-  var chunks = fullText.match(/.{1,800}(?:\s|$)/g) || [fullText];
-  var idx = 0;
+  // Split into sentence-based chunks for reliable mobile TTS
+  var chunks = [];
+  var sentences = fullText.match(/[^.!?]+[.!?]+/g) || [fullText];
+  var current = '';
+  sentences.forEach(function(s){
+    if((current+s).length > 600){ if(current) chunks.push(current.trim()); current = s; }
+    else current += s;
+  });
+  if(current.trim()) chunks.push(current.trim());
+  if(!chunks.length) chunks = [fullText.substring(0,600)];
   
+  var idx = 0;
   function speakNext(){
     if(idx >= chunks.length){ ttsStop(); return; }
     var utter = new SpeechSynthesisUtterance(chunks[idx]);
-    utter.rate = 0.88;
+    utter.rate = 0.85;
     utter.pitch = 1.05;
     if(ttsVoice) utter.voice = ttsVoice;
     utter.lang = 'en-GB';
     utter.onend = function(){ idx++; speakNext(); };
-    utter.onerror = function(){ ttsStop(); };
+    utter.onerror = function(e){ console.log('TTS err',e); idx++; speakNext(); };
     window.speechSynthesis.speak(utter);
     idx++;
   }

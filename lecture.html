@@ -1047,10 +1047,26 @@ function _mLoadVoice(){var v=window.speechSynthesis.getVoices();_mTtsVoice=v.fin
 window.speechSynthesis.onvoiceschanged=_mLoadVoice;_mLoadVoice();
 function masterReadAloud(btn,contentId){
   masterTtsStop();
+  // Collect text from all visible text nodes explicitly
   var el=document.getElementById(contentId);
   if(!el)return;
-  var text=el.innerText||el.textContent;
-  text=text.replace(/YOUR DISCUSSION SCRIPT/gi,'').replace(/VIVA ALERT/gi,'Viva alert.').replace(/\n\n/g,' ').trim();
+  var parts=[];
+  var nodes=el.querySelectorAll('h1,h2,h3,h4,h5,h6,p,li,td,th,.note-concept,.timing,.talk-points li,.script-text p,.callout p,blockquote');
+  if(nodes.length>0){
+    nodes.forEach(function(n){
+      var t=(n.innerText||n.textContent||'').trim();
+      if(t) parts.push(t);
+    });
+  } else {
+    // fallback - walk all text nodes
+    var walker=document.createTreeWalker(el,NodeFilter.SHOW_TEXT,null,false);
+    var node;
+    while(node=walker.nextNode()){
+      var t=node.nodeValue.trim();
+      if(t.length>3) parts.push(t);
+    }
+  }
+  var text=parts.join('. ').replace(/\.+/g,'.').replace(/\s+/g,' ').trim();
   if(!text)return;
   _mTtsBtn=btn;
   btn.innerHTML='⏹ Stop Reading';
@@ -1059,15 +1075,24 @@ function masterReadAloud(btn,contentId){
   btn.style.color='#ef4444';
   document.getElementById('master-tts-title').textContent='🎤 Reading: '+btn.getAttribute('data-label');
   document.getElementById('master-tts-bar').style.display='flex';
-  var chunks=text.match(/[\s\S]{1,800}(?:\s|$)/g)||[text];
+  // Split into 600 char chunks for reliable TTS on mobile
+  var chunks=[];
+  var sentences=text.match(/[^.!?]+[.!?]+/g)||[text];
+  var current='';
+  sentences.forEach(function(s){
+    if((current+s).length>600){if(current)chunks.push(current.trim());current=s;}
+    else current+=s;
+  });
+  if(current.trim())chunks.push(current.trim());
+  if(!chunks.length)chunks=[text.substring(0,600)];
   var idx=0;
   function next(){
     if(idx>=chunks.length){masterTtsStop();return;}
     var u=new SpeechSynthesisUtterance(chunks[idx]);
-    u.rate=0.88;u.pitch=1.05;u.lang='en-GB';
+    u.rate=0.85;u.pitch=1.05;u.lang='en-GB';
     if(_mTtsVoice)u.voice=_mTtsVoice;
     u.onend=function(){idx++;next();};
-    u.onerror=function(){masterTtsStop();};
+    u.onerror=function(e){console.log('TTS error',e);idx++;next();};
     window.speechSynthesis.speak(u);idx++;
   }
   next();

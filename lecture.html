@@ -171,6 +171,12 @@ li strong{color:var(--text);}
     <li><a href="index.html">← Home</a></li>
   </ul>
 </nav>
+<div style="text-align:center;padding:0.75rem 0 0.5rem;">
+  <button onclick="masterReadAloud(this,'lecture-body')" data-label="Full Lecture"
+    style="padding:0.6rem 1.5rem;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);border-radius:8px;cursor:pointer;font-family:monospace;font-size:0.78rem;color:#f59e0b;font-weight:700;">
+    🔊 Read All Aloud
+  </button>
+</div>
 
 <!-- PROGRESS -->
 <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
@@ -1028,6 +1034,55 @@ const obs = new IntersectionObserver(entries=>{
   });
 },{threshold:0.3});
 sections.forEach(s=>obs.observe(s));
+</script>
+
+<div id="master-tts-bar" style="position:fixed;bottom:0;left:0;right:0;background:#111827;border-top:2px solid #f59e0b;padding:0.65rem 1.25rem;display:none;align-items:center;gap:0.75rem;z-index:999;">
+  <span id="master-tts-title" style="font-family:monospace;font-size:0.72rem;color:#e2e8f0;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Reading...</span>
+  <button onclick="masterTtsPause()" id="master-tts-pause" style="padding:0.35rem 0.85rem;border:none;border-radius:5px;font-family:monospace;font-size:0.7rem;cursor:pointer;font-weight:700;background:#f59e0b;color:#000;">⏸ Pause</button>
+  <button onclick="masterTtsStop()" style="padding:0.35rem 0.85rem;border:none;border-radius:5px;font-family:monospace;font-size:0.7rem;cursor:pointer;font-weight:700;background:#ef4444;color:#fff;">■ Stop</button>
+</div>
+<script>
+var _mTtsVoice=null;var _mTtsPaused=false;var _mTtsBtn=null;
+function _mLoadVoice(){var v=window.speechSynthesis.getVoices();_mTtsVoice=v.find(function(x){return x.name==='Google UK English Female';})||v.find(function(x){return x.name.indexOf('Hazel')>-1;})||v.find(function(x){return x.lang==='en-GB';})||v.find(function(x){return x.lang.indexOf('en')===0;})||null;}
+window.speechSynthesis.onvoiceschanged=_mLoadVoice;_mLoadVoice();
+function masterReadAloud(btn,contentId){
+  masterTtsStop();
+  var el=document.getElementById(contentId);
+  if(!el)return;
+  var text=el.innerText||el.textContent;
+  text=text.replace(/YOUR DISCUSSION SCRIPT/gi,'').replace(/VIVA ALERT/gi,'Viva alert.').replace(/\n\n/g,' ').trim();
+  if(!text)return;
+  _mTtsBtn=btn;
+  btn.innerHTML='⏹ Stop Reading';
+  btn.style.background='rgba(239,68,68,0.15)';
+  btn.style.borderColor='rgba(239,68,68,0.4)';
+  btn.style.color='#ef4444';
+  document.getElementById('master-tts-title').textContent='🎤 Reading: '+btn.getAttribute('data-label');
+  document.getElementById('master-tts-bar').style.display='flex';
+  var chunks=text.match(/[\s\S]{1,800}(?:\s|$)/g)||[text];
+  var idx=0;
+  function next(){
+    if(idx>=chunks.length){masterTtsStop();return;}
+    var u=new SpeechSynthesisUtterance(chunks[idx]);
+    u.rate=0.88;u.pitch=1.05;u.lang='en-GB';
+    if(_mTtsVoice)u.voice=_mTtsVoice;
+    u.onend=function(){idx++;next();};
+    u.onerror=function(){masterTtsStop();};
+    window.speechSynthesis.speak(u);idx++;
+  }
+  next();
+}
+function masterTtsPause(){
+  if(_mTtsPaused){window.speechSynthesis.resume();document.getElementById('master-tts-pause').textContent='⏸ Pause';_mTtsPaused=false;}
+  else{window.speechSynthesis.pause();document.getElementById('master-tts-pause').textContent='▶ Resume';_mTtsPaused=true;}
+}
+function masterTtsStop(){
+  window.speechSynthesis.cancel();
+  document.getElementById('master-tts-bar').style.display='none';
+  document.getElementById('master-tts-pause').textContent='⏸ Pause';
+  _mTtsPaused=false;
+  if(_mTtsBtn){_mTtsBtn.innerHTML='🔊 Read All Aloud';_mTtsBtn.style.background='rgba(245,158,11,0.1)';_mTtsBtn.style.borderColor='rgba(245,158,11,0.3)';_mTtsBtn.style.color='#f59e0b';_mTtsBtn=null;}
+}
 </script>
 </body>
 </html>

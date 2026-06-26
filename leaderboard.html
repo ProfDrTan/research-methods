@@ -6,7 +6,7 @@
 <title>Leaderboard — Dr. Tan</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
-body{background:#020817;color:#e2e8f0;font-family:'Segoe UI',Arial,sans-serif;min-height:100vh;padding:1.5rem;}
+body{background:#020817;color:#e2e8f0;font-family:Arial,sans-serif;min-height:100vh;padding:1.5rem;}
 h1{font-size:1.6rem;font-weight:700;color:#00e5ff;margin-bottom:0.25rem;font-family:monospace;}
 .sub{color:#64748b;font-size:0.85rem;margin-bottom:1.5rem;}
 .filters{display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1.25rem;}
@@ -16,27 +16,17 @@ table{width:100%;border-collapse:collapse;}
 th{padding:0.6rem 1rem;text-align:left;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:#64748b;border-bottom:1px solid #1e2d45;}
 td{padding:0.75rem 1rem;border-bottom:1px solid #0f172a;font-size:0.95rem;}
 tr:hover td{background:rgba(255,255,255,0.02);}
-.rank{font-family:monospace;color:#64748b;width:40px;}
-.rank.gold{color:#f59e0b;font-size:1.2rem;}
-.rank.silver{color:#94a3b8;font-size:1.1rem;}
-.rank.bronze{color:#b45309;font-size:1.1rem;}
-.name{font-weight:700;font-size:1rem;}
-.section{color:#a78bfa;font-size:0.78rem;}
-.score{font-family:monospace;font-size:1rem;color:#00e5ff;}
-.pct{font-family:monospace;font-weight:700;font-size:1rem;}
-.pct.high{color:#10b981;}
-.pct.mid{color:#f59e0b;}
-.pct.low{color:#ef4444;}
 .bar{height:6px;background:#1e2d45;border-radius:3px;margin-top:4px;}
-.bar-fill{height:100%;border-radius:3px;transition:width 0.5s;}
-.empty{text-align:center;padding:4rem;color:#64748b;font-size:1rem;}
-.refresh{font-family:monospace;font-size:0.72rem;color:#64748b;margin-top:1rem;}
+.bar-fill{height:100%;border-radius:3px;}
+.empty{text-align:center;padding:4rem;color:#64748b;}
+.refresh{font-family:monospace;font-size:0.72rem;color:#64748b;margin-top:1rem;display:flex;justify-content:space-between;align-items:center;}
+.ref-btn{padding:0.3rem 0.75rem;border:1px solid #1e2d45;border-radius:5px;background:transparent;color:#64748b;cursor:pointer;font-size:0.72rem;}
+.ref-btn:hover{color:#00e5ff;border-color:#00e5ff;}
 </style>
 </head>
 <body>
 <h1>🏆 Live Leaderboard</h1>
-<div class="sub">Research Methods — Dr. Tan · Auto-refreshes every 10 seconds</div>
-
+<div class="sub">Research Methods — Dr. Tan · <span id="last-update">Loading...</span></div>
 <div class="filters" id="filters">
   <button class="fb active" onclick="setFilter('all',this)">All Sections</button>
   <button class="fb" onclick="setFilter(0,this)">Quiz 1</button>
@@ -44,140 +34,61 @@ tr:hover td{background:rgba(255,255,255,0.02);}
   <button class="fb" onclick="setFilter(2,this)">Quiz 3</button>
   <button class="fb" onclick="setFilter(3,this)">Quiz 4</button>
   <button class="fb" onclick="setFilter(4,this)">Quiz 5</button>
-  <button class="fb" onclick="setFilter(5,this)">Quiz 6</button>
 </div>
-
-<div style="background:#0f172a;border:1px solid #1e2d45;border-radius:10px;padding:1rem;margin-bottom:1.25rem;">
-  <div style="font-size:0.7rem;letter-spacing:0.1em;color:#64748b;text-transform:uppercase;margin-bottom:0.75rem;">🧪 Test Score Injector — Dr. Tan Only</div>
-  <div style="display:flex;gap:0.5rem;flex-wrap:wrap;align-items:center;margin-bottom:0.75rem;">
-    <input type="text" id="test-name" placeholder="Student name" value="Test Student"
-      style="background:#111827;border:1px solid #1e2d45;border-radius:6px;padding:0.45rem 0.75rem;color:#e2e8f0;font-size:0.85rem;flex:1;min-width:150px;">
-    <input type="number" id="test-score" placeholder="Score" min="0" max="19" value="12"
-      style="background:#111827;border:1px solid #1e2d45;border-radius:6px;padding:0.45rem 0.75rem;color:#e2e8f0;font-size:0.85rem;width:80px;">
-  </div>
-  <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
-    <button onclick="injectScore(0,19)" style="padding:0.4rem 0.75rem;background:#1e2d45;border:1px solid #334155;border-radius:6px;color:#a78bfa;font-size:0.78rem;cursor:pointer;">Q1 (19q)</button>
-    <button onclick="injectScore(1,19)" style="padding:0.4rem 0.75rem;background:#1e2d45;border:1px solid #334155;border-radius:6px;color:#a78bfa;font-size:0.78rem;cursor:pointer;">Q2 (19q)</button>
-    <button onclick="injectScore(2,19)" style="padding:0.4rem 0.75rem;background:#1e2d45;border:1px solid #334155;border-radius:6px;color:#a78bfa;font-size:0.78rem;cursor:pointer;">Q3 (19q)</button>
-    <button onclick="injectScore(3,19)" style="padding:0.4rem 0.75rem;background:#1e2d45;border:1px solid #334155;border-radius:6px;color:#a78bfa;font-size:0.78rem;cursor:pointer;">Q4 (19q)</button>
-    <button onclick="injectScore(4,15)" style="padding:0.4rem 0.75rem;background:#1e2d45;border:1px solid #334155;border-radius:6px;color:#a78bfa;font-size:0.78rem;cursor:pointer;">Q5 (15q)</button>
-    <button onclick="injectAll()" style="padding:0.4rem 0.75rem;background:rgba(124,58,237,0.2);border:1px solid #7c3aed;border-radius:6px;color:#a78bfa;font-size:0.78rem;cursor:pointer;font-weight:700;">Inject All Sections</button>
-    <button onclick="clearScores()" style="padding:0.4rem 0.75rem;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:6px;color:#ef4444;font-size:0.78rem;cursor:pointer;">Clear All Scores</button>
-  </div>
-  <div id="inject-status" style="font-size:0.75rem;color:#64748b;margin-top:0.5rem;font-family:monospace;"></div>
-</div>
-
 <div id="board"></div>
-<div class="refresh" id="refresh-time"></div>
+<div class="refresh">
+  <span id="status"></span>
+  <button class="ref-btn" onclick="load()">⟳ Refresh</button>
+</div>
 
 <script>
-var WORKER = 'https://rm-students.teikkheong.workers.dev';
-var currentFilter = 'all';
+var REPO='ProfDrTan/research-methods';
+var currentFilter='all';
+var LABELS=['Scales & Tendency','Distribution & Correlation','Inferential Tests','SEM Foundations','Advanced SEM','Mixed Methods'];
 
-function setFilter(f, btn) {
-  currentFilter = f;
-  document.querySelectorAll('.fb').forEach(function(b){ b.classList.remove('active'); });
+function rawUrl(f){return 'https://raw.githubusercontent.com/'+REPO+'/main/'+f+'?t='+Date.now();}
+
+function setFilter(f,btn){
+  currentFilter=f;
+  document.querySelectorAll('.fb').forEach(function(b){b.classList.remove('active');});
   btn.classList.add('active');
   load();
 }
 
-function load() {
-  var url = WORKER + '/scores' + (currentFilter !== 'all' ? '?section='+currentFilter : '') + '&t=' + Date.now();
-  fetch(url)
-    .then(function(r){ return r.json(); })
+function load(){
+  document.getElementById('status').textContent='Loading...';
+  fetch(rawUrl('scores.json'))
+    .then(function(r){return r.json();})
     .then(function(scores){
-      scores.sort(function(a,b){ return b.pct - a.pct || b.score - a.score; });
-      var el = document.getElementById('board');
-      if(!scores.length){
-        el.innerHTML = '<div class="empty">No scores yet — students are still taking the quiz.</div>';
-        return;
+      if(!Array.isArray(scores)) scores=[];
+      var filtered=currentFilter==='all'?scores:scores.filter(function(s){return s.section==currentFilter;});
+      filtered.sort(function(a,b){return b.pct-a.pct||b.score-a.score;});
+      var el=document.getElementById('board');
+      if(!filtered.length){el.innerHTML='<div class="empty">No scores yet — students are still taking the quiz.</div>';}
+      else{
+        var medals=['🥇','🥈','🥉'];
+        var html='<table><thead><tr><th>Rank</th><th>Student</th><th>Section</th><th>Score</th><th>Result</th></tr></thead><tbody>';
+        filtered.forEach(function(s,i){
+          var c=s.pct>=75?'#10b981':s.pct>=50?'#f59e0b':'#ef4444';
+          html+='<tr><td style="color:#64748b;font-family:monospace;">'+(i<3?medals[i]:(i+1))+'</td>';
+          html+='<td style="font-weight:700;">'+s.name+'</td>';
+          html+='<td style="color:#a78bfa;font-size:0.78rem;">Q'+(s.section+1)+' '+(LABELS[s.section]||'')+'</td>';
+          html+='<td style="font-family:monospace;color:#00e5ff;">'+s.score+'/'+s.total+'</td>';
+          html+='<td><span style="font-weight:700;color:'+c+';">'+s.pct+'%</span><div class="bar"><div class="bar-fill" style="width:'+s.pct+'%;background:'+c+';"></div></div></td></tr>';
+        });
+        html+='</tbody></table>';
+        el.innerHTML=html;
       }
-      var medals = ['🥇','🥈','🥉'];
-      var sectionNames = ['Scales & Tendency','Distribution & Correlation','Inferential Tests','SEM Foundations','Advanced SEM','Mixed Methods'];
-      var html = '<table><thead><tr><th>Rank</th><th>Student</th><th>Section</th><th>Score</th><th>Result</th></tr></thead><tbody>';
-      scores.forEach(function(s, i){
-        var rankClass = i===0?'gold':i===1?'silver':i===2?'bronze':'';
-        var rankLabel = i < 3 ? medals[i] : (i+1);
-        var pctClass = s.pct>=75?'high':s.pct>=50?'mid':'low';
-        var barColor = s.pct>=75?'#10b981':s.pct>=50?'#f59e0b':'#ef4444';
-        html += '<tr>';
-        html += '<td class="rank '+rankClass+'">'+rankLabel+'</td>';
-        html += '<td class="name">'+s.name+'</td>';
-        html += '<td class="section">Q'+(s.section+1)+' '+(sectionNames[s.section]||'')+'</td>';
-        html += '<td class="score">'+s.score+'/'+s.total+'</td>';
-        html += '<td><span class="pct '+pctClass+'">'+s.pct+'%</span><div class="bar"><div class="bar-fill" style="width:'+s.pct+'%;background:'+barColor+'"></div></div></td>';
-        html += '</tr>';
-      });
-      html += '</tbody></table>';
-      el.innerHTML = html;
-      document.getElementById('refresh-time').textContent = 'Last updated: ' + new Date().toLocaleTimeString();
-    }).catch(function(){
-      document.getElementById('board').innerHTML = '<div class="empty">Connecting to server...</div>';
+      document.getElementById('last-update').textContent='Updated: '+new Date().toLocaleTimeString();
+      document.getElementById('status').textContent=filtered.length+' scores loaded';
+    }).catch(function(e){
+      document.getElementById('status').textContent='Error: '+e.message;
+      document.getElementById('board').innerHTML='<div class="empty">Could not load scores. Try refreshing.</div>';
     });
 }
 
-var SECTIONS_INFO = [
-  {label:'Quiz 1 — Scales & Tendency', total:19},
-  {label:'Quiz 2 — Distribution & Correlation', total:19},
-  {label:'Quiz 3 — Inferential Tests', total:19},
-  {label:'Quiz 4 — SEM Foundations', total:19},
-  {label:'Quiz 5 — Advanced SEM', total:15}
-];
-
-function injectScore(sectionIdx, total) {
-  var name = document.getElementById('test-name').value.trim() || 'Test Student';
-  var score = parseInt(document.getElementById('test-score').value) || 12;
-  if(score > total) score = total;
-  var pct = Math.round(score/total*100);
-  var wrong = total - score;
-  var data = {name:name, section:sectionIdx, sectionLabel:SECTIONS_INFO[sectionIdx].label, score:score, wrong:wrong, total:total, pct:pct, ts:Date.now()};
-  document.getElementById('inject-status').textContent = 'Injecting ' + name + ' into Q' + (sectionIdx+1) + '...';
-  fetch(WORKER+'/scores', {
-    method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data)
-  }).then(function(){
-    document.getElementById('inject-status').textContent = '✓ Injected: ' + name + ' · Q' + (sectionIdx+1) + ' · ' + score + '/' + total + ' (' + pct + '%)';
-    load();
-  }).catch(function(e){ document.getElementById('inject-status').textContent = 'Error: ' + e.message; });
-}
-
-function injectAll() {
-  var name = document.getElementById('test-name').value.trim() || 'Test Student';
-  var score = parseInt(document.getElementById('test-score').value) || 12;
-  var st = document.getElementById('inject-status');
-  st.textContent = 'Injecting all sections...';
-  var idx = 0;
-  function next() {
-    if(idx >= SECTIONS_INFO.length) {
-      st.textContent = '\u2713 All ' + SECTIONS_INFO.length + ' sections injected for ' + name;
-      load();
-      return;
-    }
-    var s = SECTIONS_INFO[idx];
-    var sc = Math.min(score, s.total);
-    var pct = Math.round(sc/s.total*100);
-    var data = {name:name, section:idx, sectionLabel:s.label, score:sc, wrong:s.total-sc, total:s.total, pct:pct, ts:Date.now()};
-    st.textContent = 'Injecting Q' + (idx+1) + '...';
-    fetch(WORKER+'/scores', {
-      method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data)
-    }).then(function(){ idx++; next(); })
-    .catch(function(e){ st.textContent = 'Error on Q'+(idx+1)+': '+e.message; });
-  }
-  next();
-}
-
-function clearScores() {
-  if(!confirm('Clear ALL scores? This cannot be undone.')) return;
-  fetch(WORKER+'/clear', {
-    method:'POST', headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({secret:'drtan2025clear'})
-  }).then(function(){
-    document.getElementById('inject-status').textContent = '✓ All scores cleared';
-    load();
-  });
-}
-
 load();
-setInterval(load, 10000);
+setInterval(load,15000);
 </script>
 </body>
 </html>

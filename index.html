@@ -713,8 +713,33 @@ document.addEventListener('DOMContentLoaded', function(){
     enterMemberView();
     return;
   }
+  // Validate registration against GitHub — if server is empty, reset localStorage
   if(isRegistered()){
-    enterMemberView();
+    var regName = localStorage.getItem('student_name_v1')||'';
+    fetch('https://raw.githubusercontent.com/ProfDrTan/research-methods/main/students.json?t='+Date.now())
+      .then(function(r){return r.json();})
+      .then(function(students){
+        // If GitHub has no students at all, our registration is stale — clear it
+        if(!students || students.length === 0){
+          localStorage.removeItem('student_registered');
+          localStorage.removeItem('student_name_v1');
+          localStorage.removeItem('rm_v2');
+          document.getElementById('view-guest').style.display='block';
+          document.getElementById('view-member').style.display='none';
+          return;
+        }
+        // Check if THIS student is still in GitHub
+        var found = students.some(function(s){
+          return (s.first+' '+s.last).toLowerCase() === regName.toLowerCase();
+        });
+        if(found){ enterMemberView(); }
+        else {
+          localStorage.removeItem('student_registered');
+          localStorage.removeItem('student_name_v1');
+          document.getElementById('view-guest').style.display='block';
+          document.getElementById('view-member').style.display='none';
+        }
+      }).catch(function(){ enterMemberView(); }); // if GitHub unreachable, trust localStorage
   } else {
     document.getElementById('view-guest').style.display='block';
     document.getElementById('view-member').style.display='none';

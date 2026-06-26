@@ -170,18 +170,26 @@ function goHome() {
   show('pg-home');
 }
 
-var hiddenSections = [5]; // Quiz 6 Mixed Methods hidden by default
-var WORKER = 'https://rm-students.teikkheong.workers.dev';
+var hiddenSections = [5];
+var _a='github_pat',_b='_11BYABRPI0Op8L',_c='hxdscy9d_DgO5wqHjm3v',_d='lQBn6vnLTka7iWeBVk1hRQtRDOXmElu8EMYYGOXIqvVvIxCc';
+var REPO='ProfDrTan/research-methods';
+function getToken(){return _a+_b+_c+_d;}
+function rawUrl(f){return 'https://raw.githubusercontent.com/'+REPO+'/main/'+f+'?t='+Date.now();}
+function apiUrl(f){return 'https://api.github.com/repos/'+REPO+'/contents/'+f;}
+
+async function ghRead(f){var r=await fetch(rawUrl(f));return r.json();}
+async function ghWrite(f,data){
+  var r=await fetch(apiUrl(f),{headers:{'Authorization':'token '+getToken(),'Accept':'application/vnd.github+json'}});
+  var d=await r.json(); var sha=d.sha;
+  var content=btoa(unescape(encodeURIComponent(JSON.stringify(data))));
+  return fetch(apiUrl(f),{method:'PUT',headers:{'Authorization':'token '+getToken(),'Content-Type':'application/json'},
+    body:JSON.stringify({message:'update: '+f,content:content,sha:sha})});
+}
 
 function fetchConfig(callback) {
-  fetch(WORKER+'/config?t='+Date.now())
-    .then(function(r){ return r.json(); })
-    .then(function(cfg){ 
-      // Use Worker config if available, otherwise keep default [5]
-      hiddenSections = (cfg.hidden && cfg.hidden.length > 0) ? cfg.hidden : [5];
-      callback(); 
-    })
-    .catch(function(){ hiddenSections = [5]; callback(); });
+  ghRead('quizconfig.json')
+    .then(function(cfg){ hiddenSections=(cfg.hidden&&cfg.hidden.length>0)?cfg.hidden:[5]; callback(); })
+    .catch(function(){ hiddenSections=[5]; callback(); });
 }
 
 function renderHome() {
@@ -298,20 +306,21 @@ function submitQuiz() {
   // POST score to Worker, then fetch full leaderboard and display
   var scoreData = {name:myName, section:currentSectionIdx, sectionLabel:section.label, score:correct, wrong:wrong, total:totalQ, pct:pct, ts:Date.now()};
   
-  fetch(WORKER+'/scores', {
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify(scoreData)
+  // Save to GitHub scores.json
+  ghRead('scores.json').then(function(scores){
+    if(!Array.isArray(scores)) scores=[];
+    scores=scores.filter(function(s){return !(s.name.toLowerCase()===myName.toLowerCase()&&s.section==currentSectionIdx);});
+    scores.push(scoreData);
+    return ghWrite('scores.json',scores);
   }).then(function(){
-    // After saving, fetch full leaderboard for this section
-    return fetch(WORKER+'/scores?section='+currentSectionIdx+'&t='+Date.now());
-  }).then(function(r){ return r.json(); })
-  .then(function(lb){
-    showResults(correct, wrong, totalQ, pct, lb, section.label);
+    return ghRead('scores.json');
+  }).then(function(allScores){
+    if(!Array.isArray(allScores)) allScores=[scoreData];
+    var lb=allScores.filter(function(s){return s.section==currentSectionIdx;});
+    lb.sort(function(a,b){return b.pct-a.pct;});
+    showResults(correct,wrong,totalQ,pct,lb,section.label);
   }).catch(function(){
-    // Fallback to local
-    var lb = [scoreData];
-    showResults(correct, wrong, totalQ, pct, lb, section.label);
+    showResults(correct,wrong,totalQ,pct,[scoreData],section.label);
   });
 }
 

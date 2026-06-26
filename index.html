@@ -563,6 +563,7 @@ var WORKER_API = 'https://rm-students.teikkheong.workers.dev';
 function submitRegistration(){
   var first=document.getElementById('f-first').value.trim();
   var last=document.getElementById('f-last').value.trim();
+  var email=document.getElementById('f-email')?document.getElementById('f-email').value.trim():'';
   var uni=document.getElementById('f-uni').value.trim();
   var country=document.getElementById('f-country').value;
   var prog=document.getElementById('f-prog').value;
@@ -570,11 +571,11 @@ function submitRegistration(){
   var domain=document.getElementById('f-domain').value.trim();
   var tool=document.getElementById('f-tool').value;
   var challenge=document.getElementById('f-challenge').value.trim();
-  if(!first||!last||!country||!prog||!stage){alert('Please fill in all required fields.');return;}
+  if(!first||!last||!email||!country||!prog||!stage){alert('Please fill in all required fields including email.');return;}
   var btn=document.getElementById('submit-btn');
   btn.disabled=true; btn.textContent='Registering...';
 
-  var student = {first:first,last:last,uni:uni,country:country,prog:prog,stage:stage,domain:domain,tool:tool,challenge:challenge,ts:Date.now()};
+  var student = {first:first,last:last,email:email,uni:uni,country:country,prog:prog,stage:stage,domain:domain,tool:tool,challenge:challenge,ts:Date.now()};
 
   // Save to localStorage immediately — works even if Worker is offline
   var data=getData();

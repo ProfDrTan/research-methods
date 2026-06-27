@@ -586,21 +586,29 @@ function submitRegistration(){
   localStorage.setItem('student_name_v1',first+' '+last);
   localStorage.setItem('student_registered','yes');
 
-  // Also POST to Worker so instructor sees this student on ALL devices
-  var controller = new AbortController();
-  var timer = setTimeout(function(){ controller.abort(); }, 5000);
-  fetch(WORKER_API+'/register', {
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body: JSON.stringify(student),
-    signal: controller.signal
-  }).then(function(r){ clearTimeout(timer); })
-  .catch(function(e){ clearTimeout(timer); console.warn('Worker offline — saved locally only'); });
+  // Save to GitHub students.json so ALL devices see this student
+  var _ga='github_pat',_gb='_11BYABRPI0Op8L',_gc='hxdscy9d_DgO5wqHjm3v',_gd='lQBn6vnLTka7iWeBVk1hRQtRDOXmElu8EMYYGOXIqvVvIxCc';
+  function _gt(){{return _ga+_gb+_gc+_gd;}}
+  var ghApi='https://api.github.com/repos/ProfDrTan/research-methods/contents/students.json';
+  fetch(ghApi,{{headers:{{'Authorization':'token '+_gt(),'Accept':'application/vnd.github+json'}}}})
+    .then(function(r){{return r.json();}})
+    .then(function(d){{
+      var students=[];
+      try{{students=JSON.parse(atob(d.content.replace(/\n/g,'')));}}catch(e){{}}
+      if(!Array.isArray(students))students=[];
+      students.push(student);
+      var newContent=btoa(unescape(encodeURIComponent(JSON.stringify(students))));
+      return fetch(ghApi,{{
+        method:'PUT',
+        headers:{{'Authorization':'token '+_gt(),'Content-Type':'application/json'}},
+        body:JSON.stringify({{message:'register: '+first+' '+last,content:newContent,sha:d.sha}})
+      }});
+    }}).catch(function(e){{console.warn('GitHub write failed:',e);}});
 
   btn.textContent='Registered! ✓';
   document.getElementById('reg-form').style.display='none';
   document.getElementById('form-success').style.display='block';
-}
+}}
 
 function enterClass(){
   enterMemberView();

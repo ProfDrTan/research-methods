@@ -537,6 +537,17 @@ function getData(){
 function saveData(arr){localStorage.setItem(KEY,JSON.stringify(arr));}
 function isRegistered(){return localStorage.getItem('student_registered')==='yes';}
 
+var _dashPoll=null;
+function fetchAndRender(){
+  fetch('https://raw.githubusercontent.com/ProfDrTan/research-methods/main/students.json?t='+Date.now())
+    .then(function(r){return r.json();})
+    .then(function(students){
+      if(Array.isArray(students)) renderDashboard(students);
+    }).catch(function(){
+      renderDashboard(getData());
+    });
+}
+
 function enterMemberView(){
   document.getElementById('view-guest').style.display='none';
   document.getElementById('view-member').style.display='block';
@@ -544,7 +555,9 @@ function enterMemberView(){
   document.getElementById('nav-member').style.display='flex';
   var name=localStorage.getItem('student_name_v1')||'';
   if(name) document.getElementById('wb-title').textContent='Welcome, '+name.split(' ')[0]+'!';
-  renderDashboard(getData());
+  fetchAndRender();
+  if(_dashPoll) clearInterval(_dashPoll);
+  _dashPoll = setInterval(fetchAndRender, 10000);
 }
 
 var WORKER_API = 'https://rm-students.teikkheong.workers.dev';

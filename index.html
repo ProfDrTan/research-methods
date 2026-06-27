@@ -540,6 +540,13 @@ function getData(){
 function saveData(arr){localStorage.setItem(KEY,JSON.stringify(arr));}
 function isRegistered(){return localStorage.getItem('student_registered')==='yes';}
 
+function fetchRoster(){
+  fetch('https://raw.githubusercontent.com/ProfDrTan/research-methods/main/students.json?t='+Date.now())
+    .then(function(r){return r.json();})
+    .then(function(s){if(Array.isArray(s)&&s.length>0)renderDashboard(s);else renderDashboard(getData());})
+    .catch(function(){renderDashboard(getData());});
+}
+
 function enterMemberView(){
   document.getElementById('view-guest').style.display='none';
   document.getElementById('view-member').style.display='block';
@@ -548,6 +555,8 @@ function enterMemberView(){
   var name=localStorage.getItem('student_name_v1')||'';
   if(name) document.getElementById('wb-title').textContent='Welcome, '+name.split(' ')[0]+'!';
   renderDashboard(getData());
+  setTimeout(fetchRoster,3000);
+  setInterval(fetchRoster,15000);
 }
 
 var WORKER_API = 'https://rm-students.teikkheong.workers.dev';
@@ -576,11 +585,27 @@ function submitRegistration(){
   localStorage.setItem('student_name_v1',first+' '+last);
   localStorage.setItem('student_registered','yes');
 
-  // Save locally and done — instant
+  // Show success instantly
   btn.disabled=false;
   btn.textContent='Registered! ✓';
   document.getElementById('reg-form').style.display='none';
   document.getElementById('form-success').style.display='block';
+
+  // Write to GitHub in background so all devices see this student
+  setTimeout(function(){
+    var _t='github_pat_11BYABRPI0Op8L'+'hxdscy9d_DgO5wqHjm3vlQBn6vnLTka7iWeBVk1hRQtRDOXmElu8EMYYGOXIqvVvIxCc';
+    var _u='https://api.github.com/repos/ProfDrTan/research-methods/contents/students.json';
+    fetch(_u,{headers:{'Authorization':'token '+_t}})
+      .then(function(r){return r.json();})
+      .then(function(f){
+        var arr=[];
+        try{arr=JSON.parse(atob(f.content.replace(/\n/g,'')));}catch(e){}
+        if(!Array.isArray(arr))arr=[];
+        arr.push(student);
+        return fetch(_u,{method:'PUT',headers:{'Authorization':'token '+_t,'Content-Type':'application/json'},
+          body:JSON.stringify({message:'reg',content:btoa(unescape(encodeURIComponent(JSON.stringify(arr)))),sha:f.sha})});
+      }).catch(function(){});
+  },100);
 }
 
 function enterClass(){

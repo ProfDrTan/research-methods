@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SmartPLS Hub — Dr. Tan</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--bg:#020817;--bg2:#0b1120;--bg3:#111827;--surface:#161f30;--border:#1e2d45;--cyan:#00e5ff;--violet:#7c3aed;--green:#10b981;--amber:#f59e0b;--red:#ef4444;--text:#e2e8f0;--muted:#64748b;--mono:'Space Mono',monospace;--sans:'Space Grotesk',sans-serif;}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;}
+nav{background:var(--bg3);border-bottom:1px solid var(--border);padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:52px;position:sticky;top:0;z-index:100;}
+.brand{font-family:var(--mono);font-size:0.82rem;color:var(--cyan);}
+.nav-links a{color:var(--muted);text-decoration:none;margin-left:1rem;font-size:0.82rem;}
+.nav-links a:hover{color:var(--cyan);}
+.hero{background:linear-gradient(135deg,#0b1120 0%,#111827 100%);border-bottom:1px solid var(--border);padding:3rem 1.5rem;}
+.hero-inner{max-width:900px;margin:0 auto;}
+.hero-badge{display:inline-block;font-family:var(--mono);font-size:0.65rem;letter-spacing:0.12em;color:var(--violet);background:rgba(124,58,237,0.1);border:1px solid rgba(124,58,237,0.25);border-radius:4px;padding:0.2rem 0.6rem;margin-bottom:1rem;text-transform:uppercase;}
+.hero h1{font-size:2rem;font-weight:700;margin-bottom:0.75rem;line-height:1.2;}
+.hero h1 span{color:var(--cyan);}
+.hero p{color:var(--muted);font-size:1rem;line-height:1.6;max-width:650px;margin-bottom:1.5rem;}
+.hero-tags{display:flex;gap:0.5rem;flex-wrap:wrap;}
+.tag{font-family:var(--mono);font-size:0.68rem;padding:0.25rem 0.65rem;border-radius:4px;border:1px solid var(--border);color:var(--muted);}
+.tag.green{border-color:rgba(16,185,129,0.3);color:var(--green);background:rgba(16,185,129,0.06);}
+.tag.amber{border-color:rgba(245,158,11,0.3);color:var(--amber);background:rgba(245,158,11,0.06);}
+.tag.violet{border-color:rgba(124,58,237,0.3);color:#a78bfa;background:rgba(124,58,237,0.06);}
+
+.wrap{max-width:900px;margin:0 auto;padding:2rem 1.5rem;}
+.section-label{font-family:var(--mono);font-size:0.65rem;letter-spacing:0.12em;color:var(--muted);text-transform:uppercase;margin-bottom:0.75rem;}
+.section-title{font-size:1.3rem;font-weight:700;margin-bottom:0.5rem;}
+.section-sub{color:var(--muted);font-size:0.9rem;margin-bottom:1.5rem;line-height:1.6;}
+
+/* DECISION TREE */
+.decision-tree{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.5rem;margin-bottom:2rem;}
+.dt-question{font-weight:700;font-size:0.95rem;margin-bottom:1rem;padding-left:0.75rem;border-left:3px solid var(--cyan);}
+.dt-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+@media(max-width:600px){.dt-grid{grid-template-columns:1fr;}}
+.dt-option{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:1rem;cursor:pointer;transition:all 0.2s;}
+.dt-option:hover{border-color:var(--cyan);}
+.dt-option.pls{border-color:rgba(0,229,255,0.3);}
+.dt-option.cb{border-color:rgba(245,158,11,0.3);}
+.dt-label{font-weight:700;font-size:0.9rem;margin-bottom:0.5rem;}
+.dt-label.pls{color:var(--cyan);}
+.dt-label.cb{color:var(--amber);}
+.dt-criteria{list-style:none;font-size:0.82rem;color:var(--muted);line-height:1.8;}
+.dt-criteria li:before{content:"✓ ";color:var(--green);}
+.dt-criteria li.no:before{content:"✗ ";color:var(--red);}
+
+/* CARDS */
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;margin-bottom:2rem;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.25rem;transition:all 0.2s;}
+.card:hover{border-color:var(--cyan);transform:translateY(-2px);}
+.card-icon{font-size:1.5rem;margin-bottom:0.6rem;}
+.card-title{font-weight:700;font-size:0.9rem;margin-bottom:0.4rem;}
+.card-desc{font-size:0.8rem;color:var(--muted);line-height:1.6;}
+.card a{display:inline-block;margin-top:0.75rem;font-family:var(--mono);font-size:0.65rem;color:var(--cyan);text-decoration:none;border:1px solid rgba(0,229,255,0.2);padding:0.2rem 0.6rem;border-radius:4px;}
+.card a:hover{background:rgba(0,229,255,0.08);}
+
+/* STEP GUIDE */
+.steps{counter-reset:step;margin-bottom:2rem;}
+.step{display:flex;gap:1rem;margin-bottom:1.25rem;align-items:flex-start;}
+.step-num{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--violet),#5b21b6);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:0.75rem;font-weight:700;flex-shrink:0;color:#fff;}
+.step-body{flex:1;}
+.step-title{font-weight:700;font-size:0.9rem;margin-bottom:0.3rem;}
+.step-desc{font-size:0.82rem;color:var(--muted);line-height:1.6;}
+.step-desc code{font-family:var(--mono);background:var(--bg3);padding:0.1rem 0.35rem;border-radius:3px;font-size:0.78rem;color:var(--cyan);}
+
+/* COMPARISON TABLE */
+.comp-table{width:100%;border-collapse:collapse;margin-bottom:2rem;font-size:0.85rem;}
+.comp-table th{padding:0.75rem 1rem;text-align:left;background:var(--bg3);border-bottom:2px solid var(--border);font-family:var(--mono);font-size:0.68rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);}
+.comp-table td{padding:0.7rem 1rem;border-bottom:1px solid var(--border);}
+.comp-table tr:hover td{background:rgba(255,255,255,0.02);}
+.comp-table .criterion{font-weight:600;color:var(--text);}
+.comp-table .pls-col{color:var(--cyan);}
+.comp-table .cb-col{color:var(--amber);}
+.check{color:var(--green);}
+.cross{color:var(--red);}
+
+/* THRESHOLDS */
+.thresh-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:0.75rem;margin-bottom:2rem;}
+.thresh{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1rem;text-align:center;}
+.thresh-val{font-family:var(--mono);font-size:1.4rem;font-weight:700;color:var(--cyan);margin-bottom:0.3rem;}
+.thresh-label{font-size:0.78rem;font-weight:600;margin-bottom:0.2rem;}
+.thresh-desc{font-size:0.7rem;color:var(--muted);}
+
+/* VIDEO RESOURCES */
+.video-list{display:flex;flex-direction:column;gap:0.75rem;margin-bottom:2rem;}
+.video-item{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1rem;display:flex;align-items:center;gap:1rem;text-decoration:none;transition:all 0.2s;}
+.video-item:hover{border-color:var(--cyan);}
+.vi-icon{font-size:1.5rem;flex-shrink:0;}
+.vi-title{font-weight:700;font-size:0.88rem;color:var(--text);margin-bottom:0.2rem;}
+.vi-desc{font-size:0.75rem;color:var(--muted);}
+.vi-tag{font-family:var(--mono);font-size:0.6rem;color:var(--violet);margin-top:0.3rem;}
+
+/* CALLOUT */
+.callout{background:rgba(0,229,255,0.04);border:1px solid rgba(0,229,255,0.2);border-radius:8px;padding:1rem 1.25rem;margin-bottom:1.5rem;}
+.callout-label{font-family:var(--mono);font-size:0.65rem;letter-spacing:0.1em;color:var(--cyan);text-transform:uppercase;margin-bottom:0.4rem;}
+.callout p{font-size:0.85rem;color:var(--muted);line-height:1.6;}
+.callout.warn{background:rgba(245,158,11,0.04);border-color:rgba(245,158,11,0.2);}
+.callout.warn .callout-label{color:var(--amber);}
+.callout.key{background:rgba(16,185,129,0.04);border-color:rgba(16,185,129,0.2);}
+.callout.key .callout-label{color:var(--green);}
+
+hr.divider{border:none;border-top:1px solid var(--border);margin:2.5rem 0;}
+</style>
+</head>
+<body>
+<nav>
+  <div class="brand">DR.TAN // SMARTPLS HUB</div>
+  <div class="nav-links">
+    <a href="lecture.html">Lecture</a>
+    <a href="quiz.html">Quiz</a>
+    <a href="index.html">Home</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">Module 4 & 5 — SEM Tools</div>
+    <h1>Your Complete <span>SmartPLS</span> Guide</h1>
+    <p>From first installation to publishing your PLS-SEM results. Everything you need to run a rigorous structural equation model — step by step, with real examples from hospitality, SME, education, and digital transformation research.</p>
+    <div class="hero-tags">
+      <span class="tag green">✓ Free Academic Use</span>
+      <span class="tag amber">PLS-SEM & CB-SEM</span>
+      <span class="tag violet">Hair et al. 2019</span>
+      <span class="tag">Bootstrapping</span>
+      <span class="tag">Mediation & Moderation</span>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- SECTION 1: WHAT IS SMARTPLS -->
+<div class="section-label">Section 1</div>
+<div class="section-title">What is SmartPLS?</div>
+<div class="section-sub">SmartPLS is the world's leading software for Partial Least Squares Structural Equation Modelling (PLS-SEM). It is free for academic use, runs on Windows and Mac, and is the tool of choice for management, marketing, hospitality, and social science doctoral research worldwide.</div>
+
+<div class="callout key">
+  <div class="callout-label">🔑 Why PhD and DBA students use SmartPLS</div>
+  <p>PLS-SEM works with smaller samples, does not require normally distributed data, and handles both reflective and formative measurement models — making it ideal for management research where perfect conditions rarely exist. It is particularly powerful when your goal is prediction and theory development rather than theory confirmation.</p>
+</div>
+
+<div class="card-grid">
+  <div class="card">
+    <div class="card-icon">🔧</div>
+    <div class="card-title">Download SmartPLS</div>
+    <div class="card-desc">Free for academic use. Available for Windows and macOS. Install before the session.</div>
+    <a href="https://www.smartpls.com/downloads" target="_blank">Download Now →</a>
+  </div>
+  <div class="card">
+    <div class="card-icon">🎓</div>
+    <div class="card-title">PLS-SEM Academy</div>
+    <div class="card-desc">Official online course by Christian M. Ringle and Marko Sarstedt. Videos, exercises, certificate.</div>
+    <a href="https://www.smartpls.com/documentation/pls-sem-academy" target="_blank">Start Learning →</a>
+  </div>
+  <div class="card">
+    <div class="card-icon">📚</div>
+    <div class="card-title">The PLS-SEM Primer Book</div>
+    <div class="card-desc">Hair, Ringle & Sarstedt — the definitive reference for PLS-SEM. Required reading for your methodology chapter.</div>
+    <a href="https://www.smartpls.com/documentation/must-reads/pls-sem-book" target="_blank">View Book →</a>
+  </div>
+  <div class="card">
+    <div class="card-icon">📋</div>
+    <div class="card-title">Sample Projects</div>
+    <div class="card-desc">Downloadable data files and pre-built models. Import directly into SmartPLS and run immediately.</div>
+    <a href="https://www.smartpls.com/documentation/sample-projects" target="_blank">Get Samples →</a>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- SECTION 2: PLS vs CB-SEM -->
+<div class="section-label">Section 2</div>
+<div class="section-title">PLS-SEM vs CB-SEM — Which One Do You Need?</div>
+<div class="section-sub">This is the most common question in doctoral research. The answer depends on your research goals, sample size, data distribution, and measurement model type.</div>
+
+<div class="decision-tree">
+  <div class="dt-question">Quick decision: What is your primary research goal?</div>
+  <div class="dt-grid">
+    <div class="dt-option pls">
+      <div class="dt-label pls">✦ Choose PLS-SEM (SmartPLS)</div>
+      <ul class="dt-criteria">
+        <li>Prediction and exploration are your goals</li>
+        <li>Sample size is small to medium (n ≥ 30)</li>
+        <li>Data is non-normal or skewed</li>
+        <li>You have formative constructs</li>
+        <li>Your model is complex (many constructs)</li>
+        <li>You are in early theory development</li>
+        <li>Management, hospitality, SME, EdTech research</li>
+      </ul>
+    </div>
+    <div class="dt-option cb">
+      <div class="dt-label cb">✦ Choose CB-SEM (AMOS/LISREL)</div>
+      <ul class="dt-criteria">
+        <li>Theory confirmation is your goal</li>
+        <li>Large sample (n ≥ 200 recommended)</li>
+        <li>Data is normally distributed</li>
+        <li>All constructs are reflective only</li>
+        <li class="no">Formative constructs — not suitable</li>
+        <li>Established theory with strong prior evidence</li>
+        <li>Psychology, medicine, economics research</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<table class="comp-table">
+  <thead>
+    <tr>
+      <th>Criterion</th>
+      <th class="pls-col">PLS-SEM (SmartPLS)</th>
+      <th class="cb-col">CB-SEM (AMOS)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td class="criterion">Minimum sample size</td><td class="pls-col">n ≥ 30 (rule of thumb: 10× max arrows)</td><td class="cb-col">n ≥ 200 recommended</td></tr>
+    <tr><td class="criterion">Data normality required</td><td class="pls-col"><span class="check">✓</span> Not required</td><td class="cb-col"><span class="cross">✗</span> Required</td></tr>
+    <tr><td class="criterion">Formative constructs</td><td class="pls-col"><span class="check">✓</span> Fully supported</td><td class="cb-col"><span class="cross">✗</span> Not supported</td></tr>
+    <tr><td class="criterion">Reflective constructs</td><td class="pls-col"><span class="check">✓</span> Supported</td><td class="cb-col"><span class="check">✓</span> Supported</td></tr>
+    <tr><td class="criterion">Model complexity</td><td class="pls-col">Handles large complex models</td><td class="cb-col">Performance degrades with complexity</td></tr>
+    <tr><td class="criterion">Research goal</td><td class="pls-col">Prediction & exploration</td><td class="cb-col">Theory confirmation</td></tr>
+    <tr><td class="criterion">Fit indices</td><td class="pls-col">SRMR, NFI</td><td class="cb-col">CFI, RMSEA, GFI, χ²</td></tr>
+    <tr><td class="criterion">Missing data handling</td><td class="pls-col">Mean replacement, EM algorithm</td><td class="cb-col">Listwise deletion default</td></tr>
+    <tr><td class="criterion">Software cost</td><td class="pls-col"><span class="check">✓</span> Free for academics</td><td class="cb-col">Paid licence required</td></tr>
+  </tbody>
+</table>
+
+<div class="callout warn">
+  <div class="callout-label">⚠️ Viva Alert — The Question Every Examiner Asks</div>
+  <p>"Why did you choose PLS-SEM over CB-SEM?" Your answer: "My study is exploratory and prediction-oriented rather than confirmatory. My sample of n=[X] is adequate for PLS-SEM but below the threshold recommended for CB-SEM. Additionally, my model includes both reflective and formative constructs, which CB-SEM cannot accommodate. PLS-SEM is therefore the methodologically appropriate choice as supported by Hair et al. (2019) and Ringle et al. (2023)."</p>
+</div>
+
+<hr class="divider">
+
+<!-- SECTION 3: GETTING STARTED -->
+<div class="section-label">Section 3</div>
+<div class="section-title">Getting Started — Step by Step</div>
+<div class="section-sub">Follow these steps exactly. Each links to the official SmartPLS tutorial.</div>
+
+<div class="steps">
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-body">
+      <div class="step-title">Download and Install SmartPLS</div>
+      <div class="step-desc">Go to <a href="https://www.smartpls.com/downloads" target="_blank" style="color:var(--cyan);">smartpls.com/downloads</a>. Choose your OS (Windows or Mac). Install and launch. You get a 30-day free trial of the full version, then the free academic licence covers all essential features.</div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-body">
+      <div class="step-title">Select a Workspace Folder</div>
+      <div class="step-desc">SmartPLS stores all your projects in a workspace folder on your computer. Choose a dedicated folder — e.g. <code>My Documents/SmartPLS_Projects</code>. All your models, data files, and results save here automatically. See the <a href="https://www.smartpls.com/documentation/tutorials/first-steps" target="_blank" style="color:var(--cyan);">official first-steps tutorial</a>.</div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">3</div>
+    <div class="step-body">
+      <div class="step-title">Create Your First Project and Import Data</div>
+      <div class="step-desc">Click New Project. Name it after your research (e.g. HotelSatisfaction_Study). Import your CSV or Excel data file. SmartPLS reads each column as one indicator variable. Missing values are handled automatically — use Mean Value Replacement for small gaps. See the <a href="https://www.smartpls.com/documentation/tutorials/import-datafiles" target="_blank" style="color:var(--cyan);">import data tutorial</a>.</div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">4</div>
+    <div class="step-body">
+      <div class="step-title">Draw Your Path Model</div>
+      <div class="step-desc">Drag constructs onto the canvas. Double-click a construct to assign its indicators from your dataset. Draw arrows between constructs to represent hypothesised relationships. Arrows from construct to indicators = reflective. Arrows from indicators to construct = formative. See the <a href="https://www.smartpls.com/documentation/tutorials/first-pls-path-model" target="_blank" style="color:var(--cyan);">path model tutorial</a>.</div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">5</div>
+    <div class="step-body">
+      <div class="step-title">Run PLS Algorithm — Assess Measurement Model</div>
+      <div class="step-desc">Click Calculate → PLS Algorithm. Check outer loadings (≥ 0.70), Composite Reliability (≥ 0.70), AVE (≥ 0.50), and discriminant validity (HTMT < 0.90). Remove items with loadings below 0.40 only if theoretically justified. Never delete items blindly to improve numbers.</div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">6</div>
+    <div class="step-body">
+      <div class="step-title">Run Bootstrapping — Assess Structural Model</div>
+      <div class="step-desc">Click Calculate → Bootstrapping. Set 5,000 subsamples. Check path coefficients (β), t-values (> 1.96 for p < 0.05), and p-values. Check R² values for each endogenous construct. This is where your hypotheses are supported or rejected. Report confidence intervals from the bootstrapping results.</div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">7</div>
+    <div class="step-body">
+      <div class="step-title">Test Mediation and Moderation (if applicable)</div>
+      <div class="step-desc">For mediation: check the indirect effect in bootstrapping results. If the confidence interval does not include zero — significant mediation. For moderation: create an interaction term (IV × Moderator) and draw an arrow to the DV. Significant path coefficient = moderation confirmed. See the <a href="https://www.researchgate.net/publication/402893335_Moderated_Mediation_Analysis_Using_SmartPLS_A_Tutorial_for_Business_Researchers" target="_blank" style="color:var(--cyan);">moderated mediation tutorial</a>.</div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">8</div>
+    <div class="step-body">
+      <div class="step-title">Report Your Results</div>
+      <div class="step-desc">SmartPLS generates a complete HTML report. Export path diagrams as images. Report in this order: (1) measurement model assessment, (2) discriminant validity, (3) structural model results, (4) hypothesis summary table. Always cite Hair et al. (2019) as your methodological authority.</div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- SECTION 4: KEY THRESHOLDS -->
+<div class="section-label">Section 4</div>
+<div class="section-title">Key Thresholds — What the Numbers Mean</div>
+<div class="section-sub">These are the acceptance thresholds used in SmartPLS assessment. Memorise these before your viva.</div>
+
+<div class="thresh-grid">
+  <div class="thresh">
+    <div class="thresh-val">≥ 0.70</div>
+    <div class="thresh-label">Outer Loadings</div>
+    <div class="thresh-desc">Each indicator's loading on its construct. Below 0.40 = consider removing. 0.40–0.70 = keep if AVE is acceptable.</div>
+  </div>
+  <div class="thresh">
+    <div class="thresh-val">≥ 0.70</div>
+    <div class="thresh-label">Composite Reliability</div>
+    <div class="thresh-desc">Internal consistency. 0.70–0.90 = satisfactory. Above 0.95 = possible redundancy.</div>
+  </div>
+  <div class="thresh">
+    <div class="thresh-val">≥ 0.50</div>
+    <div class="thresh-label">AVE</div>
+    <div class="thresh-desc">Average Variance Extracted. Convergent validity. Construct explains more than 50% of indicator variance.</div>
+  </div>
+  <div class="thresh">
+    <div class="thresh-val">&lt; 0.90</div>
+    <div class="thresh-label">HTMT Ratio</div>
+    <div class="thresh-desc">Heterotrait-Monotrait ratio. Discriminant validity. Below 0.85 is conservative threshold.</div>
+  </div>
+  <div class="thresh">
+    <div class="thresh-val">≥ 0.26</div>
+    <div class="thresh-label">R² Substantial</div>
+    <div class="thresh-desc">Variance explained in endogenous construct. 0.26 = substantial, 0.13 = moderate, 0.02 = weak.</div>
+  </div>
+  <div class="thresh">
+    <div class="thresh-val">5,000</div>
+    <div class="thresh-label">Bootstrap Samples</div>
+    <div class="thresh-desc">Standard for bootstrapping in SmartPLS. More samples = more stable results. Never use less than 1,000.</div>
+  </div>
+  <div class="thresh">
+    <div class="thresh-val">&lt; 5.0</div>
+    <div class="thresh-label">VIF (Formative)</div>
+    <div class="thresh-desc">Variance Inflation Factor for formative constructs. Above 5.0 = multicollinearity problem.</div>
+  </div>
+  <div class="thresh">
+    <div class="thresh-val">&gt; 1.96</div>
+    <div class="thresh-label">t-value (p&lt;0.05)</div>
+    <div class="thresh-desc">From bootstrapping. t > 1.96 = significant at 5%. t > 2.576 = significant at 1%.</div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- SECTION 5: VIDEO RESOURCES -->
+<div class="section-label">Section 5</div>
+<div class="section-title">Recommended Video Resources</div>
+<div class="section-sub">These are the best free video resources for learning SmartPLS — from beginner to advanced.</div>
+
+<div class="video-list">
+  <a href="https://www.smartpls.com/documentation/pls-sem-academy" target="_blank" class="video-item">
+    <div class="vi-icon">🎓</div>
+    <div>
+      <div class="vi-title">PLS-SEM Academy — Ringle & Sarstedt (Official)</div>
+      <div class="vi-desc">Comprehensive online course by the creators of SmartPLS. Videos, exercises, case studies, and certificate of completion. The most authoritative resource available.</div>
+      <div class="vi-tag">OFFICIAL · CERTIFICATE AVAILABLE · RECOMMENDED</div>
+    </div>
+  </a>
+  <a href="https://www.youtube.com/playlist?list=PLnMJlbz3sefIJoPbCfTDwzOgMKR3IHL5x" target="_blank" class="video-item">
+    <div class="vi-icon">▶️</div>
+    <div>
+      <div class="vi-title">James Gaskin — 30+ SmartPLS 4 Videos</div>
+      <div class="vi-desc">Clear, step-by-step YouTube tutorials covering all major SmartPLS 4 functions. Excellent for beginners and intermediate users. Each video focuses on one specific task.</div>
+      <div class="vi-tag">YOUTUBE · 30+ VIDEOS · BEGINNER FRIENDLY</div>
+    </div>
+  </a>
+  <a href="https://www.youtube.com/playlist?list=PLb7vm6tsQ3Kv4YWhYNkP7DizqOjT7ubSX" target="_blank" class="video-item">
+    <div class="vi-icon">▶️</div>
+    <div>
+      <div class="vi-title">Research with Fawad — 60+ SmartPLS Videos</div>
+      <div class="vi-desc">The largest SmartPLS 4 YouTube collection. Covers advanced topics including mediation, moderation, multi-group analysis, and common method bias testing.</div>
+      <div class="vi-tag">YOUTUBE · 60+ VIDEOS · ADVANCED TOPICS</div>
+    </div>
+  </a>
+  <a href="https://www.youtube.com/watch?v=ed2OQu2q5po&list=PLiOBAYiI6xJhAs18-C8MrU0i_UuNyze5R" target="_blank" class="video-item">
+    <div class="vi-icon">▶️</div>
+    <div>
+      <div class="vi-title">Dhaval Maheta — 35+ SmartPLS Videos</div>
+      <div class="vi-desc">Practical, application-focused tutorials. Strong on data import, model building, and interpreting SmartPLS output for journal publication.</div>
+      <div class="vi-tag">YOUTUBE · 35+ VIDEOS · PRACTICAL FOCUS</div>
+    </div>
+  </a>
+  <a href="https://www.youtube.com/watch?v=xbKhGLMuhRk" target="_blank" class="video-item">
+    <div class="vi-icon">🎤</div>
+    <div>
+      <div class="vi-title">Wen-Lung Shiau — Multi-method SEM (SASEM 2025)</div>
+      <div class="vi-desc">Keynote speech on multi-method structural equation modelling. Advanced topic for researchers combining PLS-SEM with other approaches.</div>
+      <div class="vi-tag">CONFERENCE KEYNOTE · ADVANCED · 2025</div>
+    </div>
+  </a>
+</div>
+
+<hr class="divider">
+
+<!-- SECTION 6: MUST READ -->
+<div class="section-label">Section 6</div>
+<div class="section-title">Must-Read Literature</div>
+<div class="section-sub">Cite these in your methodology chapter. Examiners expect to see Hair et al. as your primary reference for PLS-SEM decisions.</div>
+
+<div class="card-grid">
+  <div class="card">
+    <div class="card-icon">📖</div>
+    <div class="card-title">Hair et al. — A Primer on PLS-SEM</div>
+    <div class="card-desc">The definitive textbook. Covers all aspects from model specification to results reporting. Available via your university library.</div>
+    <a href="https://www.smartpls.com/documentation/must-reads/pls-sem-book" target="_blank">View Details →</a>
+  </div>
+  <div class="card">
+    <div class="card-icon">📄</div>
+    <div class="card-title">Advanced Issues in PLS-SEM</div>
+    <div class="card-desc">Covers second-order constructs, necessary condition analysis, endogeneity, and other advanced topics for experienced PLS-SEM users.</div>
+    <a href="https://www.smartpls.com/documentation/must-reads/book-on-advanced-pls-sem-issues" target="_blank">View Details →</a>
+  </div>
+  <div class="card">
+    <div class="card-icon">📄</div>
+    <div class="card-title">Moderated Mediation in SmartPLS</div>
+    <div class="card-desc">Step-by-step tutorial article for running moderated mediation analysis — increasingly required in top management journals.</div>
+    <a href="https://www.researchgate.net/publication/402893335_Moderated_Mediation_Analysis_Using_SmartPLS_A_Tutorial_for_Business_Researchers" target="_blank">Read Article →</a>
+  </div>
+  <div class="card">
+    <div class="card-icon">📄</div>
+    <div class="card-title">Recommended Readings — Full List</div>
+    <div class="card-desc">The official SmartPLS list of must-read articles covering all aspects of PLS-SEM methodology, application, and reporting.</div>
+    <a href="https://www.smartpls.com/documentation/literature/recommended-readings" target="_blank">View List →</a>
+  </div>
+  <div class="card">
+    <div class="card-icon">📄</div>
+    <div class="card-title">PLS-SEM Glossary</div>
+    <div class="card-desc">Official glossary of all PLS-SEM terms. Bookmark this. If an examiner uses a term you don't recognise — look it up here first.</div>
+    <a href="https://www.smartpls.com/documentation/literature/glossary" target="_blank">Open Glossary →</a>
+  </div>
+  <div class="card">
+    <div class="card-icon">⚖️</div>
+    <div class="card-title">When to Use PLS-SEM (and When Not)</div>
+    <div class="card-desc">Critical reading for your viva. Covers the conditions under which PLS-SEM is — and is not — the appropriate method.</div>
+    <a href="https://www.smartpls.com/documentation/choosing-pls-sem/more-insights-on-when-to-use-pls-sem-and-when-not" target="_blank">Read Guide →</a>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- DELI99 WALKTHROUGH -->
+<div class="section-label">Section 7 — Class Exercise</div>
+<div class="section-title">Hands-On: The Deli99 Case Study</div>
+<div class="section-sub">We use the Deli99 dataset in class. This is a real customer satisfaction survey from a food service company. Download it, import it, and follow along.</div>
+
+<div class="callout">
+  <div class="callout-label">📋 The Deli99 Dataset</div>
+  <p>The dataset contains customer responses on food quality, service quality, atmosphere, value for money, and overall satisfaction. Your task: build a PLS-SEM model predicting customer satisfaction and loyalty. Test which antecedents have the strongest paths. Run bootstrapping and report your hypothesis results.</p>
+</div>
+
+<div class="steps">
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-body">
+      <div class="step-title">Download the Deli99 CSV</div>
+      <div class="step-desc">Download from the class materials section on the home page after registration.</div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-body">
+      <div class="step-title">Import into SmartPLS</div>
+      <div class="step-desc">File → Import Data File → select Deli99.csv. SmartPLS auto-detects all columns. Verify the data looks correct in the Data View before building your model.</div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">3</div>
+    <div class="step-body">
+      <div class="step-title">Build the Conceptual Model</div>
+      <div class="step-desc">Create 5 constructs: Food Quality (FQ), Service Quality (SQ), Atmosphere (ATM), Value for Money (VAL), Customer Satisfaction (SAT). Draw paths: FQ → SAT, SQ → SAT, ATM → SAT, VAL → SAT. Assign indicators to each construct from the dataset columns.</div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">4</div>
+    <div class="step-body">
+      <div class="step-title">Run PLS Algorithm and Check Measurement Model</div>
+      <div class="step-desc">Check all outer loadings ≥ 0.70, CR ≥ 0.70, AVE ≥ 0.50, HTMT < 0.90. Remove any problematic indicators with theoretical justification. Document your decisions.</div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">5</div>
+    <div class="step-body">
+      <div class="step-title">Run Bootstrapping and Report Results</div>
+      <div class="step-desc">5,000 subsamples. Report path coefficients, t-values, p-values, and R² for Customer Satisfaction. Which antecedent has the strongest effect? Which hypothesis is rejected? Write up your findings in a 3-sentence conclusion.</div>
+    </div>
+  </div>
+</div>
+
+<div style="text-align:center;padding:2rem 0 1rem;">
+  <a href="lecture.html#module4" style="display:inline-block;padding:0.75rem 2rem;background:linear-gradient(135deg,var(--violet),#5b21b6);color:#fff;text-decoration:none;border-radius:8px;font-weight:700;font-size:0.9rem;margin-right:0.75rem;">← Back to Lecture</a>
+  <a href="quiz.html" style="display:inline-block;padding:0.75rem 2rem;background:rgba(0,229,255,0.1);color:var(--cyan);text-decoration:none;border-radius:8px;font-weight:700;font-size:0.9rem;border:1px solid rgba(0,229,255,0.3);">Take the SEM Quiz →</a>
+</div>
+
+</div><!-- end wrap -->
+</body>
+</html>

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>SmartPLS Hub — Dr. Tan</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
@@ -102,9 +102,11 @@ nav{background:var(--bg3);border-bottom:1px solid var(--border);padding:0 1.5rem
 .callout.key .callout-label{color:var(--green);}
 
 hr.divider{border:none;border-top:1px solid var(--border);margin:2.5rem 0;}
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);}
 </style>
 </head>
 <body>
+
 <nav>
   <div class="brand">DR.TAN // SMARTPLS HUB</div>
   <div class="nav-links">
@@ -446,52 +448,90 @@ hr.divider{border:none;border-top:1px solid var(--border);margin:2.5rem 0;}
 
 <hr class="divider">
 
-<!-- DELI99 WALKTHROUGH -->
+<!-- GOLDTRADER99 CASE STUDY -->
 <div class="section-label">Section 7 — Class Exercise</div>
-<div class="section-title">Hands-On: The Deli99 Case Study</div>
-<div class="section-sub">We use the Deli99 dataset in class. This is a real customer satisfaction survey from a food service company. Download it, import it, and follow along.</div>
+<div class="section-title">Hands-On: The GoldTrader99 Case Study</div>
+<div class="section-sub">What drives a trader's intention to trade gold? You will test four drivers using 99 survey responses, first in SPSS and then in SmartPLS. The data is synthetic and was designed for teaching, so treat the results as a demonstration of the method, not a finding about real traders.</div>
 
-<div class="callout">
-  <div class="callout-label">📋 The Deli99 Dataset</div>
-  <p>The dataset contains customer responses on food quality, service quality, atmosphere, value for money, and overall satisfaction. Your task: build a PLS-SEM model predicting customer satisfaction and loyalty. Test which antecedents have the strongest paths. Run bootstrapping and report your hypothesis results.</p>
+<div class="callout key">
+  <div class="callout-label">Why 99 cases</div>
+  <p>The free SmartPLS student version handles up to 99 observations, so the whole exercise runs without a paid licence. Download the dataset before class: <a href="GoldTrader99.csv" style="color:var(--cyan);">GoldTrader99.csv</a> (99 rows, 26 columns, no missing values).</p>
 </div>
 
+<div class="decision-tree">
+  <div class="dt-question">The research model</div>
+  <svg viewBox="0 0 600 300" role="img" aria-label="Path model: Sentiment, Technical, Macro and FOMO each point to Trading Intention" style="width:100%;height:auto;display:block;">
+    <defs>
+      <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#00e5ff"/></marker>
+      <marker id="ahm" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#64748b"/></marker>
+    </defs>
+    <g font-family="Space Grotesk, sans-serif" font-size="13">
+      <g fill="#161f30" stroke="#1e2d45">
+        <rect x="10" y="18" width="190" height="48" rx="24"/>
+        <rect x="10" y="88" width="190" height="48" rx="24"/>
+        <rect x="10" y="158" width="190" height="48" rx="24"/>
+        <rect x="10" y="228" width="190" height="48" rx="24"/>
+        <rect x="420" y="118" width="170" height="64" rx="32" stroke="#00e5ff"/>
+      </g>
+      <g fill="#e2e8f0" text-anchor="middle">
+        <text x="105" y="47">Market Sentiment</text>
+        <text x="105" y="117">Technical Reliance</text>
+        <text x="105" y="187" fill="#64748b">Macro Reliance</text>
+        <text x="105" y="257">Fear of Missing Out</text>
+        <text x="505" y="155" font-weight="700">Trading Intention</text>
+      </g>
+      <path d="M200,42 L420,138" stroke="#00e5ff" stroke-width="2" fill="none" marker-end="url(#ah)"/>
+      <path d="M200,112 L420,146" stroke="#00e5ff" stroke-width="2" fill="none" marker-end="url(#ah)"/>
+      <path d="M200,182 L420,154" stroke="#64748b" stroke-width="2" stroke-dasharray="6 5" fill="none" marker-end="url(#ahm)"/>
+      <path d="M200,252 L420,162" stroke="#00e5ff" stroke-width="2" fill="none" marker-end="url(#ah)"/>
+      <g font-family="Space Mono, monospace" font-size="11" text-anchor="middle">
+        <text x="300" y="76" fill="#00e5ff">H1</text>
+        <text x="300" y="117" fill="#00e5ff">H2</text>
+        <text x="300" y="160" fill="#64748b">H3</text>
+        <text x="300" y="218" fill="#00e5ff">H4</text>
+      </g>
+    </g>
+  </svg>
+  <p style="font-size:0.82rem;color:var(--muted);margin-top:0.75rem;line-height:1.6;">All four constructs are measured with 7-point survey items. The dashed path is the one to watch: decide for yourself whether it holds before you run the model.</p>
+</div>
+
+<table class="comp-table">
+  <thead><tr><th>Construct</th><th>Items</th><th>Example item</th></tr></thead>
+  <tbody>
+    <tr><td class="criterion">Market Sentiment</td><td>SENT1–4</td><td>Most market participants are currently bullish on gold.</td></tr>
+    <tr><td class="criterion">Technical Reliance</td><td>TECH1–4</td><td>I rely on chart patterns when deciding to trade gold.</td></tr>
+    <tr><td class="criterion">Macro Reliance</td><td>MACRO1–4</td><td>I consider the US dollar's direction before trading gold.</td></tr>
+    <tr><td class="criterion">Fear of Missing Out</td><td>FOMO1–4</td><td>I feel anxious when gold rallies and I am not in the trade.</td></tr>
+    <tr><td class="criterion">Trading Intention</td><td>INT1–3</td><td>I intend to trade gold in the next month.</td></tr>
+  </tbody>
+</table>
+
+<div class="section-title" style="font-size:1.05rem;">Part A — SPSS (about 50 minutes)</div>
 <div class="steps">
-  <div class="step">
-    <div class="step-num">1</div>
-    <div class="step-body">
-      <div class="step-title">Download the Deli99 CSV</div>
-      <div class="step-desc">Download from the class materials section on the home page after registration.</div>
-    </div>
-  </div>
-  <div class="step">
-    <div class="step-num">2</div>
-    <div class="step-body">
-      <div class="step-title">Import into SmartPLS</div>
-      <div class="step-desc">File → Import Data File → select Deli99.csv. SmartPLS auto-detects all columns. Verify the data looks correct in the Data View before building your model.</div>
-    </div>
-  </div>
-  <div class="step">
-    <div class="step-num">3</div>
-    <div class="step-body">
-      <div class="step-title">Build the Conceptual Model</div>
-      <div class="step-desc">Create 5 constructs: Food Quality (FQ), Service Quality (SQ), Atmosphere (ATM), Value for Money (VAL), Customer Satisfaction (SAT). Draw paths: FQ → SAT, SQ → SAT, ATM → SAT, VAL → SAT. Assign indicators to each construct from the dataset columns.</div>
-    </div>
-  </div>
-  <div class="step">
-    <div class="step-num">4</div>
-    <div class="step-body">
-      <div class="step-title">Run PLS Algorithm and Check Measurement Model</div>
-      <div class="step-desc">Check all outer loadings ≥ 0.70, CR ≥ 0.70, AVE ≥ 0.50, HTMT < 0.90. Remove any problematic indicators with theoretical justification. Document your decisions.</div>
-    </div>
-  </div>
-  <div class="step">
-    <div class="step-num">5</div>
-    <div class="step-body">
-      <div class="step-title">Run Bootstrapping and Report Results</div>
-      <div class="step-desc">5,000 subsamples. Report path coefficients, t-values, p-values, and R² for Customer Satisfaction. Which antecedent has the strongest effect? Which hypothesis is rejected? Write up your findings in a 3-sentence conclusion.</div>
-    </div>
-  </div>
+  <div class="step"><div class="step-num">1</div><div class="step-body"><div class="step-title">Import and screen the data</div><div class="step-desc">Import the CSV, add value labels for AGE_GROUP and GENDER, then run descriptives with skewness and kurtosis. Is the data close to normal? Does PLS-SEM need it to be?</div></div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-body"><div class="step-title">Check reliability</div><div class="step-desc">Run Cronbach's alpha for each construct with "Scale if item deleted" ticked. One item stands out. Read its wording: what is it really measuring?</div></div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-body"><div class="step-title">Run exploratory factor analysis</div><div class="step-desc">Use all core items with KMO and Bartlett's test. How many factors do you get, and is it the number the model expects? Bring your answer to the discussion.</div></div></div>
+  <div class="step"><div class="step-num">4</div><div class="step-body"><div class="step-title">Test for common method bias</div><div class="step-desc">Run Harman's single-factor test. Note the result, and note why this test alone is weak evidence.</div></div></div>
+  <div class="step"><div class="step-num">5</div><div class="step-body"><div class="step-title">Run a baseline regression</div><div class="step-desc">Compute a mean score for each construct and regress Trading Intention on the four drivers. Keep these betas: you will compare them with SmartPLS.</div></div></div>
+</div>
+
+<div class="section-title" style="font-size:1.05rem;">Part B — SmartPLS (about 75 minutes)</div>
+<div class="steps">
+  <div class="step"><div class="step-num">6</div><div class="step-body"><div class="step-title">Draw and run the model</div><div class="step-desc">Draw the five constructs and four paths shown above, then run the PLS algorithm.</div></div></div>
+  <div class="step"><div class="step-num">7</div><div class="step-body"><div class="step-title">Decide on the weak item</div><div class="step-desc">Check outer loadings, reliability and AVE. The weak item's construct still passes AVE with it included. Would you delete it? Justify your decision with its content, not only its numbers.</div></div></div>
+  <div class="step"><div class="step-num">8</div><div class="step-body"><div class="step-title">Check discriminant validity</div><div class="step-desc">Read the HTMT matrix. Which pair is closest to the cutoff, and does that connect to what you found in the factor analysis?</div></div></div>
+  <div class="step"><div class="step-num">9</div><div class="step-body"><div class="step-title">Bootstrap and test H1–H4</div><div class="step-desc">Run bootstrapping with 5,000 subsamples. Report β, t, p, f² and R² for Trading Intention. Which hypothesis fails, and why might traders say a factor matters when it does not drive their behaviour?</div></div></div>
+  <div class="step"><div class="step-num">10</div><div class="step-body"><div class="step-title">Compare the two tools</div><div class="step-desc">Put your SPSS betas beside your SmartPLS paths. Explain any difference in one sentence.</div></div></div>
+</div>
+
+<div class="callout warn">
+  <div class="callout-label">Going further (if time allows)</div>
+  <p>The dataset also contains Prediction Confidence (CONF1–3) and years of trading experience (EXP_YEARS). Test whether confidence mediates the sentiment and technical paths, and whether experience weakens the effect of FOMO on intention.</p>
+</div>
+
+<div class="callout">
+  <div class="callout-label">Think about it</div>
+  <p>Could you run this same model on gold price data instead of survey responses? Write down your answer and the reason before the end of class.</p>
 </div>
 
 <div style="text-align:center;padding:2rem 0 1rem;">

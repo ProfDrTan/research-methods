@@ -91,7 +91,8 @@ nav{background:#0b1120;border-bottom:1px solid #1e2d45;padding:0 1.5rem;display:
       <div style="font-size:2.5rem;margin-bottom:1rem;">&#128221;</div>
       <h2>Research Methods Quiz</h2>
       <p>Enter your name then choose a quiz section below.</p>
-      <p style="font-size:0.82rem;color:#64748b;margin-bottom:1.25rem;">You get instant right/wrong feedback on every answer.</p>
+      <p style="font-size:0.82rem;color:#64748b;margin-bottom:0.5rem;">You get instant right/wrong feedback on every answer.</p>
+      <p style="font-size:0.82rem;color:#10b981;margin-bottom:1.25rem;">&#128274; Your quiz results are private &mdash; they are never shown to other students. Only you and your instructor see them.</p>
       <input type="text" id="home-name" placeholder="Your full name e.g. Aisha Rahman">
     </div>
     <div class="quiz-grid" id="quiz-grid"></div>
@@ -132,10 +133,7 @@ nav{background:#0b1120;border-bottom:1px solid #1e2d45;padding:0 1.5rem;display:
         </div>
       </div>
     </div>
-    <div class="lb">
-      <div class="lb-head"><span>&#127942; Leaderboard — <span id="lb-section"></span></span><span id="lb-count"></span></div>
-      <div id="lb-body"></div>
-    </div>
+    <div style="background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.25);border-radius:10px;padding:0.9rem 1.1rem;margin-bottom:1.5rem;font-size:0.85rem;color:#94a3b8;line-height:1.6;">&#128274; <strong style="color:#10b981;">Your result is private.</strong> It is never shown to other students &mdash; only you and your instructor see it.</div>
     <div class="btn-row">
       <button class="btn-sec btn-home" onclick="goHome()">&#8592; All Quizzes</button>
       <button class="btn-sec btn-home" onclick="retryQuiz()">&#128260; Retry</button>
@@ -303,28 +301,21 @@ function submitQuiz() {
   scores[sectionKey] = {name:myName, score:correct, wrong:wrong, total:totalQ, pct:pct, ts:Date.now()};
   saveScores(scores);
 
-  // POST score to Worker, then fetch full leaderboard and display
   var scoreData = {name:myName, section:currentSectionIdx, sectionLabel:section.label, score:correct, wrong:wrong, total:totalQ, pct:pct, ts:Date.now()};
-  
-  // Save to GitHub scores.json
-  ghRead('scores.json').then(function(scores){
-    if(!Array.isArray(scores)) scores=[];
-    scores=scores.filter(function(s){return !(s.name.toLowerCase()===myName.toLowerCase()&&s.section==currentSectionIdx);});
-    scores.push(scoreData);
-    return ghWrite('scores.json',scores);
-  }).then(function(){
-    return ghRead('scores.json');
-  }).then(function(allScores){
-    if(!Array.isArray(allScores)) allScores=[scoreData];
-    var lb=allScores.filter(function(s){return s.section==currentSectionIdx;});
-    lb.sort(function(a,b){return b.pct-a.pct;});
-    showResults(correct,wrong,totalQ,pct,lb,section.label);
-  }).catch(function(){
-    showResults(correct,wrong,totalQ,pct,[scoreData],section.label);
-  });
+
+  // The student sees ONLY their own result. Nobody else's score is ever fetched or displayed here.
+  showResults(correct, wrong, totalQ, pct, section.label);
+
+  // Save to GitHub scores.json in the background (the instructor dashboard reads this file)
+  ghRead('scores.json').then(function(all){
+    if(!Array.isArray(all)) all=[];
+    all=all.filter(function(s){return !(s.name.toLowerCase()===myName.toLowerCase()&&s.section==currentSectionIdx);});
+    all.push(scoreData);
+    return ghWrite('scores.json',all);
+  }).catch(function(e){ console.warn('Score save failed:', e); });
 }
 
-function showResults(correct, wrong, total, pct, lb, sectionLabel) {
+function showResults(correct, wrong, total, pct, sectionLabel) {
   document.getElementById('r-score').textContent = correct + '/' + total;
   document.getElementById('r-section-label').textContent = sectionLabel;
   document.getElementById('r-correct').textContent = correct;
@@ -333,19 +324,6 @@ function showResults(correct, wrong, total, pct, lb, sectionLabel) {
   var g = document.getElementById('r-grade');
   g.textContent = grade;
   g.style.color = pct>=60 ? '#10b981' : '#f59e0b';
-  document.getElementById('lb-section').textContent = sectionLabel;
-  document.getElementById('lb-count').textContent = lb.length + ' students';
-  var html = '';
-  lb.forEach(function(s,i){
-    var isMe = s.name.toLowerCase() === myName.toLowerCase();
-    html += '<div class="lb-row' + (isMe?' me':'') + '">';
-    html += '<span class="lb-rank">' + (i+1) + '</span>';
-    html += '<span class="lb-name">' + s.name + (isMe?' (you)':'') + '</span>';
-    html += '<span class="lb-sc">' + s.score + '/' + s.total + '</span>';
-    html += '<span class="lb-pct">' + s.pct + '%</span>';
-    html += '</div>';
-  });
-  document.getElementById('lb-body').innerHTML = html || '<div style="padding:1rem;color:#64748b;font-size:0.85rem;">Be the first to complete this quiz!</div>';
   var nextBtn = document.getElementById('btn-next');
   if(currentSectionIdx < ALL_SECTIONS.length - 1) {
     nextBtn.style.display = 'inline-block';

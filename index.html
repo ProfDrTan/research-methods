@@ -523,6 +523,21 @@ footer a{color:var(--cyan);text-decoration:none;}
 </footer>
 
 <script>
+// ---- cohort guard: a new class starts with a clean browser as well as a clean roster ----
+window.__rmReload=function(){location.reload();};
+(function(){
+  var KEYS=['rm_v2','drtan_scores_v3','student_registered','student_name_v1'];
+  fetch('https://raw.githubusercontent.com/ProfDrTan/research-methods/main/cohort.json?t='+Date.now())
+    .then(function(r){return r.json();})
+    .then(function(c){
+      if(!c||!c.id)return;
+      var cur=null;try{cur=localStorage.getItem('rm_cohort');}catch(e){return;}
+      if(cur===c.id)return;
+      var had=KEYS.some(function(k){return localStorage.getItem(k)!==null;});
+      localStorage.setItem('rm_cohort',c.id);
+      if(had){KEYS.forEach(function(k){localStorage.removeItem(k);});window.__rmReload();}
+    }).catch(function(){});
+})();
 const KEY = 'rm_v2';
 
 const SEED=[];
@@ -543,7 +558,12 @@ function isRegistered(){return localStorage.getItem('student_registered')==='yes
 function fetchRoster(){
   fetch('https://raw.githubusercontent.com/ProfDrTan/research-methods/main/students.json?t='+Date.now())
     .then(function(r){return r.json();})
-    .then(function(s){if(Array.isArray(s)&&s.length>0)renderDashboard(s);else renderDashboard(getData());})
+    .then(function(s){
+      if(!Array.isArray(s)){renderDashboard(getData());return;}
+      // the live file is the truth; add this device's own registration only until GitHub shows it
+      var mine=getData().filter(function(l){return !s.some(function(g){return g.ts===l.ts&&g.email===l.email;});});
+      renderDashboard(s.concat(mine));
+    })
     .catch(function(){renderDashboard(getData());});
 }
 
@@ -560,6 +580,34 @@ function enterMemberView(){
 }
 
 var WORKER_API = 'https://rm-students.teikkheong.workers.dev';
+
+// Read-modify-write with retries: many students can write at the same moment without losing anyone.
+function ghUpdate(file,mutate,attempt){
+  attempt=attempt||0;
+  var u='https://api.github.com/repos/ProfDrTan/research-methods/contents/'+file;
+  var H={'Authorization':'token '+('github_pat_11BYABRPI0Op8L'+'hxdscy9d_DgO5wqHjm3vlQBn6vnLTka7iWeBVk1hRQtRDOXmElu8EMYYGOXIqvVvIxCc'),'Accept':'application/vnd.github+json'};
+  function again(ms){return new Promise(function(ok){setTimeout(ok,ms);}).then(function(){return ghUpdate(file,mutate,attempt+1);});}
+  return fetch(u+'?t='+Date.now(),{headers:H})
+    .then(function(r){if(!r.ok){var e=new Error('read '+r.status);e.status=r.status;throw e;}return r.json();})
+    .then(function(f){
+      var txt=decodeURIComponent(escape(atob(String(f.content||'').replace(/\n/g,''))));
+      var arr=txt.trim()?JSON.parse(txt):[];
+      if(!Array.isArray(arr))throw new Error('unexpected data shape');
+      var next=mutate(arr);
+      return fetch(u,{method:'PUT',headers:{'Authorization':'token '+('github_pat_11BYABRPI0Op8L'+'hxdscy9d_DgO5wqHjm3vlQBn6vnLTka7iWeBVk1hRQtRDOXmElu8EMYYGOXIqvVvIxCc'),'Content-Type':'application/json','Accept':'application/vnd.github+json'},
+        body:JSON.stringify({message:'update: '+file,content:btoa(unescape(encodeURIComponent(JSON.stringify(next)))),sha:f.sha})})
+        .then(function(r){
+          if(r.ok)return true;
+          if((r.status===409||r.status===422)&&attempt<8)return again(150+Math.random()*700);
+          if((r.status===403||r.status===429)&&attempt<5)return again(3000+Math.random()*3000);
+          var e=new Error('write '+r.status);e.status=r.status;throw e;
+        });
+    })
+    .catch(function(e){
+      if(attempt<4&&e&&e.status===undefined&&!/unexpected|JSON|Unexpected/.test(String(e.message)))return again(1500+Math.random()*1500);
+      throw e;
+    });
+}
 
 function submitRegistration(){
   var first=document.getElementById('f-first').value.trim();
@@ -591,20 +639,12 @@ function submitRegistration(){
   document.getElementById('reg-form').style.display='none';
   document.getElementById('form-success').style.display='block';
 
-  // Write to GitHub in background so all devices see this student
+  // Write to GitHub in background so all devices see this student (retries if another student writes at the same moment)
   setTimeout(function(){
-    var _t='github_pat_11BYABRPI0Op8L'+'hxdscy9d_DgO5wqHjm3vlQBn6vnLTka7iWeBVk1hRQtRDOXmElu8EMYYGOXIqvVvIxCc';
-    var _u='https://api.github.com/repos/ProfDrTan/research-methods/contents/students.json';
-    fetch(_u,{headers:{'Authorization':'token '+_t}})
-      .then(function(r){return r.json();})
-      .then(function(f){
-        var arr=[];
-        try{arr=JSON.parse(atob(f.content.replace(/\n/g,'')));}catch(e){}
-        if(!Array.isArray(arr))arr=[];
-        arr.push(student);
-        return fetch(_u,{method:'PUT',headers:{'Authorization':'token '+_t,'Content-Type':'application/json'},
-          body:JSON.stringify({message:'reg',content:btoa(unescape(encodeURIComponent(JSON.stringify(arr)))),sha:f.sha})});
-      }).catch(function(){});
+    ghUpdate('students.json',function(arr){
+      if(!arr.some(function(x){return x.ts===student.ts&&x.email===student.email;}))arr.push(student);
+      return arr;
+    }).catch(function(){});
   },100);
 }
 

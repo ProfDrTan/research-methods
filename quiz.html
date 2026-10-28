@@ -206,6 +206,49 @@ async function ghWrite(f,data){
     body:JSON.stringify({message:'update: '+f,content:content,sha:sha})});
 }
 
+// ---- cohort guard: a new class starts with a clean browser as well as a clean roster ----
+window.__rmReload=function(){location.reload();};
+(function(){
+  var KEYS=['rm_v2','drtan_scores_v3','student_registered','student_name_v1'];
+  fetch('https://raw.githubusercontent.com/ProfDrTan/research-methods/main/cohort.json?t='+Date.now())
+    .then(function(r){return r.json();})
+    .then(function(c){
+      if(!c||!c.id)return;
+      var cur=null;try{cur=localStorage.getItem('rm_cohort');}catch(e){return;}
+      if(cur===c.id)return;
+      var had=KEYS.some(function(k){return localStorage.getItem(k)!==null;});
+      localStorage.setItem('rm_cohort',c.id);
+      if(had){KEYS.forEach(function(k){localStorage.removeItem(k);});window.__rmReload();}
+    }).catch(function(){});
+})();
+// Read-modify-write with retries: many students can write at the same moment without losing anyone.
+function ghUpdate(file,mutate,attempt){
+  attempt=attempt||0;
+  var u='https://api.github.com/repos/'+REPO+'/contents/'+file;
+  var H={'Authorization':'token '+getToken(),'Accept':'application/vnd.github+json'};
+  function again(ms){return new Promise(function(ok){setTimeout(ok,ms);}).then(function(){return ghUpdate(file,mutate,attempt+1);});}
+  return fetch(u+'?t='+Date.now(),{headers:H})
+    .then(function(r){if(!r.ok){var e=new Error('read '+r.status);e.status=r.status;throw e;}return r.json();})
+    .then(function(f){
+      var txt=decodeURIComponent(escape(atob(String(f.content||'').replace(/\n/g,''))));
+      var arr=txt.trim()?JSON.parse(txt):[];
+      if(!Array.isArray(arr))throw new Error('unexpected data shape');
+      var next=mutate(arr);
+      return fetch(u,{method:'PUT',headers:{'Authorization':'token '+getToken(),'Content-Type':'application/json','Accept':'application/vnd.github+json'},
+        body:JSON.stringify({message:'update: '+file,content:btoa(unescape(encodeURIComponent(JSON.stringify(next)))),sha:f.sha})})
+        .then(function(r){
+          if(r.ok)return true;
+          if((r.status===409||r.status===422)&&attempt<8)return again(150+Math.random()*700);
+          if((r.status===403||r.status===429)&&attempt<5)return again(3000+Math.random()*3000);
+          var e=new Error('write '+r.status);e.status=r.status;throw e;
+        });
+    })
+    .catch(function(e){
+      if(attempt<4&&e&&e.status===undefined&&!/unexpected|JSON|Unexpected/.test(String(e.message)))return again(1500+Math.random()*1500);
+      throw e;
+    });
+}
+
 function fetchConfig(callback) {
   ghRead('quizconfig.json')
     .then(function(cfg){ hiddenSections=(cfg.hidden&&cfg.hidden.length>0)?cfg.hidden:[5]; callback(); })
@@ -338,11 +381,10 @@ function submitQuiz() {
   showResults(correct, wrong, totalQ, pct, section.label + levelTag(currentLevel));
 
   // Save to GitHub scores.json in the background (the instructor dashboard reads this file)
-  ghRead('scores.json').then(function(all){
-    if(!Array.isArray(all)) all=[];
-    all=all.filter(function(s){return !(s.name.toLowerCase()===myName.toLowerCase()&&s.section==currentSectionIdx&&(s.level||'foundation')===currentLevel);});
+  ghUpdate('scores.json',function(all){
+    all=all.filter(function(s){return !(String(s.name||'').toLowerCase()===scoreData.name.toLowerCase()&&s.section==scoreData.section&&(s.level||'foundation')===scoreData.level);});
     all.push(scoreData);
-    return ghWrite('scores.json',all);
+    return all;
   }).catch(function(e){ console.warn('Score save failed:', e); });
 }
 

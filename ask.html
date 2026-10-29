@@ -351,5 +351,51 @@ function renderHistory() {
 
 renderHistory();
 </script>
+<script>
+// ---- Student Preview bar: only appears in a tab opened as a preview (see the instructor dashboard) ----
+(function(){
+  var S;try{S=window.sessionStorage;}catch(e){return;}
+  var q=location.search;
+  if(/[?&]preview=0\b/.test(q)){S.removeItem('rm_preview');return;}
+  if(!(S.getItem('rm_preview')==='1'||/[?&]preview=1\b/.test(q)))return;
+  S.setItem('rm_preview','1');window.__RM_PREVIEW=true;
+  window.__rmGo=window.__rmGo||function(u){location.href=u;};
+  var KEYS=['student_registered','student_name_v1','student_sid_v1','rm_v2','drtan_scores_v3'];
+  function build(){
+    if(document.getElementById('rm-pv-bar'))return;
+    var reg=S.getItem('student_registered')==='yes',done=+(S.getItem('pv_done')||0),i,opts='';
+    for(i=0;i<=5;i++)opts+='<option value="'+i+'"'+(i===done?' selected':'')+'>'+i+'</option>';
+    var bar=document.createElement('div');bar.id='rm-pv-bar';
+    bar.style.cssText='position:fixed;left:0;right:0;bottom:0;z-index:2147483000;background:#0b1120;border-top:2px solid #00e5ff;color:#e2e8f0;font:13px/1.35 system-ui,-apple-system,Segoe UI,sans-serif;padding:8px 10px;display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;box-shadow:0 -4px 20px rgba(0,0,0,.55)';
+    var btn='background:#161f30;border:1px solid #334155;color:#e2e8f0;border-radius:6px;padding:4px 9px;font:inherit;cursor:pointer';
+    var ctl='<label>View as <select id="pv-as" style="'+btn+'"><option value="new"'+(reg?'':' selected')+'>a new student</option><option value="reg"'+(reg?' selected':'')+'>a registered student</option></select></label>'
+      +'<label>Foundation checkpoints finished <select id="pv-done" style="'+btn+'">'+opts+'</select></label>'
+      +'<span style="display:flex;gap:5px;flex-wrap:wrap"><button style="'+btn+'" data-go="index.html">Home</button><button style="'+btn+'" data-go="quiz.html">Checkpoints</button><button style="'+btn+'" data-go="lecture.html">Lecture</button><button style="'+btn+'" data-go="smartpls.html">SmartPLS</button><button style="'+btn+'" data-go="ask.html">Ask</button></span>'
+      +'<span style="display:flex;gap:5px;margin-left:auto"><button style="'+btn+'" id="pv-reset">Reset</button><button style="'+btn+';border-color:#00e5ff;color:#00e5ff" id="pv-exit">Exit preview</button></span>';
+    bar.innerHTML='<div style="display:flex;align-items:center;gap:10px;width:100%"><b style="color:#00e5ff">&#128065; STUDENT PREVIEW</b><span id="pv-note" style="color:#94a3b8">Nothing here is saved or shown to the class.</span><button style="'+btn+';margin-left:auto" id="pv-min"></button></div>'
+      +'<div id="pv-body" style="display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;width:100%">'+ctl+'</div>';
+    document.body.appendChild(bar);
+    function isMin(){var m=S.getItem('pv_min');return m===null?window.innerWidth<600:m==='1';}
+    function applyMin(){var m=isMin(),narrow=window.innerWidth<600;document.getElementById('pv-body').style.display=m?'none':'flex';document.getElementById('pv-min').textContent=m?'Show controls \u25B4':'Hide \u25BE';document.getElementById('pv-note').style.display=(m&&narrow)?'none':'';document.body.style.paddingBottom=m?'56px':(narrow?'270px':'120px');}
+    applyMin();
+    document.getElementById('pv-min').onclick=function(){S.setItem('pv_min',isMin()?'0':'1');applyMin();};
+    var as=document.getElementById('pv-as');
+    as.onchange=function(){
+      if(as.value==='new'){KEYS.forEach(function(k){S.removeItem(k);});}
+      else{S.setItem('student_registered','yes');S.setItem('student_name_v1','Preview Student');S.setItem('student_sid_v1','preview');}
+      window.__rmGo(location.pathname.split('/').pop()||'index.html');
+    };
+    document.getElementById('pv-done').onchange=function(){
+      S.setItem('pv_done',this.value);S.removeItem('drtan_scores_v3');
+      if(!S.getItem('student_name_v1'))S.setItem('student_name_v1','Preview Student');
+      window.__rmGo(location.pathname.split('/').pop()||'index.html');
+    };
+    [].forEach.call(bar.querySelectorAll('[data-go]'),function(b){b.onclick=function(){window.__rmGo(b.getAttribute('data-go'));};});
+    document.getElementById('pv-reset').onclick=function(){S.clear();S.setItem('rm_preview','1');window.__rmGo('index.html');};
+    document.getElementById('pv-exit').onclick=function(){S.clear();window.__rmGo('secret.html');};
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',build);else build();
+})();
+</script>
 </body>
 </html>

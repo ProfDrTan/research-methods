@@ -135,8 +135,9 @@ function render(){
     var shown=idx.slice(0,3).map(esc),more=idx.length-shown.length;
     banner.className='';banner.innerHTML='🎉 Congratulations '+shown.join(', ').replace(/, ([^,]*)$/,more?', $1':' and $1')+(more>0?' and '+more+' more':'')+'!';
   }else if(sm.any>0){banner.className='';banner.innerHTML='🌟 '+sm.any+' of '+n+' have finished a Checkpoint. Who\'s next?';}
+  else if(level==='intermediate'){banner.className='quiet';banner.textContent='⭐ Intermediate is optional extra practice. Cheer on anyone who tries it!';}
   else{banner.className='quiet';banner.textContent='⚡ Let\'s turn the first box green!';}
-  document.getElementById('chips').innerHTML='<span class="chip"><b>'+n+'</b> in the class</span><span class="chip"><b>'+sm.any+'</b> finished at least one Checkpoint</span><span class="chip"><b>'+sm.all+'</b> finished all five</span>';
+  document.getElementById('chips').innerHTML='<span class="chip"><b>'+n+'</b> in the class</span><span class="chip"><b>'+sm.any+'</b> finished at least one Checkpoint</span><span class="chip"><b>'+sm.all+'</b> finished all five</span>'+(level==='intermediate'?'<span class="chip">Optional extra practice</span>':'<span class="chip">Checkpoints open in order, 1 to 5</span>');
   if(!n){document.getElementById('board').innerHTML='<div class="empty">No students yet.</div>';return;}
   var h='<table><thead><tr><th class="namecol">Student</th><th>Warm-up<small>&nbsp;</small></th>';
   for(var c=0;c<5;c++)h+='<th>Checkpoint '+(c+1)+'<small>'+esc(LABELS[c])+'</small><small><b style="color:#4ade80">'+sm.perCol[c].done+'</b> / '+n+' done</small></th>';

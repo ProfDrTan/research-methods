@@ -190,7 +190,7 @@ footer a{color:var(--cyan);text-decoration:none;}
   </ul>
   <ul class="member-nav" id="nav-member" style="display:none;">
     <li><a href="lecture.html">📖 Lecture</a></li>
-    <li><a href="quiz.html">⚡ Quiz</a></li>
+    <li><a href="quiz.html">⚡ Checkpoints</a></li>
     <li><a href="#dashboard">📊 Class Dashboard</a></li>
   </ul>
 </nav>
@@ -206,7 +206,7 @@ footer a{color:var(--cyan);text-decoration:none;}
     <div class="hero-glow2"></div>
     <div class="eyebrow">Saturday Intensive · 9:00 AM – 1:00 PM</div>
     <h1>Quantitative Research<br>in the <span class="ac">Age of AI</span> &amp; <span class="av">Data Science</span></h1>
-    <p class="hero-sub">A doctoral-level programme for PhD and DBA candidates. Register to access the full lecture, datasets, live quiz, and class dashboard.</p>
+    <p class="hero-sub">A doctoral-level programme for PhD and DBA candidates. Register to access the full lecture, datasets, live checkpoints, and class dashboard.</p>
     <div class="hero-actions">
       <a href="#register" class="btn-primary">Join the Class →</a>
       <a href="#about" class="btn-outline">What's Inside</a>
@@ -214,7 +214,7 @@ footer a{color:var(--cyan);text-decoration:none;}
     <div class="preview-strip">
       <div class="preview-item"><span class="lock">🔒</span> Full 4-Hour Lecture</div>
       <div class="preview-item"><span class="lock">🔒</span> SPSS &amp; SEM Datasets</div>
-      <div class="preview-item"><span class="lock">🔒</span> Live Quiz</div>
+      <div class="preview-item"><span class="lock">🔒</span> Live Checkpoints</div>
       <div class="preview-item"><span class="lock">🔒</span> Class Intelligence Dashboard</div>
     </div>
   </div>
@@ -259,8 +259,8 @@ footer a{color:var(--cyan);text-decoration:none;}
       </div>
       <div class="course-card">
         <div class="cc-icon">⚡</div>
-        <div class="cc-title">Live Quiz — 4 Rounds</div>
-        <div class="cc-desc">Interactive quizzes after each module. Your results are private &mdash; never shown to other students.</div>
+        <div class="cc-title">Live Checkpoints — 4 Rounds</div>
+        <div class="cc-desc">Interactive checkpoints after each module. Your results are private &mdash; never shown to other students.</div>
         <div class="cc-lock">🔒 Register to access</div>
       </div>
     </div>
@@ -305,11 +305,11 @@ footer a{color:var(--cyan);text-decoration:none;}
         <div class="reg-left">
           <div class="section-label">Step 1 of 1</div>
           <h2>Register to Join the Class</h2>
-          <p>Complete your profile below. This takes 60 seconds and gives you immediate access to all course materials, the full lecture, datasets, and the live quiz.</p>
+          <p>Complete your profile below. This takes 60 seconds and gives you immediate access to all course materials, the full lecture, datasets, and the live checkpoints.</p>
           <div class="what-you-get">
             <div class="wyg-item"><span class="wyg-check">✅</span> Full 4-hour self-driven lecture</div>
             <div class="wyg-item"><span class="wyg-check">✅</span> PDF slides &amp; SPSS/SEM datasets</div>
-            <div class="wyg-item"><span class="wyg-check">✅</span> Private quiz &mdash; results seen only by you and your instructor</div>
+            <div class="wyg-item"><span class="wyg-check">✅</span> Private checkpoint &mdash; results seen only by you and your instructor</div>
             <div class="wyg-item"><span class="wyg-check">✅</span> Live class intelligence dashboard</div>
             <div class="wyg-item"><span class="wyg-check">✅</span> Retained for future cohorts — track your progress</div>
           </div>
@@ -368,12 +368,19 @@ footer a{color:var(--cyan);text-decoration:none;}
               </select>
             </div>
             <div class="field"><label>Biggest Research Challenge (optional)</label><textarea id="f-challenge" placeholder="e.g. Understanding SEM, sample size, literature gap..."></textarea></div>
+<div class="field" style="margin-top:.5rem;padding-top:.9rem;border-top:1px solid #1e293b;"><label style="font-size:.95rem;">Warm-up: where are you today? (about 1 minute)</label><div style="font-size:.78rem;color:var(--muted);margin:.25rem 0 .2rem;">The first two are about how you feel, so there are no wrong answers. The last three are quick questions we will build on today. Other students never see your answers.</div></div>
+<div class="field"><label>1. How confident do you feel about statistics right now? *</label><select id="wu-c1"><option value="">Choose…</option><option value="1">1 · Just starting out</option><option value="2">2 · A little</option><option value="3">3 · Getting there</option><option value="4">4 · Fairly confident</option><option value="5">5 · Very confident</option></select></div>
+<div class="field"><label>2. How confident do you feel about writing your methodology chapter? *</label><select id="wu-c2"><option value="">Choose…</option><option value="1">1 · Just starting out</option><option value="2">2 · A little</option><option value="3">3 · Getting there</option><option value="4">4 · Fairly confident</option><option value="5">5 · Very confident</option></select></div>
+<div class="field"><label>3. Nationality (for example Malaysian, Nigerian, Indian) is measured on which scale? *</label><select id="wu-k1"><option value="">Choose…</option><option value="0">Ordinal</option><option value="1">Nominal</option><option value="2">Interval</option><option value="3">Ratio</option></select></div>
+<div class="field"><label>4. Which of these is NOT a measure of central tendency? *</label><select id="wu-k2"><option value="">Choose…</option><option value="0">Mean</option><option value="1">Median</option><option value="2">Mode</option><option value="3">Standard deviation</option></select></div>
+<div class="field"><label>5. You want to compare the average scores of two separate groups. Which test is the usual starting point? *</label><select id="wu-k3"><option value="">Choose…</option><option value="0">Chi-square test</option><option value="1">Independent-samples t-test</option><option value="2">Pearson correlation</option><option value="3">Simple regression</option></select></div>
             <button class="submit-btn" id="submit-btn" onclick="submitRegistration()">Register &amp; Access All Materials →</button>
           </div>
           <div class="form-success" id="form-success">
             <div class="check">✅</div>
             <p style="font-family:var(--sans);font-weight:700;font-size:1rem;margin-bottom:0.5rem;color:var(--text);">You're in!</p>
-            <p style="font-size:0.85rem;color:var(--muted);margin-bottom:1.25rem;">Welcome to the class. All materials are now unlocked.</p>
+            <p style="font-size:0.85rem;color:var(--muted);margin-bottom:0.75rem;">Welcome to the class. All materials are now unlocked.</p>
+            <p id="wu-msg" style="font-size:0.9rem;color:#4ade80;font-weight:700;margin-bottom:1.25rem;"></p>
             <button onclick="enterMemberView()" style="padding:0.75rem 1.75rem;background:linear-gradient(135deg,var(--cyan),#0097b2);color:var(--bg);border:none;border-radius:8px;font-family:var(--sans);font-weight:700;font-size:0.9rem;cursor:pointer;">Enter Class →</button>
           </div>
         </div>
@@ -404,7 +411,7 @@ footer a{color:var(--cyan);text-decoration:none;}
   <div class="member-hero">
     <div class="mh-label">Quantitative Research Methods · Saturday Intensive</div>
     <h2 class="mh-title">Your Class Dashboard</h2>
-    <p class="mh-sub">Access your lecture, materials, and the live quiz below. The class intelligence dashboard updates in real time as your classmates join.</p>
+    <p class="mh-sub">Access your lecture, materials, and the live checkpoints below. The class intelligence dashboard updates in real time as your classmates join.</p>
   </div>
 
   <!-- ACCESS CARDS -->
@@ -417,9 +424,9 @@ footer a{color:var(--cyan);text-decoration:none;}
     </a>
     <a href="quiz.html" class="access-card quiz-card">
       <div class="ac-icon">⚡</div>
-      <div class="ac-title">Live Quiz</div>
+      <div class="ac-title">Live Checkpoints</div>
       <div class="ac-desc">Launched by Dr. Tan during class. 4 rounds of 5 questions each. Your results are private &mdash; never shown to other students; only you and your instructor see them.</div>
-      <span class="ac-tag" style="color:var(--amber);border-color:rgba(245,158,11,0.2);background:rgba(245,158,11,0.07);">OPEN QUIZ →</span>
+      <span class="ac-tag" style="color:var(--amber);border-color:rgba(245,158,11,0.2);background:rgba(245,158,11,0.07);">OPEN CHECKPOINT →</span>
     </a>
 
 
@@ -526,14 +533,14 @@ footer a{color:var(--cyan);text-decoration:none;}
 // ---- cohort guard: a new class starts with a clean browser as well as a clean roster ----
 window.__rmReload=function(){location.reload();};
 (function(){
-  var KEYS=['rm_v2','drtan_scores_v3','student_registered','student_name_v1'];
+  var KEYS=['rm_v2','drtan_scores_v3','student_registered','student_name_v1','student_sid_v1'];
+  var had=false;try{had=KEYS.some(function(k){return localStorage.getItem(k)!==null;});}catch(e){}
   fetch('https://raw.githubusercontent.com/ProfDrTan/research-methods/main/cohort.json?t='+Date.now())
     .then(function(r){return r.json();})
     .then(function(c){
       if(!c||!c.id)return;
       var cur=null;try{cur=localStorage.getItem('rm_cohort');}catch(e){return;}
       if(cur===c.id)return;
-      var had=KEYS.some(function(k){return localStorage.getItem(k)!==null;});
       localStorage.setItem('rm_cohort',c.id);
       if(had){KEYS.forEach(function(k){localStorage.removeItem(k);});window.__rmReload();}
     }).catch(function(){});
@@ -621,10 +628,14 @@ function submitRegistration(){
   var tool=document.getElementById('f-tool').value;
   var challenge=document.getElementById('f-challenge').value.trim();
   if(!first||!last||!email||!country||!prog||!stage){alert('Please fill in all required fields including email.');return;}
+  var wv=['wu-c1','wu-c2','wu-k1','wu-k2','wu-k3'].map(function(id){var e=document.getElementById(id);return e?e.value:'';});
+  if(wv.some(function(v){return v==='';})){alert('Please answer the 5 warm-up questions. It takes about a minute, and there are no wrong answers in the first two.');return;}
   var btn=document.getElementById('submit-btn');
   btn.disabled=true; btn.textContent='Registering...';
 
   var student = {first:first,last:last,email:email,uni:uni,country:country,prog:prog,stage:stage,domain:domain,tool:tool,challenge:challenge,ts:Date.now()};
+  var kk=[+wv[2],+wv[3],+wv[4]],okN=(kk[0]===1?1:0)+(kk[1]===3?1:0)+(kk[2]===1?1:0);
+  student.wu={c1:+wv[0],c2:+wv[1],k:kk,ok:okN,n:3,done:true,ts:student.ts};
 
   // Save to localStorage immediately — works even if Worker is offline
   var data=getData();
@@ -632,12 +643,14 @@ function submitRegistration(){
   saveData(data);
   localStorage.setItem('student_name_v1',first+' '+last);
   localStorage.setItem('student_registered','yes');
+  localStorage.setItem('student_sid_v1',String(student.ts));
 
   // Show success instantly
   btn.disabled=false;
   btn.textContent='Registered! ✓';
   document.getElementById('reg-form').style.display='none';
   document.getElementById('form-success').style.display='block';
+  document.getElementById('wu-msg').textContent=(okN===3?'Warm-up complete ✓ Perfect, 3 of 3. You are off to a flying start!':'Warm-up complete ✓ You answered '+okN+' of 3 knowledge questions correctly. A great starting point: by the end of today you will know all three inside out.');
 
   // Write to GitHub in background so all devices see this student (retries if another student writes at the same moment)
   setTimeout(function(){

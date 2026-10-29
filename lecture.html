@@ -1305,13 +1305,13 @@ function masterTtsStop(){
     var btn='background:#161f30;border:1px solid #334155;color:#e2e8f0;border-radius:6px;padding:4px 9px;font:inherit;cursor:pointer';
     var ctl='<label>View as <select id="pv-as" style="'+btn+'"><option value="new"'+(reg?'':' selected')+'>a new student</option><option value="reg"'+(reg?' selected':'')+'>a registered student</option></select></label>'
       +'<label>Foundation checkpoints finished <select id="pv-done" style="'+btn+'">'+opts+'</select></label>'
-      +'<span style="display:flex;gap:5px;flex-wrap:wrap"><button style="'+btn+'" data-go="index.html">Home</button><button style="'+btn+'" data-go="quiz.html">Checkpoints</button><button style="'+btn+'" data-go="lecture.html">Lecture</button><button style="'+btn+'" data-go="smartpls.html">SmartPLS</button><button style="'+btn+'" data-go="ask.html">Ask</button></span>'
+      +'<span style="display:flex;gap:5px;flex-wrap:wrap"><button style="'+btn+'" data-go="index.html">Home</button><button style="'+btn+'" data-go="quiz.html">Checkpoints</button><button style="'+btn+'" data-go="lecture.html">Lecture</button><button style="'+btn+'" data-go="smartpls.html">SmartPLS</button></span>'
       +'<span style="display:flex;gap:5px;margin-left:auto"><button style="'+btn+'" id="pv-reset">Reset</button><button style="'+btn+';border-color:#00e5ff;color:#00e5ff" id="pv-exit">Exit preview</button></span>';
-    bar.innerHTML='<div style="display:flex;align-items:center;gap:10px;width:100%"><b style="color:#00e5ff">&#128065; STUDENT PREVIEW</b><span id="pv-note" style="color:#94a3b8">Nothing here is saved or shown to the class.</span><button style="'+btn+';margin-left:auto" id="pv-min"></button></div>'
+    bar.innerHTML='<div style="display:flex;align-items:center;gap:10px;width:100%"><b style="color:#00e5ff">&#128065; STUDENT PREVIEW</b><button style="'+btn+';margin-left:auto" id="pv-min"></button></div>'
       +'<div id="pv-body" style="display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;width:100%">'+ctl+'</div>';
     document.body.appendChild(bar);
     function isMin(){var m=S.getItem('pv_min');return m===null?window.innerWidth<600:m==='1';}
-    function applyMin(){var m=isMin(),narrow=window.innerWidth<600;document.getElementById('pv-body').style.display=m?'none':'flex';document.getElementById('pv-min').textContent=m?'Show controls \u25B4':'Hide \u25BE';document.getElementById('pv-note').style.display=(m&&narrow)?'none':'';document.body.style.paddingBottom=m?'56px':(narrow?'270px':'120px');}
+    function applyMin(){var m=isMin(),narrow=window.innerWidth<600;document.getElementById('pv-body').style.display=m?'none':'flex';document.getElementById('pv-min').textContent=m?'Show controls \u25B4':'Hide \u25BE';document.body.style.paddingBottom=m?'56px':(narrow?'270px':'120px');}
     applyMin();
     document.getElementById('pv-min').onclick=function(){S.setItem('pv_min',isMin()?'0':'1');applyMin();};
     var as=document.getElementById('pv-as');

@@ -173,6 +173,14 @@ function ghWrite(f,data){
 - Quiz results are PRIVATE: a student sees only their own score. leaderboard.html is retired and shows a privacy notice. The secret.html Dashboard shows every student's scores, filterable by section and by level. Entries in scores.json carry a level field (intermediate); entries without it are Foundation.
 - Intermediate options were length-balanced so the longest option is correct only about 20 percent of the time. Keep that balance when adding questions.
 
+### EXECUTION RULES FOR THE CHECKPOINTS — 28 Oct 2026 (these are rules, not suggestions)
+- The student-facing word is CHECKPOINT, not quiz ("Checkpoint 1" to "Checkpoint 5"). Do not reintroduce "quiz" on student pages. Private pages (notes, answers, solutions, this page) may still say quiz.
+- Foundation checkpoints are REQUIRED and SEQUENTIAL: Checkpoint N opens only when Checkpoint N-1 is finished. No jumping or skipping. Enforced in quiz.html (card locks plus a guard inside startSection), using this device's saved scores AND the student's done entries in progress.json, so a new phone or a cleared browser does not re-lock earlier checkpoints.
+- Intermediate checkpoints are OPTIONAL: nothing depends on them and nothing requires Foundation first. They open in order within the Intermediate level only.
+- progress.json records started (amber) and done (green) per student, level and checkpoint; the Class Progress Board (progress.html) reads progress.json and students.json only and must NEVER read or display scores.
+- Registration includes a required 5-question warm-up (stored on the student record as wu). Students registered before it existed show a neutral dash on the board, not red.
+- A new cohort = archive the old data privately (never inside the public repo), clear students.json, scores.json and progress.json, and bump cohort.json (the Reset Everything button does all of this). Devices holding the old cohort clear their saved registration on the next visit.
+
 ### COMPONENT 3: THE QUIZ SYSTEM
 
 **94 questions across 6 sections:**

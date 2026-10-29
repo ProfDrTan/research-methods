@@ -179,6 +179,7 @@ function ghWrite(f,data){
 - Intermediate checkpoints are OPTIONAL: nothing depends on them and nothing requires Foundation first. They open in order within the Intermediate level only.
 - progress.json records started (amber) and done (green) per student, level and checkpoint; the Class Progress Board (progress.html) reads progress.json and students.json only and must NEVER read or display scores.
 - Registration includes a required 5-question warm-up (stored on the student record as wu). Students registered before it existed show a neutral dash on the board, not red.
+- STUDENT PREVIEW (instructor only): index.html?preview=1, opened from the secret.html dashboard card, shows exactly what a student sees. The tab uses its own sessionStorage (RMS in index.html and quiz.html) so the instructor's real browser data is never touched, and window.__RM_PREVIEW switches OFF every write to the class data (ghUpdate and ghWrite return at once). A bar at the bottom lets the instructor view as a new or registered student and simulate 0 to 5 Foundation checkpoints finished. NEVER register fake students on the live site for testing, and never remove the preview write guard.
 - A new cohort = archive the old data privately (never inside the public repo), clear students.json, scores.json and progress.json, and bump cohort.json (the Reset Everything button does all of this). Devices holding the old cohort clear their saved registration on the next visit.
 
 ### COMPONENT 3: THE QUIZ SYSTEM

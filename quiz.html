@@ -27,6 +27,11 @@ nav{background:#0b1120;border-bottom:1px solid #1e2d45;padding:0 1.5rem;display:
 .qc-title{font-weight:700;font-size:0.9rem;margin-bottom:0.3rem;}
 .qc-count{font-size:0.78rem;color:#64748b;}
 .qc-score{font-family:monospace;font-size:0.78rem;color:#10b981;margin-top:0.4rem;}
+.quiz-card.locked{opacity:0.55;cursor:not-allowed;}
+.quiz-card.locked:hover{border-color:#1e2d45;transform:none;}
+.qc-lock{font-size:0.78rem;color:#f59e0b;margin-top:0.4rem;}
+.quiz-card.next{border-color:#00e5ff;}
+.qc-up{font-family:monospace;font-size:0.75rem;color:#00e5ff;margin-top:0.4rem;}
 
 /* QUIZ */
 .section-title{font-size:0.7rem;letter-spacing:0.15em;color:#a78bfa;text-transform:uppercase;margin:1.5rem 0 0.75rem;padding-bottom:0.5rem;border-bottom:1px solid #1e2d45;}
@@ -159,8 +164,8 @@ var myName = '';
 var currentSectionIdx = 0;
 var currentLevel = 'foundation';
 var LEVELS = {
-  foundation: {name:'Foundation', desc:'Core concepts and definitions: the essentials of each topic.'},
-  intermediate: {name:'Intermediate', desc:'Deeper questions: interpret output, spot flawed reasoning and choose the right method in realistic scenarios.'}
+  foundation: {name:'Foundation', desc:'Core concepts and definitions. Do these in order: each checkpoint opens when the one before it is finished.'},
+  intermediate: {name:'Intermediate', desc:'Optional extra practice: deeper questions on interpreting output and choosing methods. Nothing depends on these, and they open in order too.'}
 };
 function sectionsFor(level){ return level==='intermediate' ? INT_SECTIONS : ALL_SECTIONS; }
 function scoreKey(level, idx, name){ return (level==='intermediate' ? 'int_section_' : 'section_') + idx + '_' + name.toLowerCase(); }
@@ -260,6 +265,24 @@ function markProgress(status,level,section){
   }).catch(function(e){console.warn('Progress save failed:',e);});
 }
 
+// ---- order rule: checkpoints open one at a time within each level (Foundation is required, Intermediate is optional) ----
+var remoteDone={};
+function normName(s){return String(s||'').toLowerCase().replace(/\s+/g,' ').trim();}
+function refreshRemote(cb){
+  fetch('https://raw.githubusercontent.com/ProfDrTan/research-methods/main/progress.json?t='+Date.now())
+    .then(function(r){return r.json();})
+    .then(function(arr){
+      var sid='';try{sid=localStorage.getItem('student_sid_v1')||'';}catch(e){}
+      var nm=normName(myName),out={};
+      if(Array.isArray(arr))arr.forEach(function(p){if(p&&p.status==='done'&&((sid&&String(p.sid)===sid)||(nm&&normName(p.name)===nm)))out[p.level+'|'+p.section]=true;});
+      remoteDone=out;
+    }).catch(function(){}).then(function(){if(cb)cb();});
+}
+function isDone(level,idx,scores){scores=scores||getScores();return !!scores[scoreKey(level,idx,myName)]||!!remoteDone[level+'|'+idx];}
+function firstUndone(level,before){var s=getScores();for(var i=0;i<before;i++){if(hiddenSections.indexOf(i)>=0)continue;if(!isDone(level,i,s))return i+1;}return 0;}
+function isUnlocked(level,idx){return firstUndone(level,idx)===0;}
+function lockedMsg(idx){alert('Please finish Checkpoint '+firstUndone(currentLevel,idx)+' first. The checkpoints go in order, so each one opens when the one before it is done.');}
+
 function fetchConfig(callback) {
   ghRead('quizconfig.json')
     .then(function(cfg){ hiddenSections=(cfg.hidden&&cfg.hidden.length>0)?cfg.hidden:[5]; callback(); })
@@ -283,16 +306,22 @@ function renderHome() {
   var hidden = hiddenSections;
   var html = '';
   var anyVisible = false;
+  var upNextSet = false;
   sectionsFor(currentLevel).forEach(function(section, idx) {
     if(hidden.indexOf(idx) >= 0) return; // skip hidden sections
     anyVisible = true;
     var sc = scores[scoreKey(currentLevel, idx, myName)];
-    var done = sc ? true : false;
-    html += '<div class="quiz-card' + (done?' done':'') + '" onclick="startSection(' + idx + ')">';
+    var done = isDone(currentLevel, idx, scores);
+    var open = isUnlocked(currentLevel, idx);
+    var isNext = open && !done && !upNextSet; if(isNext) upNextSet = true;
+    html += '<div class="quiz-card' + (done?' done':'') + (open?'':' locked') + (isNext?' next':'') + '" onclick="' + (open ? 'startSection(' + idx + ')' : 'lockedMsg(' + idx + ')') + '">';
     html += '<div class="qc-num">Checkpoint ' + (idx+1) + '</div>';
     html += '<div class="qc-title">' + section.label.replace(/(?:Quiz|Checkpoint) \d+ — /,'') + '</div>';
     html += '<div class="qc-count">' + section.questions.length + ' questions</div>';
-    if(done) html += '<div class="qc-score">&#10003; ' + sc.score + '/' + sc.total + ' (' + sc.pct + '%)</div>';
+    if(!open) html += '<div class="qc-lock">&#128274; Finish Checkpoint ' + firstUndone(currentLevel, idx) + ' first</div>';
+    else if(isNext) html += '<div class="qc-up">Up next &#9654;</div>';
+    if(sc) html += '<div class="qc-score">&#10003; ' + sc.score + '/' + sc.total + ' (' + sc.pct + '%)</div>';
+    else if(done) html += '<div class="qc-score">&#10003; Done</div>';
     html += '</div>';
   });
   if(!anyVisible) html = '<div style="text-align:center;padding:3rem;color:#64748b;font-family:monospace;font-size:0.85rem;">No checkpoints available yet.<br>Check back soon.</div>';
@@ -304,6 +333,7 @@ function startSection(idx) {
   if(!name) { alert('Please enter your name first.'); return; }
   myName = name;
   localStorage.setItem('student_name_v1', name);
+  if(!isUnlocked(currentLevel, idx)) { lockedMsg(idx); return; }
   currentSectionIdx = idx;
   answers = {};
   markProgress('started', currentLevel, idx);
@@ -434,9 +464,11 @@ function nextQuiz() {
 
 window.onload = function() {
   var saved = localStorage.getItem('student_name_v1');
-  if(saved) document.getElementById('home-name').value = saved;
+  if(saved) { document.getElementById('home-name').value = saved; myName = saved; }
+  var hn = document.getElementById('home-name'), nt = null;
+  hn.addEventListener('input', function(){ clearTimeout(nt); nt = setTimeout(function(){ myName = hn.value.trim(); refreshRemote(function(){ renderHome(); }); }, 500); });
   try{ var lv = localStorage.getItem('quiz_level_v1'); if(lv==='intermediate'||lv==='foundation') currentLevel = lv; }catch(e){}
-  fetchConfig(function(){ renderHome(); });
+  fetchConfig(function(){ refreshRemote(function(){ renderHome(); }); });
 };
 </script>
 </body>

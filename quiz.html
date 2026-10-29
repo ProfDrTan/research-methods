@@ -200,9 +200,16 @@ var _a='github_pat',_b='_11BYABRPI0Op8L',_c='hxdscy9d_DgO5wqHjm3v',_d='lQBn6vnLT
 var REPO='ProfDrTan/research-methods';
 function getToken(){return _a+_b+_c+_d;}
 function rawUrl(f){return 'https://raw.githubusercontent.com/'+REPO+'/main/'+f+'?t='+Date.now();}
+// Live reads go through GitHub's API (fresh), not the raw file address (which GitHub caches for up to 5 minutes).
+function liveRead(f){
+  return fetch('https://api.github.com/repos/'+REPO+'/contents/'+f+'?t='+Date.now(),{headers:{'Authorization':'token '+getToken(),'Accept':'application/vnd.github.raw+json'}})
+    .then(function(r){if(!r.ok)throw new Error(f+' '+r.status);return r.json();})
+    .catch(function(){return fetch(rawUrl(f)).then(function(r){return r.json();});});
+}
+
 function apiUrl(f){return 'https://api.github.com/repos/'+REPO+'/contents/'+f;}
 
-async function ghRead(f){var r=await fetch(rawUrl(f));return r.json();}
+async function ghRead(f){return liveRead(f);}
 async function ghWrite(f,data){
   var r=await fetch(apiUrl(f),{headers:{'Authorization':'token '+getToken(),'Accept':'application/vnd.github+json'}});
   var d=await r.json(); var sha=d.sha;
@@ -216,8 +223,7 @@ window.__rmReload=function(){location.reload();};
 (function(){
   var KEYS=['rm_v2','drtan_scores_v3','student_registered','student_name_v1','student_sid_v1'];
   var had=false;try{had=KEYS.some(function(k){return localStorage.getItem(k)!==null;});}catch(e){}
-  fetch('https://raw.githubusercontent.com/ProfDrTan/research-methods/main/cohort.json?t='+Date.now())
-    .then(function(r){return r.json();})
+  liveRead('cohort.json')
     .then(function(c){
       if(!c||!c.id)return;
       var cur=null;try{cur=localStorage.getItem('rm_cohort');}catch(e){return;}
@@ -269,8 +275,7 @@ function markProgress(status,level,section){
 var remoteDone={};
 function normName(s){return String(s||'').toLowerCase().replace(/\s+/g,' ').trim();}
 function refreshRemote(cb){
-  fetch('https://raw.githubusercontent.com/ProfDrTan/research-methods/main/progress.json?t='+Date.now())
-    .then(function(r){return r.json();})
+  liveRead('progress.json')
     .then(function(arr){
       var sid='';try{sid=localStorage.getItem('student_sid_v1')||'';}catch(e){}
       var nm=normName(myName),out={};

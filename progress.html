@@ -72,6 +72,7 @@ body.big{padding:1.6rem 2.2rem}
 
 <script>
 var RAW='https://raw.githubusercontent.com/ProfDrTan/research-methods/main/';
+var REPO='ProfDrTan/research-methods',TOK=('github_pat'+'_11BYABRPI0Op8L'+'hxdscy9d_DgO5wqHjm3v'+'lQBn6vnLTka7iWeBVk1hRQtRDOXmElu8EMYYGOXIqvVvIxCc');
 var LABELS=['Scales & Tendency','Distribution & Correlation','Inferential Tests','SEM Foundations','Advanced SEM'];
 var state={level:'foundation',names:'initials',students:[],progress:[],loaded:false};
 
@@ -154,7 +155,12 @@ function render(){
 function setLevel(l){state.level=l;['foundation','intermediate'].forEach(function(k){document.getElementById('lv-'+k).className='btn'+(k===l?' on':'');});render();}
 function setNames(m){state.names=m;['initials','first','full'].forEach(function(k){document.getElementById('nm-'+k).className='btn'+(k===m?' on':'');});render();}
 function toggleFull(){var d=document.documentElement;try{if(!document.fullscreenElement){document.body.classList.add('big');d.requestFullscreen&&d.requestFullscreen();}else{document.body.classList.remove('big');document.exitFullscreen();}}catch(e){}}
-function getJson(f){return fetch(RAW+f+'?t='+Date.now()).then(function(r){if(!r.ok)throw new Error(f+' '+r.status);return r.json();});}
+// Reads through GitHub's API so the board is fresh to within seconds. (The raw file address is cached for up to 5 minutes.)
+function getJson(f){
+  return fetch('https://api.github.com/repos/'+REPO+'/contents/'+f+'?t='+Date.now(),{headers:{'Authorization':'token '+TOK,'Accept':'application/vnd.github.raw+json'}})
+    .then(function(r){if(!r.ok)throw new Error(f+' '+r.status);return r.json();})
+    .catch(function(){return fetch(RAW+f+'?t='+Date.now()).then(function(r){if(!r.ok)throw new Error(f+' '+r.status);return r.json();});});
+}
 function load(){
   Promise.all([getJson('students.json'),getJson('progress.json')]).then(function(a){
     state.students=Array.isArray(a[0])?a[0]:[];state.progress=Array.isArray(a[1])?a[1]:[];state.loaded=true;

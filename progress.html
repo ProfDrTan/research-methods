@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Class Progress Board</title>
+<style>
+:root{--bg:#020817;--card:#0f172a;--line:#1e293b;--text:#e2e8f0;--muted:#94a3b8;--cyan:#00e5ff;--green:#22c55e;--amber:#f59e0b;--red:#ef4444}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;min-height:100vh;padding:1.1rem 1.2rem 2rem}
+.top{display:flex;flex-wrap:wrap;gap:.8rem 1.2rem;align-items:flex-end;justify-content:space-between;margin-bottom:.9rem}
+h1{font-size:clamp(1.3rem,2.4vw,2.2rem);letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:clamp(.78rem,1.1vw,1rem);margin-top:.25rem}
+.ctl{display:flex;flex-wrap:wrap;gap:.45rem;align-items:center}
+.ctl .lbl{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin:0 .15rem 0 .5rem}
+.btn{background:var(--card);border:1px solid var(--line);color:var(--muted);border-radius:8px;padding:.4rem .75rem;font:inherit;font-size:.82rem;cursor:pointer}
+.btn.on{background:rgba(0,229,255,.12);border-color:var(--cyan);color:var(--cyan)}
+#banner{background:linear-gradient(135deg,rgba(34,197,94,.16),rgba(0,229,255,.1));border:1px solid rgba(34,197,94,.45);border-radius:14px;padding:clamp(.5rem,1.4vh,1.4rem) clamp(1rem,2vw,1.8rem);font-size:clamp(1.05rem,min(2.3vw,4.2vh),2.1rem);font-weight:800;margin-bottom:.9rem;text-align:center}
+#banner.quiet{background:var(--card);border-color:var(--line);font-weight:600;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:.9rem}
+.chip{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:.35rem .9rem;font-size:clamp(.78rem,1.1vw,1rem);color:var(--muted)}
+.chip b{color:var(--text)}
+.wrap{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--card)}
+table{border-collapse:separate;border-spacing:5px;width:100%;min-width:640px}
+th{font-size:clamp(.68rem,.95vw,.95rem);font-weight:700;color:var(--muted);text-align:center;padding:.3rem .2rem;vertical-align:bottom}
+th small{display:block;font-weight:500;font-size:.8em;margin-top:.15rem}
+th.namecol,td.namecol{text-align:left;padding-left:.8rem}
+td.namecol{font-weight:700;font-size:clamp(.9rem,min(1.5vw,2.6vh),1.5rem);white-space:nowrap;padding-right:.8rem}
+td.namecol .star{margin-left:.35rem}
+.cell{border-radius:10px;text-align:center;font-weight:800;font-size:clamp(.78rem,min(1.2vw,2vh),1.2rem);padding:clamp(.28rem,.95vh,.9rem) .3rem;border:1px solid transparent}
+.cell.done{background:rgba(34,197,94,.2);color:#4ade80;border-color:var(--green)}
+.cell.started{background:rgba(245,158,11,.2);color:#fbbf24;border-color:var(--amber)}
+.cell.na{background:transparent;color:#475569;border-color:#1e293b;font-weight:600}
+.cell.none{background:rgba(239,68,68,.12);color:#f87171;border-color:rgba(239,68,68,.5)}
+tr.allgreen td.namecol{color:#4ade80}
+.legend{display:flex;flex-wrap:wrap;gap:1rem;margin-top:.9rem;color:var(--muted);font-size:.85rem}
+.legend span{display:inline-flex;gap:.4rem;align-items:center}
+.dot{width:.9rem;height:.9rem;border-radius:4px;display:inline-block}
+.foot{margin-top:.8rem;color:var(--muted);font-size:.78rem}
+#conn{color:var(--amber);font-size:.78rem;margin-left:.5rem}
+.empty{padding:2.5rem 1rem;text-align:center;color:var(--muted);font-size:1.1rem}
+body.big{padding:1.6rem 2.2rem}
+</style>
+</head>
+<body>
+<div class="top">
+  <div>
+    <h1>Class Progress Board <span id="conn"></span></h1>
+    <div class="sub">Green = done &nbsp;·&nbsp; Amber = in progress &nbsp;·&nbsp; Red = not yet. This board shows progress only. Results stay private.</div>
+  </div>
+  <div class="ctl" id="ctl">
+    <span class="lbl">Level</span>
+    <button class="btn on" id="lv-foundation" onclick="setLevel('foundation')">Foundation</button>
+    <button class="btn" id="lv-intermediate" onclick="setLevel('intermediate')">Intermediate</button>
+    <span class="lbl">Names</span>
+    <button class="btn on" id="nm-initials" onclick="setNames('initials')">First + initial</button>
+    <button class="btn" id="nm-first" onclick="setNames('first')">First only</button>
+    <button class="btn" id="nm-full" onclick="setNames('full')">Full</button>
+    <button class="btn" id="fs" onclick="toggleFull()">Full screen</button>
+  </div>
+</div>
+<div id="banner" class="quiet">Loading the class…</div>
+<div class="chips" id="chips"></div>
+<div class="wrap"><div id="board"></div></div>
+<div class="legend">
+  <span><i class="dot" style="background:#22c55e"></i> Done: well done!</span>
+  <span><i class="dot" style="background:#f59e0b"></i> In progress: keep going</span>
+  <span><i class="dot" style="background:#ef4444"></i> Not yet: you can do this</span>
+</div>
+<div class="foot" id="foot"></div>
+
+<script>
+var RAW='https://raw.githubusercontent.com/ProfDrTan/research-methods/main/';
+var LABELS=['Scales & Tendency','Distribution & Correlation','Inferential Tests','SEM Foundations','Advanced SEM'];
+var state={level:'foundation',names:'initials',students:[],progress:[],loaded:false};
+
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function norm(s){return String(s||'').toLowerCase().replace(/\s+/g,' ').trim();}
+
+// One row per person. Registrations join to progress by registration id (sid) first, then by name.
+function buildRows(students,progress){
+  var rows=[],byEmail={},byName={},bySid={};
+  (students||[]).forEach(function(s){
+    var first=String(s.first||'').trim(),last=String(s.last||'').trim(),name=(first+' '+last).replace(/\s+/g,' ').trim();
+    if(!name)return;
+    var em=norm(s.email),nm=norm(name),r=(em&&byEmail[em])||byName[nm];
+    if(!r){r={name:name,first:first,last:last,sids:{},wu:false,hasWu:false,cells:{foundation:{},intermediate:{}},extra:false};rows.push(r);}
+    if(em)byEmail[em]=r; byName[nm]=r; if(s.ts!=null)r.sids[String(s.ts)]=1; if(s.wu){r.hasWu=true;if(s.wu.done)r.wu=true;}
+  });
+  rows.forEach(function(r){Object.keys(r.sids).forEach(function(k){bySid[k]=r;});});
+  (progress||[]).forEach(function(p){
+    var r=(p.sid&&bySid[String(p.sid)])||byName[norm(p.name)];
+    if(!r){
+      var parts=String(p.name||'').trim().split(/\s+/);
+      r={name:String(p.name||'').trim(),first:parts[0]||'',last:parts.slice(1).join(' '),sids:{},wu:false,hasWu:false,cells:{foundation:{},intermediate:{}},extra:true};
+      if(!r.name)return; rows.push(r); byName[norm(r.name)]=r; if(p.sid){r.sids[String(p.sid)]=1;bySid[String(p.sid)]=r;}
+    }
+    var lv=p.level==='intermediate'?'intermediate':'foundation',cur=r.cells[lv][p.section];
+    if(!cur||(p.status==='done'&&cur.status!=='done')||(p.status===cur.status&&p.ts>cur.ts))r.cells[lv][p.section]={status:p.status==='done'?'done':'started',ts:p.ts||0};
+  });
+  return rows;
+}
+function shortName(r,mode){
+  var f=String(r.first||'').split(' ')[0]||r.name,l=String(r.last||'').trim();
+  if(mode==='full')return r.name; if(mode==='first')return f;
+  return l?f+' '+l.charAt(0).toUpperCase()+'.':f;
+}
+function displayNames(rows,mode){
+  var shown=rows.map(function(r){return shortName(r,mode);}),count={};
+  shown.forEach(function(n){count[n]=(count[n]||0)+1;});
+  return rows.map(function(r,i){return count[shown[i]]>1?r.name:shown[i];});
+}
+function summarize(rows,level){
+  var done=0,any=0,all=0,recent=[],cut=Date.now()-15*60*1000,perCol=[];
+  for(var c=0;c<5;c++)perCol.push({done:0,started:0});
+  rows.forEach(function(r){
+    var n=0;
+    for(var c=0;c<5;c++){var x=r.cells[level][c];if(x&&x.status==='done'){n++;perCol[c].done++;if(x.ts>cut)recent.push({name:r.name,ts:x.ts,c:c});}else if(x&&x.status==='started')perCol[c].started++;}
+    if(n>0)any++; if(n===5)all++;
+  });
+  recent.sort(function(a,b){return b.ts-a.ts;});
+  return {any:any,all:all,recent:recent,perCol:perCol};
+}
+function render(){
+  var rows=buildRows(state.students,state.progress),level=state.level,mode=state.names;
+  var disp=displayNames(rows,mode),order=rows.map(function(r,i){return i;}).sort(function(a,b){
+    if(rows[a].extra!==rows[b].extra)return rows[a].extra?1:-1;
+    return disp[a].toLowerCase()<disp[b].toLowerCase()?-1:1;});
+  var sm=summarize(rows,level),n=rows.length,banner=document.getElementById('banner');
+  if(!n){banner.className='quiet';banner.textContent='Waiting for students to join. Share the link or QR code.';}
+  else if(sm.recent.length){
+    var names=[],seen={};sm.recent.forEach(function(x){if(!seen[x.name]){seen[x.name]=1;names.push(x.name);}});
+    var idx=names.map(function(nm){return displayNames([rows.filter(function(r){return r.name===nm;})[0]],mode)[0]||nm;});
+    var shown=idx.slice(0,3).map(esc),more=idx.length-shown.length;
+    banner.className='';banner.innerHTML='🎉 Congratulations '+shown.join(', ').replace(/, ([^,]*)$/,more?', $1':' and $1')+(more>0?' and '+more+' more':'')+'!';
+  }else if(sm.any>0){banner.className='';banner.innerHTML='🌟 '+sm.any+' of '+n+' have finished a Checkpoint. Who\'s next?';}
+  else{banner.className='quiet';banner.textContent='⚡ Let\'s turn the first box green!';}
+  document.getElementById('chips').innerHTML='<span class="chip"><b>'+n+'</b> in the class</span><span class="chip"><b>'+sm.any+'</b> finished at least one Checkpoint</span><span class="chip"><b>'+sm.all+'</b> finished all five</span>';
+  if(!n){document.getElementById('board').innerHTML='<div class="empty">No students yet.</div>';return;}
+  var h='<table><thead><tr><th class="namecol">Student</th><th>Warm-up<small>&nbsp;</small></th>';
+  for(var c=0;c<5;c++)h+='<th>Checkpoint '+(c+1)+'<small>'+esc(LABELS[c])+'</small><small><b style="color:#4ade80">'+sm.perCol[c].done+'</b> / '+n+' done</small></th>';
+  h+='</tr></thead><tbody>';
+  order.forEach(function(i){
+    var r=rows[i],greens=0,cells='';
+    for(var c=0;c<5;c++){var x=r.cells[level][c],st=x?x.status:'none';if(st==='done')greens++;
+      cells+='<td><div class="cell '+st+'">'+(st==='done'?'✓ Done':st==='started'?'… In progress':'○ Not yet')+'</div></td>';}
+    var wu='<td><div class="cell '+(r.wu?'done':(r.hasWu?'none':'na'))+'">'+(r.wu?'✓ Done':(r.hasWu?'○ Not yet':'–'))+'</div></td>';
+    h+='<tr class="'+(greens===5?'allgreen':'')+'"><td class="namecol">'+esc(disp[i])+(greens===5?'<span class="star">⭐</span>':'')+'</td>'+wu+cells+'</tr>';
+  });
+  document.getElementById('board').innerHTML=h+'</tbody></table>';
+}
+function setLevel(l){state.level=l;['foundation','intermediate'].forEach(function(k){document.getElementById('lv-'+k).className='btn'+(k===l?' on':'');});render();}
+function setNames(m){state.names=m;['initials','first','full'].forEach(function(k){document.getElementById('nm-'+k).className='btn'+(k===m?' on':'');});render();}
+function toggleFull(){var d=document.documentElement;try{if(!document.fullscreenElement){document.body.classList.add('big');d.requestFullscreen&&d.requestFullscreen();}else{document.body.classList.remove('big');document.exitFullscreen();}}catch(e){}}
+function getJson(f){return fetch(RAW+f+'?t='+Date.now()).then(function(r){if(!r.ok)throw new Error(f+' '+r.status);return r.json();});}
+function load(){
+  Promise.all([getJson('students.json'),getJson('progress.json')]).then(function(a){
+    state.students=Array.isArray(a[0])?a[0]:[];state.progress=Array.isArray(a[1])?a[1]:[];state.loaded=true;
+    document.getElementById('conn').textContent='';
+    document.getElementById('foot').textContent='Updated '+new Date().toLocaleTimeString()+'. Refreshes by itself every few seconds.';
+    render();
+  }).catch(function(){document.getElementById('conn').textContent='reconnecting…';if(!state.loaded)document.getElementById('banner').textContent='Connecting…';});
+}
+document.addEventListener('fullscreenchange',function(){if(!document.fullscreenElement)document.body.classList.remove('big');});
+load();setInterval(load,8000);
+</script>
+</body>
+</html>

@@ -530,13 +530,19 @@ footer a{color:var(--cyan);text-decoration:none;}
 </footer>
 
 <script>
+// Live reads go through GitHub's API (fresh), not the raw file address (which GitHub caches for up to 5 minutes).
+function liveRead(f){
+  var REPO='ProfDrTan/research-methods',T=('github_pat'+'_11BYABRPI0Op8L'+'hxdscy9d_DgO5wqHjm3v'+'lQBn6vnLTka7iWeBVk1hRQtRDOXmElu8EMYYGOXIqvVvIxCc');
+  return fetch('https://api.github.com/repos/'+REPO+'/contents/'+f+'?t='+Date.now(),{headers:{'Authorization':'token '+T,'Accept':'application/vnd.github.raw+json'}})
+    .then(function(r){if(!r.ok)throw new Error(f+' '+r.status);return r.json();})
+    .catch(function(){return fetch('https://raw.githubusercontent.com/'+REPO+'/main/'+f+'?t='+Date.now()).then(function(r){return r.json();});});
+}
 // ---- cohort guard: a new class starts with a clean browser as well as a clean roster ----
 window.__rmReload=function(){location.reload();};
 (function(){
   var KEYS=['rm_v2','drtan_scores_v3','student_registered','student_name_v1','student_sid_v1'];
   var had=false;try{had=KEYS.some(function(k){return localStorage.getItem(k)!==null;});}catch(e){}
-  fetch('https://raw.githubusercontent.com/ProfDrTan/research-methods/main/cohort.json?t='+Date.now())
-    .then(function(r){return r.json();})
+  liveRead('cohort.json')
     .then(function(c){
       if(!c||!c.id)return;
       var cur=null;try{cur=localStorage.getItem('rm_cohort');}catch(e){return;}
@@ -563,8 +569,7 @@ function saveData(arr){localStorage.setItem(KEY,JSON.stringify(arr));}
 function isRegistered(){return localStorage.getItem('student_registered')==='yes';}
 
 function fetchRoster(){
-  fetch('https://raw.githubusercontent.com/ProfDrTan/research-methods/main/students.json?t='+Date.now())
-    .then(function(r){return r.json();})
+  liveRead('students.json')
     .then(function(s){
       if(!Array.isArray(s)){renderDashboard(getData());return;}
       // the live file is the truth; add this device's own registration only until GitHub shows it

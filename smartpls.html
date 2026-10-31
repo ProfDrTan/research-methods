@@ -449,11 +449,11 @@ hr.divider{border:none;border-top:1px solid var(--border);margin:2.5rem 0;}
 <!-- DELI99 WALKTHROUGH -->
 <div class="section-label">Section 7 — Class Exercise</div>
 <div class="section-title">Hands-On: The Deli99 Case Study</div>
-<div class="section-sub">We use the Deli99 dataset in class. This is a real customer satisfaction survey from a food service company. Download it, import it, and follow along.</div>
+<div class="section-sub">We use the Deli99 dataset in class. It is a teaching dataset adapted from a published SmartPLS tutorial (Wong, 2013), not real customer data. Download it, import it, and follow along. The full model, the survey items and the 7-point scale are in the lecture’s <a href="lecture.html#deli99" style="color:var(--cyan)">Deli99 case study</a>.</div>
 
 <div class="callout">
   <div class="callout-label">📋 The Deli99 Dataset</div>
-  <p>The dataset contains customer responses on food quality, service quality, atmosphere, value for money, and overall satisfaction. Your task: build a PLS-SEM model predicting customer satisfaction and loyalty. Test which antecedents have the strongest paths. Run bootstrapping and report your hypothesis results.</p>
+  <p>98 customers rated a deli on 10 survey items, using a 7-point Likert scale (1 = strongly disagree … 7 = strongly agree). The items measure four constructs: <strong>Customer Expectation</strong> (expect_1–3), <strong>Perceived Quality</strong> (qual_1–3), <strong>Customer Satisfaction</strong> (one item, cxsat) and <strong>Customer Loyalty</strong> (loyal_1–3). Your task: build a PLS-SEM model in which Perceived Quality and Customer Expectation predict Satisfaction and Loyalty, and Satisfaction predicts Loyalty. Run bootstrapping and report which hypotheses are supported.</p>
 </div>
 
 <div class="steps">
@@ -468,34 +468,34 @@ hr.divider{border:none;border-top:1px solid var(--border);margin:2.5rem 0;}
     <div class="step-num">2</div>
     <div class="step-body">
       <div class="step-title">Import into SmartPLS</div>
-      <div class="step-desc">File → Import Data File → select Deli99.csv. SmartPLS auto-detects all columns. Verify the data looks correct in the Data View before building your model.</div>
+      <div class="step-desc">Create a new project and import Deli99.csv. SmartPLS reads the column names from the first row. Check that you have 10 indicators and 98 cases before building your model.</div>
     </div>
   </div>
   <div class="step">
     <div class="step-num">3</div>
     <div class="step-body">
       <div class="step-title">Build the Conceptual Model</div>
-      <div class="step-desc">Create 5 constructs: Food Quality (FQ), Service Quality (SQ), Atmosphere (ATM), Value for Money (VAL), Customer Satisfaction (SAT). Draw paths: FQ → SAT, SQ → SAT, ATM → SAT, VAL → SAT. Assign indicators to each construct from the dataset columns.</div>
+      <div class="step-desc">Create 4 constructs: Perceived Quality (QUAL), Customer Expectation (EXPECT), Customer Satisfaction (SAT) and Customer Loyalty (LOYAL). Draw 5 paths: QUAL → SAT, EXPECT → SAT, SAT → LOYAL, QUAL → LOYAL, EXPECT → LOYAL. Assign qual_1–3 to QUAL, expect_1–3 to EXPECT, cxsat to SAT and loyal_1–3 to LOYAL. All constructs are reflective.</div>
     </div>
   </div>
   <div class="step">
     <div class="step-num">4</div>
     <div class="step-body">
-      <div class="step-title">Run PLS Algorithm and Check Measurement Model</div>
-      <div class="step-desc">Check all outer loadings ≥ 0.70, CR ≥ 0.70, AVE ≥ 0.50, HTMT < 0.90. Remove any problematic indicators with theoretical justification. Document your decisions.</div>
+      <div class="step-title">Run PLS-SEM and Check the Measurement Model</div>
+      <div class="step-desc">Use the path weighting scheme. Check all outer loadings ≥ 0.70, composite reliability ≥ 0.70, AVE ≥ 0.50 and HTMT &lt; 0.85 (some accept &lt; 0.90). Cxsat is a single item, so its reliability and AVE are not defined. Remove an indicator only with a theoretical justification, and document every decision.</div>
     </div>
   </div>
   <div class="step">
     <div class="step-num">5</div>
     <div class="step-body">
       <div class="step-title">Run Bootstrapping and Report Results</div>
-      <div class="step-desc">5,000 subsamples. Report path coefficients, t-values, p-values, and R² for Customer Satisfaction. Which antecedent has the strongest effect? Which hypothesis is rejected? Write up your findings in a 3-sentence conclusion.</div>
+      <div class="step-desc">5,000 subsamples. Report path coefficients, t-values and p-values for all five paths, and R² for both Satisfaction and Loyalty. Which antecedent has the strongest effect on loyalty? Which hypotheses are not supported? Write up your findings in a 3-sentence conclusion.</div>
     </div>
   </div>
 </div>
 
 <div style="text-align:center;padding:2rem 0 1rem;">
-  <a href="lecture.html#module4" style="display:inline-block;padding:0.75rem 2rem;background:linear-gradient(135deg,var(--violet),#5b21b6);color:#fff;text-decoration:none;border-radius:8px;font-weight:700;font-size:0.9rem;margin-right:0.75rem;">← Back to Lecture</a>
+  <a href="lecture.html#deli99" style="display:inline-block;padding:0.75rem 2rem;background:linear-gradient(135deg,var(--violet),#5b21b6);color:#fff;text-decoration:none;border-radius:8px;font-weight:700;font-size:0.9rem;margin-right:0.75rem;">← Back to Lecture</a>
   <a href="quiz.html" style="display:inline-block;padding:0.75rem 2rem;background:rgba(0,229,255,0.1);color:var(--cyan);text-decoration:none;border-radius:8px;font-weight:700;font-size:0.9rem;border:1px solid rgba(0,229,255,0.3);">Take the SEM Checkpoint →</a>
 </div>
 
